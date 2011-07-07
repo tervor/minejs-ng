@@ -18,9 +18,9 @@ var sys = require('sys'),
 
 
 console.log("minejs - Minecraft Server Wrapper")
-console.log("Configuration: " + config.toString());
 console.log("Node Memory Usage "+util.inspect(process.memoryUsage()));
 
+// Create and start minecraft server
 var mcserver = require('./mcserver.js').createMCServer();
 mcserver.start();
 
@@ -28,19 +28,6 @@ mcserver.start();
 //sys.puts("\n\nMinecraft launched on PID: " + minecraft.pid);
 //sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
 
-//minecraft.stdout.on('data', function (data) {
-//    console.log('stdout: ' + data);
-//});
-
-/* get triggeret on jvm stdout activity */
-//minecraft.stderr.on('data', function (data) {
-    /*TODO pharse logfile stream, count users, trigger on meta command*/
-//    console.log('stderr: ' + data);
-//});
-
-//minecraft.on('exit', function (code) {
-//    console.log('child process exited with code ' + code); 
-//});
 
 /* http webservice */
 //http.createServer(function (req, res) {
@@ -57,41 +44,26 @@ mcserver.start();
 //}).listen(1337);
 
 
-/* catching all console input and wraps it to stdin of the java subprocess*/
-//stdin.on('keypress', function (chunk, key) {
-//    process.stdout.write(chunk);
-//    minecraft.stdin.write(chunk);
-//    process.stdin.resume();
-//    if (key && key.ctrl && key.name == 'c') {
-//        sys.puts("CTRL+C detected!!! KILL KILL KILL! X_x");
-//		mcserver.stop();
-//        minecraft.stdin.write("stop\n");
-//        minecraft.stdin.end();
-//        minecraft.kill('SIGHUP');
-//        process.exit();
-//    }
-//});
-
 process.stdin.resume();
 
 process.stdin.on('data', function (data) {
-	if (data == "s") {
+	if (data[0] == 0x03) {
 		mcserver.stop();
 	}
-
-	console.log("received: " + data);
-	
 });
 
-/*
 process.on('SIGHUP', on_signal);
 process.on('SIGINT', on_signal);
 process.on('SIGTERM', on_signal);
 process.on('SIGKILL', on_signal);
-*/
 
 function on_signal() {
-	console.log("Terminating ...");
-	//mcserver.stop();
+	mcserver.stop();
 }
 
+
+
+mcserver.process.on('exit', function(code) {
+	console.log("Terminated");
+	process.exit(0);
+});

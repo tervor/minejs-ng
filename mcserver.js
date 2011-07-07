@@ -5,25 +5,29 @@ var config = require('./config.js').config;
 
 
 // Constructor
-function MCServer() {
+var MCServer = function() {
 }
 
-// Starts the minecraft server
-MCServer.prototype.start = function() {
-	args = config.server.java_args.concat(['-jar', config.server.jar]).concat(config.server.server_args);
-	console.log('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
-	// Spawn the child process
-    this.process = spawn(config.server.java, args, { cwd: config.server.dir });
-	this.process.stdout.on('data', this.on_stdout_data);
-	this.process.stderr.on('data', this.on_stderr_data);
-	this.process.on('exit', this.on_exit);
-}
+MCServer.prototype = {
 
-// Stops the minecraft server
-MCServer.prototype.stop = function() {
-	console.log('Stopping minecraft server');
-	this.process.stdin.write('stop\n');
-	this.process.stdin.end();
+	// Starts the minecraft server
+	start: function() {
+		args = config.server.java_args.concat(['-jar', config.server.jar]).concat(config.server.server_args);
+		console.log('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
+		// Spawn the child process
+	    this.process = spawn(config.server.java, args, { cwd: config.server.dir });
+		this.process.stdout.on('data', this.on_stdout_data);
+		this.process.stderr.on('data', this.on_stderr_data);
+		this.process.on('exit', this.on_exit);
+	},
+	
+	// Stops the minecraft server
+	stop: function() {
+		console.log('Stopping minecraft server');
+		this.process.stdin.write("stop\n");
+		//this.process.stdin.end();
+	}
+	
 }
 
 MCServer.prototype.on_stdout_data = function(data) {
