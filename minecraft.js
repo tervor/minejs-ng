@@ -6,21 +6,27 @@ var sys = require('sys'),
     http = require('http'),
     spawn = require('child_process').spawn,
     stdin = process.openStdin(),
-    util = require('util'),
-    minecraft = spawn('/usr/bin/java',['\-Xms1g','\-Xmx1g','\-jar','\/home/minecraft/minecraft-testserver/minecraft_server.jar','nogui']);
+    util = require('util')
+    
+    
+filename = process.ARGV[2];
 
+function usage() {
+     return sys.puts("\nUsage: node minejs.js /path/to/your/minecraft_server.jar\n\n");
+     process.exit(0);
+};
 
-/*process.ARGV[2];
+if (!filename) {
+    usage();
+ 
+} else {
 
-if (!filename)
-  return sys.puts("wtf");
-*/
+}
 
-console.log("Node Memory Usage "+util.inspect(process.memoryUsage()));
-
-sys.puts("\n\nMinecraft launched on PID: " + minecraft.pid);
-sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
-
+    minecraft = spawn('/usr/bin/java',['\-Xms1g','\-Xmx1g','\-jar',filename,'nogui']);
+    console.log("Node Memory Usage "+util.inspect(process.memoryUsage()));
+    sys.puts("\n\nMinecraft launched on PID: " + minecraft.pid);
+    sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
 
 minecraft.stdout.on('data', function (data) {
     console.log('stdout: ' + data);
@@ -34,7 +40,7 @@ minecraft.stderr.on('data', function (data) {
 
 minecraft.on('exit', function (code) {
     console.log('child process exited with code ' + code);
-    res.write(data);
+ 
 });
 
 /* http webservice */
