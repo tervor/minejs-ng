@@ -38,9 +38,9 @@ http.createServer(function (req, res) {
 
     res.writeHead(200, {'Content-Type': "text/plain;charset=UTF-8"});
     res.write("this is a chunk streamn");
-    data="say New NodeCraft HTTP connection"
+    data="say New Nodemine HTTP connection"
     minecraft.stdin.write(data + '\n');
-     res.write(data);
+    res.write(data);
 
   
     minecraft.stdout.on('data', function (data) {
@@ -49,8 +49,7 @@ http.createServer(function (req, res) {
     });
 
     minecraft.stderr.on('data', function (data) {
-        /*count users */
-    
+        /*pharse logfile stream, count users, trigger on meta command*/
         res.write(data);
     });
 
