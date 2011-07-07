@@ -42,6 +42,14 @@ MCServer.prototype = {
 	say: function(text) {
 		this.send_cmd(['say', text]);
 	},
+	
+	tell: function(user, text) {
+		this.send_cmd(['tell', user, text]);
+	},
+	
+	give: function(user, id, num) {
+		this.send_cmd(['give', user, id, num]);
+	},
 
 	on_exit: function(code) {
 	    console.log("Minecraft server exited with code " + code);

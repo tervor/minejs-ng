@@ -21,13 +21,42 @@ mcserver.start();
 //sys.puts("\n\nMinecraft launched on PID: " + minecraft.pid);
 //sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
 
+function requestUsers(req, res) {
+	
+}
+
+function requestSay(req, res) {
+	
+}
+
 
 /* http webservice */
 http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': "text/plain;charset=UTF-8"});
-	var uri = url.parse(req.url).pathname;
-	if (uri == '/users') {
+	var u = url.parse(req.url, true);
+	if (u.pathname == '/users') {
 		res.end(JSON.stringify(mcserver.users));
+	} else if (u.pathname == '/say') {
+		try {
+			mcserver.say(u.query.text);
+			res.end("success");
+		} catch (err) {
+			res.end("failed");
+		}
+	} else if (u.pathname == '/tell') {
+		try {
+			mcserver.tell(u.query.user, u.query.text);
+			res.end("success");
+		} catch (err) {
+			res.end("failed");
+		}
+	} else if (u.pathname == '/give') {
+		try {
+			mcserver.give(u.query.user, u.query.id, u.query.num);
+			res.end("success");
+		} catch (err) {
+			res.end("failed");
+		}
 	} else {
 		res.end("unknown request");
 	}
