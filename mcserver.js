@@ -38,6 +38,10 @@ MCServer.prototype = {
 		console.log('Stopping minecraft server');
 		this.process.stdin.write("\nstop\n");
 	},
+	
+	say: function(text) {
+		this.send_cmd(['say', text]);
+	},
 
 	on_exit: function(code) {
 	    console.log("Minecraft server exited with code " + code);
@@ -73,6 +77,10 @@ MCServer.prototype = {
 			console.log(this.users);
 		}
 
+	},
+	
+	send_cmd: function(args) {
+		this.process.stdin.write(args.join(' ') + '\n');
 	},
 	
 }

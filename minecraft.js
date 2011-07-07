@@ -67,3 +67,9 @@ mcserver.process.on('exit', function(code) {
 	console.log("Terminated");
 	process.exit(0);
 });
+
+
+var counter = 1;
+setInterval(function() {
+	mcserver.say(counter++);
+}, 2000);
