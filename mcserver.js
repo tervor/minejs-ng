@@ -5,10 +5,15 @@ var config = require('./config.js').config;
 
 
 // Constructor
-var MCServer = function() {
+function MCServer() {
+	this.recv = "";
+	this.users = [];
 }
 
 MCServer.prototype = {
+	
+	DISCONNECT: ".*\\[INFO\\] (.*) lost connection:.*",
+	CONNECT: ".*\\[INFO\\] (.*) \\[.*\\] logged in with entity id \\d+ at .*",
 
 	// Starts the minecraft server
 	start: function() {
@@ -16,31 +21,62 @@ MCServer.prototype = {
 		console.log('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
 		// Spawn the child process
 	    this.process = spawn(config.server.java, args, { cwd: config.server.dir });
-		this.process.stdout.on('data', this.on_stdout_data);
-		this.process.stderr.on('data', this.on_stderr_data);
+	
+		this.process.stdout.on('data', function(data) {
+			this.receive(data);
+		}.bind(this));
+		
+		this.process.stderr.on('data', function(data) {
+			this.receive(data);
+		}.bind(this));
+		
 		this.process.on('exit', this.on_exit);
 	},
 	
 	// Stops the minecraft server
 	stop: function() {
 		console.log('Stopping minecraft server');
-		this.process.stdin.write("stop\n");
-		//this.process.stdin.end();
-	}
+		this.process.stdin.write("\nstop\n");
+	},
+
+	on_exit: function(code) {
+	    console.log("Minecraft server exited with code " + code);
+	},
+	
+	receive: function(data) {
+		for (i = 0; i < data.length; i++) {
+			c = data.toString('ascii', i, i + 1);
+			if (c == '\n') {
+				this.receive_line(this.recv);
+				this.recv = "";
+			} else
+				this.recv += c;
+		}
+	},
+	
+	receive_line: function(line) {
+		console.log(this.recv);
+		
+		m = this.recv.match(this.CONNECT);
+		if (m) {
+			user = m[1];
+			console.log("User " + user + " has connected");
+			this.users.push(user);
+			console.log(this.users);
+		}
+		
+		m = this.recv.match(this.DISCONNECT);
+		if (m) {
+			user = m[1];
+			console.log("User " + user + " has disconnected");
+			this.users.splice(this.users.indexOf(user), 1);
+			console.log(this.users);
+		}
+
+	},
 	
 }
 
-MCServer.prototype.on_stdout_data = function(data) {
-    console.log("stdout: " + data);
-}
-
-MCServer.prototype.on_stderr_data = function(data) {
-    console.log("stderr: " + data);
-}
-
-MCServer.prototype.on_exit = function(code) {
-    console.log("child process exited with code " + code);
-}
 
 
 // Creates a minecraft server
