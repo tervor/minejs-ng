@@ -3,8 +3,16 @@ mineJS
 
 This is a proof of concept in nodeJS, we try to add some remotecontrol feautures to our minecraft server without touching the minecraft code.
 
+Requirements
+------------
+*NodeJS 0.5
+*Minecraft 1.7.x
+
+
 How to run
 ----------
+
+
 
 node minecraft.js /path/to/your/minecraft_server.jar
 or
