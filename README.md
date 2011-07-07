@@ -9,7 +9,7 @@ Requirements
 *Minecraft 1.7.x
 
 
-How to run
+How to run 
 ----------
 
 
