@@ -8,7 +8,6 @@ var sys = require('sys'),
     fs = require('fs'),
     tty = require('tty').setRawMode(true),   
     http = require('http'),
-    spawn = require('child_process').spawn,
     stdin = process.openStdin(),
     util = require('util')
     util = require('util');
@@ -50,6 +49,8 @@ process.stdin.on('data', function (data) {
 	if (data[0] == 0x03) {
 		mcserver.stop();
 	}
+	mcserver.process.stdin.write(data);
+	process.stdout.write(data);
 });
 
 process.on('SIGHUP', on_signal);
@@ -60,7 +61,6 @@ process.on('SIGKILL', on_signal);
 function on_signal() {
 	mcserver.stop();
 }
-
 
 
 mcserver.process.on('exit', function(code) {
