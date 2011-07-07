@@ -19,7 +19,7 @@ if (!filename)
 console.log("Node Memory Usage "+util.inspect(process.memoryUsage()));
 
 sys.puts("\n\nMinecraft launched on PID: " + minecraft.pid);
-sys.puts("Webconsole available on  http://oom.ch:1337/ ");
+sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
 
 minecraft.stdout.on('data', function (data) {
     console.log('stdout: ' + data);
