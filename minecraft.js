@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+var config = require('./config.js').config;
+
+args = config.server.java_args.concat(['-jar', config.server.jar]).concat(config.server.server_args);
+
+
 var sys = require('sys'),
     fs = require('fs'),
     tty = require('tty').setRawMode(true),   
@@ -7,26 +12,18 @@ var sys = require('sys'),
     spawn = require('child_process').spawn,
     stdin = process.openStdin(),
     util = require('util')
-    
-    
-filename = process.ARGV[2];
+    util = require('util'),
+    minecraft = spawn(config.server.java, args, { cwd: config.server.dir });
 
-function usage() {
-     return sys.puts("\nUsage: node minejs.js /path/to/your/minecraft_server.jar\n\n");
-     process.exit(0);
-};
 
-if (!filename) {
-    usage();
- 
-} else {
+console.log("minejs - Minecraft Server Wrapper")
+console.log("Configuration: " + config.toString());
+console.log("Cmdline: " + config.server.java + " " + args.join(' '));
 
-}
+console.log("Node Memory Usage "+util.inspect(process.memoryUsage()));
 
-    minecraft = spawn('/usr/bin/java',['\-Xms1g','\-Xmx1g','\-jar',filename,'nogui']);
-    console.log("Node Memory Usage "+util.inspect(process.memoryUsage()));
-    sys.puts("\n\nMinecraft launched on PID: " + minecraft.pid);
-    sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
+sys.puts("\n\nMinecraft launched on PID: " + minecraft.pid);
+sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
 
 minecraft.stdout.on('data', function (data) {
     console.log('stdout: ' + data);
