@@ -6,7 +6,11 @@ This is a proof of concept in nodeJS, we try to add some remotecontrol feautures
 How to run
 ----------
 
-node minecraft.js /home/minecraft/minecraft-testserver/minecraft_server.jar
+node minecraft.js /path/to/your/minecraft_server.jar
+or
+node minecraft /path/to/your/minecraft_server.jar
+or
+./minecraft.js /path/to/your/minecraft_server.jar
 
 
 
