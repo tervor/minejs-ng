@@ -6,15 +6,9 @@ var config = require('./config.js').config;
 
 var sys = require('sys'),
     fs = require('fs'),
-    tty = require('tty').setRawMode(true),   
     http = require('http'),
-    stdin = process.openStdin(),
-    util = require('util')
+	url = require('url'),
     util = require('util');
-
-
-
-
 
 console.log("minejs - Minecraft Server Wrapper")
 console.log("Node Memory Usage "+util.inspect(process.memoryUsage()));
@@ -29,18 +23,15 @@ mcserver.start();
 
 
 /* http webservice */
-//http.createServer(function (req, res) {
-//    res.writeHead(200, {'Content-Type': "text/plain;charset=UTF-8"});
-//    minecraft.stdin.write('say Welcome to Nodemine stranger HTTP client\n');
-//    res.write("");
-//    minecraft.stdout.on('data', function (data) {
-//        res.write(data);
-//    });
-//    minecraft.stderr.on('data', function (data) {
-//        /*TODO pharse logfile stream, count users, trigger on meta command*/
-//        res.write(data);
-//    });
-//}).listen(1337);
+http.createServer(function (req, res) {
+    res.writeHead(200, {'Content-Type': "text/plain;charset=UTF-8"});
+	var uri = url.parse(req.url).pathname;
+	if (uri == '/users') {
+		res.end(JSON.stringify(mcserver.users));
+	} else {
+		res.end("unknown request");
+	}
+}).listen(config.web.port);
 
 
 process.stdin.resume();
