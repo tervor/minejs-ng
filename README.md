@@ -1,4 +1,4 @@
-NODEMINE
+mineJS
 ========
 
 This is a proof of concept in nodeJS, we try to add some remotecontrol feautures to our minecraft server without touching the minecraft code.
