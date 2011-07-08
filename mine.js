@@ -108,17 +108,6 @@ http.createServer(function (req, res) {
 			    res.end("failed");
 		    }
             break;
-        case "status":
-            try {
-			    mcserver.status();
-			    console.log("status success");
-			    res.end("success");
-			   
-		    } catch (err) {
-			    console.log("status failed");
-			    res.end("failed");
-		    }
-            break;
         default:
             res.end("unknown request");
             break;
