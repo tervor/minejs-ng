@@ -3,6 +3,7 @@ var spawn = require('child_process').spawn;
 
 var config = require('./config.js').config;
 
+var util = require('util');
 
 // Constructor
 function MCServer() {
@@ -10,13 +11,19 @@ function MCServer() {
 	this.users = [];
 }
 
+// MCServer class definition
 MCServer.prototype = {
 	
-	DISCONNECT: ".*\\[INFO\\] (.*) lost connection:.*",
-	CONNECT: ".*\\[INFO\\] (.*) \\[.*\\] logged in with entity id \\d+ at .*",
-	CHAT: ".*\\[INFO\\] <(.*)> (.*)",
-	COMMAND: ".*\\[INFO\\] (.*) issued server command: (.*)",
-
+	// List of handlers to be called when a line in the server log matches the regular expression.
+	// Make sure that a handler function of type handle_xxx(args) with the same name actually
+	// exists in this class for every registered log handler.
+	log_handlers: {
+		handle_connect: ".*\\[INFO\\] (.*) \\[.*\\] logged in with entity id \\d+ at .*",
+		handle_disconnect: ".*\\[INFO\\] (.*) lost connection:.*",
+		handle_user_chat: ".*\\[INFO\\] <(.*)> (.*)",
+		handle_user_cmd: ".*\\[INFO\\] (.*) issued server command: (.*)",
+	},
+	
 	// Starts the minecraft server
 	start: function() {
 		args = config.server.java_args.concat(['-jar', config.server.jar]).concat(config.server.server_args);
@@ -40,7 +47,7 @@ MCServer.prototype = {
 		console.log('Stopping minecraft server');
 		this.process.stdin.write("\nstop\n");
 	},
-	
+
 	say: function(text) {
 		this.send_cmd(['say', text]);
 	},
@@ -53,10 +60,31 @@ MCServer.prototype = {
 		this.send_cmd(['give', user, id, num]);
 	},
 
+	status: function() {
+	    // UNSTABLE - maybe this output should only be available in console
+		this.send_cmd(['say', 'STATUS:']);
+		this.send_cmd(['say', 'Minecraft JVM is running on PID: '+this.process.pid]);
+		//this.send_cmd(['say', 'NodeMem: '+util.inspect(process.memoryUsage())]);
+		console.log('NodeJS Process Memory Status: \n'+util.inspect(process.memoryUsage()));
+		var jstat = spawn('/bin/sh', ['-c', ' jstat -gcutil'+this.process.pid]); 
+        jstat.stderr.on("data", function (data) {
+		for (i = 0; i < data.length; i++) {
+			c = data.toString('ascii', i, i + 1);
+			if (c == '\n') {
+				console.log("c is: "+c);
+			} else
+				this.recv += c; 
+		    }
+		   //debug
+           console.log("data is: "+data);
+        }); 
+	},
+
 	on_exit: function(code) {
 	    console.log("Minecraft server exited with code " + code);
 	},
 	
+	// Called for every chunk of data received from the server's STDOUT and STDERR
 	receive: function(data) {
 		for (i = 0; i < data.length; i++) {
 			c = data.toString('ascii', i, i + 1);
@@ -68,36 +96,40 @@ MCServer.prototype = {
 		}
 	},
 	
+	// Called for every new received line from the server's STDOUT and STDERR
 	receive_line: function(line) {
 		console.log(this.recv);
 		
-		m = this.recv.match(this.CONNECT);
-		if (m) {
-			user = m[1];
-			console.log("User " + user + " has connected");
-			this.users.push(user);
-			console.log(this.users);
+		// Check log handlers for matches
+		for (handler in this.log_handlers) {
+			m = this.recv.match(this.log_handlers[handler]);
+			if (m) {
+				args = m.splice(1, m.length - 1);
+				this[handler](args);
+			}
 		}
-		
-		m = this.recv.match(this.DISCONNECT);
-		if (m) {
-			user = m[1];
-			console.log("User " + user + " has disconnected");
-			this.users.splice(this.users.indexOf(user), 1);
-			console.log(this.users);
-		}
-		
-		m = this.recv.match(this.CHAT);
-		if (m) {
-			this.user_chat(m[1], m[2]);
-		}
-		
-		m = this.recv.match(this.COMMAND);
-		if (m) {
-			this.user_cmd(m[1], m[2]);
-		}
-
 	},
+	
+	handle_connect: function(args) {
+		user = args[0];
+		console.log("User " + user + " has connected");
+		this.users.push(user);
+	},
+	
+	handle_disconnect: function(args) {
+		user = args[0];
+		console.log("User " + user + " has disconnected");
+		this.users.splice(this.users.indexOf(user), 1);
+	},
+	
+	handle_user_chat: function(args) {
+		this.user_chat(args[0], args[1]);
+	},
+	
+	handle_user_cmd: function(args) {
+		this.user_cmd(args[0], args[1]);
+	},
+	
 	
 	send_cmd: function(args) {
 		this.process.stdin.write(args.join(' ') + '\n');
@@ -108,8 +140,8 @@ MCServer.prototype = {
 	},
 	
 	user_cmd: function(user, text) {
-		console.log("User " + user + " sent command " + text);
-		
+		console.log("XX User " + user + " sent command " + text);
+
 		values = text.split(' ');
 		if (values[0] == "random") {
 			this.tell(user, "test");
@@ -117,6 +149,8 @@ MCServer.prototype = {
 				this.give(user, 4, 100);
 		}
 	},
+	
+	
 	
 }
 
