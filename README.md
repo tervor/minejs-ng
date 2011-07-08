@@ -28,4 +28,4 @@ Thanks to
 oxi & freaky
 
 ###testing & input: 
-copykill, tomsnow, yingpang, mortron and the darklords
+copykill, fabich, tomsnow, yingpang, mortron and the darklords
