@@ -3,6 +3,7 @@ var spawn = require('child_process').spawn;
 
 var config = require('./config.js').config;
 
+var util = require('util');
 
 // Constructor
 function MCServer() {
@@ -54,9 +55,23 @@ MCServer.prototype = {
 	},
 
 	status: function() {
-		this.send_cmd(['say', 'SERVER STATUS:\n']);
-	    console.log("Memory Usage:\n"+util.inspect(this.process.memoryUsage()));
-        console.log("PID: "+this.process.pid());
+	    // UNSTABLE - maybe this output should only be available in console
+		this.send_cmd(['say', 'STATUS:']);
+		this.send_cmd(['say', 'Minecraft JVM is running on PID: '+this.process.pid]);
+		//this.send_cmd(['say', 'NodeMem: '+util.inspect(process.memoryUsage())]);
+		console.log('NodeJS Process Memory Status: \n'+util.inspect(process.memoryUsage()));
+		var jstat = spawn('/bin/sh', ['-c', ' jstat -gcutil'+this.process.pid]); 
+        jstat.stderr.on("data", function (data) {
+		for (i = 0; i < data.length; i++) {
+			c = data.toString('ascii', i, i + 1);
+			if (c == '\n') {
+				console.log("c is: "+c);
+			} else
+				this.recv += c; 
+		    }
+		   //debug
+           console.log("data is: "+data);
+        }); 
 	},
 
 	on_exit: function(code) {
