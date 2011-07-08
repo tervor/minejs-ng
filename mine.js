@@ -11,14 +11,14 @@ var sys = require('sys'),
     util = require('util');
 
 console.log("minejs - Minecraft Server Wrapper")
-console.log("Node Memory Usage "+util.inspect(process.memoryUsage()));
+
 
 // Create and start minecraft server
 var mcserver = require('./mcserver.js').createMCServer();
 mcserver.start();
 
 
-//sys.puts("\n\nMinecraft launched on PID: " + minecraft.pid);
+
 //sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
 
 function requestUsers(req, res) {
@@ -34,32 +34,95 @@ function requestSay(req, res) {
 http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': "text/plain;charset=UTF-8"});
 	var u = url.parse(req.url, true);
-	if (u.pathname == '/users') {
-		res.end(JSON.stringify(mcserver.users));
-	} else if (u.pathname == '/say') {
-		try {
-			mcserver.say(u.query.text);
-			res.end("success");
-		} catch (err) {
-			res.end("failed");
-		}
-	} else if (u.pathname == '/tell') {
-		try {
-			mcserver.tell(u.query.user, u.query.text);
-			res.end("success");
-		} catch (err) {
-			res.end("failed");
-		}
-	} else if (u.pathname == '/give') {
-		try {
-			mcserver.give(u.query.user, u.query.id, u.query.num);
-			res.end("success");
-		} catch (err) {
-			res.end("failed");
-		}
-	} else {
-		res.end("unknown request");
-	}
+	
+	
+    switch (u.pathname) {
+        case "/users":
+		    res.end(JSON.stringify(mcserver.users));
+            break;
+        case "/say":
+            try {
+			    mcserver.say(u.query.text);
+			    res.end("success");
+		    } catch (err) {
+			    res.end("failed");
+		    }
+            break;
+        case "/tell":
+		    try {
+			    mcserver.tell(u.query.user, u.query.text);
+			    res.end("success");
+		    } catch (err) {
+			    res.end("failed");
+		    }
+            break;
+        case "/give":
+      		try {
+			    mcserver.give(u.query.user, u.query.id, u.query.num);
+			    res.end("success");
+		    } catch (err) {
+			    res.end("failed");
+		    }
+            break;
+        case "/tp":
+            res.end("not implemented yet");
+            break;
+        case "/op":
+            res.end("not implemented yet");
+            break;
+        case "/list":
+            res.end("not implemented yet");
+            break;
+        case "/deop":
+            res.end("not implemented yet");
+            break;
+        case "/kick":
+            res.end("not implemented yet");
+            break;
+        case "/ban":
+            res.end("not implemented yet");
+            break;
+        case "/unban":
+             res.end("not implemented yet");
+            break;
+        case "/adduser":
+            /*write user to whitelist.txt*/
+            res.end("not implemented yet");
+            break;
+        case "/deluser":
+            /*delete user from whitelist.txt*/
+            res.end("not implemented yet");
+            break;
+        case "/restart":
+            /* restart minecraft server*/
+            res.end("not implemented yet");
+            break;
+        case "/status":
+            try {
+			    mcserver.status();
+			    console.log("status success");
+			    res.end("success");
+			   
+		    } catch (err) {
+			    console.log("status failed");
+			    res.end("failed");
+		    }
+            break;
+        case "status":
+            try {
+			    mcserver.status();
+			    console.log("status success");
+			    res.end("success");
+			   
+		    } catch (err) {
+			    console.log("status failed");
+			    res.end("failed");
+		    }
+            break;
+        default:
+            res.end("unknown request");
+            break;
+    }
 }).listen(config.web.port);
 
 
