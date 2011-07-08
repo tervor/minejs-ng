@@ -6,15 +6,9 @@ var config = require('./config.js').config;
 
 var sys = require('sys'),
     fs = require('fs'),
-    tty = require('tty').setRawMode(true),   
     http = require('http'),
-    stdin = process.openStdin(),
-    util = require('util')
+	url = require('url'),
     util = require('util');
-
-
-
-
 
 console.log("minejs - Minecraft Server Wrapper")
 console.log("Node Memory Usage "+util.inspect(process.memoryUsage()));
@@ -27,20 +21,46 @@ mcserver.start();
 //sys.puts("\n\nMinecraft launched on PID: " + minecraft.pid);
 //sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
 
+function requestUsers(req, res) {
+	
+}
+
+function requestSay(req, res) {
+	
+}
+
 
 /* http webservice */
-//http.createServer(function (req, res) {
-//    res.writeHead(200, {'Content-Type': "text/plain;charset=UTF-8"});
-//    minecraft.stdin.write('say Welcome to Nodemine stranger HTTP client\n');
-//    res.write("");
-//    minecraft.stdout.on('data', function (data) {
-//        res.write(data);
-//    });
-//    minecraft.stderr.on('data', function (data) {
-//        /*TODO pharse logfile stream, count users, trigger on meta command*/
-//        res.write(data);
-//    });
-//}).listen(1337);
+http.createServer(function (req, res) {
+    res.writeHead(200, {'Content-Type': "text/plain;charset=UTF-8"});
+	var u = url.parse(req.url, true);
+	if (u.pathname == '/users') {
+		res.end(JSON.stringify(mcserver.users));
+	} else if (u.pathname == '/say') {
+		try {
+			mcserver.say(u.query.text);
+			res.end("success");
+		} catch (err) {
+			res.end("failed");
+		}
+	} else if (u.pathname == '/tell') {
+		try {
+			mcserver.tell(u.query.user, u.query.text);
+			res.end("success");
+		} catch (err) {
+			res.end("failed");
+		}
+	} else if (u.pathname == '/give') {
+		try {
+			mcserver.give(u.query.user, u.query.id, u.query.num);
+			res.end("success");
+		} catch (err) {
+			res.end("failed");
+		}
+	} else {
+		res.end("unknown request");
+	}
+}).listen(config.web.port);
 
 
 process.stdin.resume();
@@ -67,3 +87,9 @@ mcserver.process.on('exit', function(code) {
 	console.log("Terminated");
 	process.exit(0);
 });
+
+
+var counter = 1;
+setInterval(function() {
+	mcserver.say(counter++);
+}, 2000);
