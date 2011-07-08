@@ -40,7 +40,7 @@ MCServer.prototype = {
 		console.log('Stopping minecraft server');
 		this.process.stdin.write("\nstop\n");
 	},
-	
+
 	say: function(text) {
 		this.send_cmd(['say', text]);
 	},
@@ -51,6 +51,12 @@ MCServer.prototype = {
 	
 	give: function(user, id, num) {
 		this.send_cmd(['give', user, id, num]);
+	},
+
+	status: function() {
+		this.send_cmd(['say', 'SERVER STATUS:\n']);
+	    console.log("Memory Usage:\n"+util.inspect(this.process.memoryUsage()));
+        console.log("PID: "+this.process.pid());
 	},
 
 	on_exit: function(code) {
@@ -108,8 +114,8 @@ MCServer.prototype = {
 	},
 	
 	user_cmd: function(user, text) {
-		console.log("User " + user + " sent command " + text);
-		
+		console.log("XX User " + user + " sent command " + text);
+
 		values = text.split(' ');
 		if (values[0] == "random") {
 			this.tell(user, "test");
