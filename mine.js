@@ -17,6 +17,9 @@ console.log("minejs - Minecraft Server Wrapper")
 var mcserver = require('./mcserver.js').createMCServer();
 mcserver.start();
 
+// Create and start telnet server
+var telnetserver = require('./telnetserver.js').createTelnetServer();
+telnetserver.start();
 
 
 //sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
@@ -135,10 +138,14 @@ function on_signal() {
 }
 
 
+/*
 mcserver.process.on('exit', function(code) {
-	console.log("Terminated");
-	process.exit(0);
+	if (mcserver.terminate) {
+		console.log("Terminated");
+		process.exit(0);
+	}
 });
+*/
 
 
 var counter = 1;
