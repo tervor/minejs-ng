@@ -6,19 +6,19 @@ var config = {
 	server: {
 		java: '/usr/bin/java',
 		java_args: ['-Xmx1024M', '-Xms1024M'],
-		dir: '/Users/freak/Documents/minejs/server',
+		dir: '/opt/mcserver/',
 		jar: 'minecraft_server.jar',
 		server_args: ['nogui'],
 	},
 	
 	// Web server configuration options
 	web: {
-		port: 8000,
+		port: 1337,
 	},
 
 	// Telnet server configuration options
 	telnet: {
-		port: 8001,
+		port: 1337,
 	},
 	
 };
