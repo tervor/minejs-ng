@@ -14,6 +14,8 @@ MCServer.prototype = {
 	
 	DISCONNECT: ".*\\[INFO\\] (.*) lost connection:.*",
 	CONNECT: ".*\\[INFO\\] (.*) \\[.*\\] logged in with entity id \\d+ at .*",
+	CHAT: ".*\\[INFO\\] <(.*)> (.*)",
+	COMMAND: ".*\\[INFO\\] (.*) issued server command: (.*)",
 
 	// Starts the minecraft server
 	start: function() {
@@ -84,11 +86,36 @@ MCServer.prototype = {
 			this.users.splice(this.users.indexOf(user), 1);
 			console.log(this.users);
 		}
+		
+		m = this.recv.match(this.CHAT);
+		if (m) {
+			this.user_chat(m[1], m[2]);
+		}
+		
+		m = this.recv.match(this.COMMAND);
+		if (m) {
+			this.user_cmd(m[1], m[2]);
+		}
 
 	},
 	
 	send_cmd: function(args) {
 		this.process.stdin.write(args.join(' ') + '\n');
+	},
+	
+	user_chat: function(user, text) {
+		console.log("User " + user + " says " + text);
+	},
+	
+	user_cmd: function(user, text) {
+		console.log("User " + user + " sent command " + text);
+		
+		values = text.split(' ');
+		if (values[0] == "random") {
+			this.tell(user, "test");
+//			for (i = 1; i <= 10; i++)
+				this.give(user, 4, 100);
+		}
 	},
 	
 }
