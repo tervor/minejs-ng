@@ -1,11 +1,11 @@
 <!DOCTYPE HTML>
 <?php
+session_set_cookie_params(60 * 60 * 24 * 30);
 session_start();
 
 require_once("include/settings.inc.php");
 require_once("include/functions.inc.php");
 require_once("include/smarty/libs/Smarty.class.php");
-
 
 ## magic starts here ##
 $smarty = getSmarty();
@@ -18,12 +18,15 @@ $smarty->assign("versionString", $GLOBALS['versionString']);
 
 $status = sendCommand("status");
 if (empty($status)) {
-    echo "<b>ERROR:</b> Unable to connect to Minecraft server. Please retry later.";
-    exit();
+    #no connection to nodejs
+    $smarty->assign("return", "Unable to connect to minejs nodejs server. Please retry later.");
+    $smarty->display('message.tpl');
 } else {
+    #are we already logged in?
     if (empty($_SESSION['loggedIn'])) {
         #Auth starts here
         if ($_REQUEST['do'] == "requestCode") {
+            #authenticating user view
             $_SESSION['user'] = $_REQUEST['user'];
 
             if (empty($_SESSION['authCode'])) {
@@ -36,14 +39,18 @@ if (empty($status)) {
             unset($_SESSION['message']);
             $smarty->display('auth.tpl');
         } else if ($_REQUEST['do'] == "authMe") {
+            #authenticating user check
             if ($_SESSION['authCode'] == $_REQUEST['authCode']) {
+                #sucessfully logged in
                 $_SESSION['message'] = "Logged in!";
                 $_SESSION['loggedIn'] = true;
             } else {
+                #wrong code recieved
                 $_SESSION['message'] = "Wrong auth code!";
             }
             header("Location: ?");
         } else {
+            #redirect to load default page
             $smarty->assign("return", "");
             $smarty->display('welcome.tpl');
         }
@@ -54,8 +61,10 @@ if (empty($status)) {
         session_write_close();
         header("Location: ?");
     } else {
+        #we are already logged in
         $smarty->assign("loggedInUser", $_SESSION['user']);
         if (in_array($_SESSION['user'], $usersOnline)) {
+            #this user is online on the minecraft server
 
             $tpTargets = array();
             foreach ($usersOnline as $user) {
@@ -104,7 +113,9 @@ if (empty($status)) {
 
             $smarty->display('loggedin.tpl');
         } else {
-            $smarty->display('loggedout.tpl');
+            #this user is not online on the minecraft server
+            $smarty->assign("return", "Please login to the Minecraft Server.");
+            $smarty->display('message.tpl');
         }
     }
 }
