@@ -26,9 +26,9 @@
     <div class="STlabel">Player:</div>
     <div class="STinput">
         <select name="user" id="STuserlist" onChange="changeUsername();">
-            {foreach $usersOnline as $userOnline}
-                <option value="{$userOnline.name}">
-	                {$userOnline.name}
+            {foreach $usersOnline as $key => $value}
+                <option value="{$value}">
+	                {$value}
 	            </option>
             {/foreach}
         </select>
@@ -76,12 +76,12 @@
 </div>
 
 <div id="teleportGrid" style="float:clear;">
-        {foreach $teleportTargets as $teleportDest}
-                <div id="box-{$teleportDest.name}"  class="GridBox TeleportGridBox" onclick="teleportByName('{$teleportDest.name}');" onmousemove="EXboxHover('box-{$teleportDest.name}','teleport','1','TeleportImg-{$teleportDest.name}')" onmouseout="EXboxHover('box-{$teleportDest.name}','teleport','0','TeleportImg-{$teleportDest.name}')">
+        {foreach $teleportTargets as $key => $value}
+                <div id="box-{$value}"  class="GridBox TeleportGridBox" onclick="teleportByName('{$value}');" onmousemove="EXboxHover('box-{$value}','teleport','1','TeleportImg-{$value}')" onmouseout="EXboxHover('box-{$value}','teleport','0','TeleportImg-{$value}')">
                 <center>
-                    <div name="IDlabel-{$teleportDest.name}" class="IDlabel">Teleport</div>
-                    <img src="icons/gate.png" id=="TeleportImg-{$teleportDest.name}" width="32" height="32" border="0">
-                    <div name="Namelabel-{$teleportDest.name}" class="Namelabel">to {$teleportDest.name}</div>
+                    <div name="IDlabel-{$value}" class="IDlabel">Teleport</div>
+                    <img src="icons/gate.png" id=="TeleportImg-{$value}" width="32" height="32" border="0">
+                    <div name="Namelabel-{$value}" class="Namelabel">to {$value}</div>
                 </center>
                 </div>
         {/foreach}

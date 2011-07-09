@@ -1,5 +1,10 @@
 <?php
 
+# settings:
+$GLOBALS['maxitems'] = 2047;
+$GLOBALS['nodejsServer'] = "http://localhost:8000";
+
+
 $items = array(
         #sample	array("id" => "1", "name" => "nice stone", "stackable" => "1"),
         #sample	array("id" => "4", "name" => "gobble stone")

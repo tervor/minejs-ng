@@ -5,15 +5,15 @@ require_once("include/settings.inc.php");
 require_once("include/functions.inc.php");
 require_once("include/smarty/libs/Smarty.class.php");
 
-# settings:
-$GLOBALS['facilitid']  = 1;
-$GLOBALS['maxitems'] = 2047;
-
 
 ## magic starts here ##
-$facility = $cfg[$GLOBALS['facilitid']];
 $smarty = getSmarty();
+
+#init
 $usersOnline = getUsers();
+#print_r($usersOnline); exit();
+
+#echo sendCommand("status"); exit();
 
 # assign smarty vars
 $smarty->assign("userCountOnline", count($usersOnline));
@@ -25,7 +25,8 @@ $smarty->assign("items", $items);
 $smarty->assign("scripts", $scripts);
 
 if ($usersOnline == false) {
-	$smarty->assign("return", "<b>ERROR:</b> Unable to communicate with server. PleasE retry");
+	echo "<b>ERROR:</b> Unable to communicate with server. Please retry";
+        exit();
 } else {
 	switch ($_REQUEST['do']) {
 		case "giveItem":

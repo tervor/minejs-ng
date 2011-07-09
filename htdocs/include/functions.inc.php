@@ -1,96 +1,90 @@
 <?php
+
 #functions
-function getSmarty () {
-	$smarty = new Smarty();
-	$smarty->setTemplateDir('templates');
-	$smarty->setCompileDir('include/smarty/templates_c');
-	$smarty->setCacheDir('include/smarty/cache');
-	//$smarty->caching = 0;
-	$smarty->setConfigDir('include/smarty/configs');
-	return $smarty;
+
+function getSmarty() {
+    $smarty = new Smarty();
+    $smarty->setTemplateDir('include/smarty/templates');
+    $smarty->setCompileDir('include/smarty/templates_c');
+    $smarty->setCacheDir('include/smarty/cache');
+    //$smarty->caching = 0;
+    $smarty->setConfigDir('include/smarty/configs');
+    return $smarty;
 }
 
-function sendCommand ($cmd) {
- return exec ( realpath(dirname($_SERVER['SCRIPT_FILENAME'])) .
- 				"/sendcommand.php " . $GLOBALS['facilitid'] . " '" . $cmd . "'");
+function sendCommand($cmd, $opts = array()) {
+    $optStr = "";
+    if (count($opts)) {
+        $first = true;
+        foreach ($opts as $name => $value) {
+            if ($first) {
+                $optStr .= "?";
+                $first = false;
+            } else {
+                $optStr .= "&";
+            }
+            $optStr .= $name . "=" . $value;
+        }
+    }
+
+    return file_get_contents($GLOBALS['nodejsServer'] . "/" . $cmd . urlencode($optStr));
 }
 
-function getUsers () {
-	$noresponse = true;
-	$search = "Connected players:";
-	$count = 0;
-	while ($noresponse) {
-		if ($count) sleep(2);
-		$count++;
-		$return = sendCommand("list");
-		if (strpos($return, $search) ) {
-			#found our string!
-			$noresponse = false;
-			$usrStr = substr($return, ( strpos($return, $search) + strlen($search) ) );
-			if (strlen($usrStr)) {
-				$tmpArray = array(); #array("name" => "john")
-				foreach (explode(",", $usrStr) as $user) {
-					array_push($tmpArray, array("name" => trim($user)));
-				}
-				return $tmpArray;
-			} else {
-				return array();
-			}
-		} elseif ($count > 1) {
-			#emergency exit
-			return false;
-		}
-	}
+function getUsers() {
+    return json_decode(sendCommand("users"));
 }
 
-function runScript ($user, $lines) {
-	$cmd = "";
-	$first = true;
-	foreach ($lines as $line) {
-		if ($first) {
-			$first=false;
-		} else {
-			$cmd .= chr(13);
-		}
-		$cmd .= $line;
-	}
+function runScript($user, $lines) {
+    $cmd = "";
+    $first = true;
+    foreach ($lines as $line) {
+        if ($first) {
+            $first = false;
+        } else {
+            $cmd .= chr(13);
+        }
+        $cmd .= $line;
+    }
 
-	sendCommand(str_replace("USER", $user, $cmd));
-	return true;
+    sendCommand(str_replace("USER", $user, $cmd));
+    return true;
 }
 
-function teleportUser ($src, $dst) {
-	sendCommand("tp " . $src . " " . $dst);
-	return "User " . $src . " to " . $dst . " teleported";
+function teleportUser($src, $dst) {
+    sendCommand("tp " . $src . " " . $dst);
+    return "User " . $src . " to " . $dst . " teleported";
 }
 
-function giveItem ($user, $id, $amount = 64, $stackable = 0) {
-	$cmd = "";
-	if ($amount > $GLOBALS['maxitems']) {
-		$amount = $GLOBALS['maxitems'];
-	} elseif ($amount < 1) {
-	    
-	    #esc stackable hack, boolean value may be better?
-	    if ( $stackable < 1 ) {
-	        $amount = 1;
-	    } else {
-	        $amount = 64;
-	    }
-	}
+function tellUser($user, $text) {
+    sendCommand("tell", array("user" => $user, "text" => $text));
+}
 
-	if ( ( $amount / 64 ) > 1 ) {
-		$runs = round ( $amount / 64 ); 	
-		for ($i = 1; $i <= $runs; $i++) {
-			$cmd .= "give " . $user . " " . $id . " 64" . chr(13);
-		}
-		$cmd .= "give " . $user . " " . $id . " " . ( $amount % 64 );
+function giveItem($user, $id, $amount = 64, $stackable = 0) {
+    sendCommand("tell", array("user" => $user, "text" => "Giving you " . $amount . " of " . $id));
+    $cmd = "";
+    if ($amount > $GLOBALS['maxitems']) {
+        $amount = $GLOBALS['maxitems'];
+    } elseif ($amount < 1) {
 
-	} else {
-		$cmd = "give " . $user . " " . $id . " " . $amount;
-	}
-	
-	sendCommand($cmd);
-	return $amount;
+        #esc stackable hack, boolean value may be better?
+        if ($stackable < 1) {
+            $amount = 1;
+        } else {
+            $amount = 64;
+        }
+    }
+
+    if (( $amount / 64 ) > 1) {
+        $runs = round($amount / 64);
+        for ($i = 1; $i <= $runs; $i++) {
+            sendCommand("give", array("user" => $user, "id" => $id, "num" => "64"));
+        }
+        sendCommand("give", array("user" => $user, "id" => $id, "num" => ( $amount % 64 )));
+    } else {
+        sendCommand("give", array("user" => $user, "id" => $id, "num" => $amount));
+    }
+
+    return $amount;
 }
 
 ?>
