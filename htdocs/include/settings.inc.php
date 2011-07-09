@@ -3,7 +3,7 @@
 # settings:
 $GLOBALS['maxitems'] = 2047;
 $GLOBALS['nodejsServer'] = "http://localhost:8000";
-
+$GLOBALS['versionString'] = "0.5";
 
 $items = array(
         #sample	array("id" => "1", "name" => "nice stone", "stackable" => "1"),

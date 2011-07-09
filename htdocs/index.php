@@ -11,24 +11,63 @@ require_once("include/smarty/libs/Smarty.class.php");
 $smarty = getSmarty();
 $usersOnline = getUsers();
 
-if (empty($_SESSION['loggedIn'])) {
-        $smarty->display('auth.tpl');
-} else {
-    # assign smarty vars
-    $smarty->assign("userCountOnline", count($usersOnline));
-    $smarty->assign("usersOnline", $usersOnline);
-    $smarty->assign("teleportTargets", $usersOnline);
-    $smarty->assign("availItems", count($items));
-    $smarty->assign("maxItems", $GLOBALS['maxitems']);
-    $smarty->assign("items", $items);
-    $smarty->assign("scripts", $scripts);
+# assign smarty vars
+$smarty->assign("userCountOnline", count($usersOnline));
+$smarty->assign("usersOnline", $usersOnline);
+$tpTargets = array();
+foreach ($usersOnline as $user) {
+    if ($user != $_SESSION['user']) {
+        array_push($tpTargets, $user);
+    }
+}
+$smarty->assign("teleportTargets", $tpTargets);
+$smarty->assign("availItems", count($items));
+$smarty->assign("maxItems", $GLOBALS['maxitems']);
+$smarty->assign("items", $items);
+$smarty->assign("scripts", $scripts);
+$smarty->assign("versionString", $GLOBALS['versionString']);
 
+if (empty($_SESSION['loggedIn'])) {
+    #Auth starts here
+    if ($_REQUEST['do'] == "requestCode") {
+        $_SESSION['user'] = $_REQUEST['user'];
+
+        if (empty($_SESSION['authCode'])) {
+            $_SESSION['authCode'] = rand(1000, 9999);
+        }
+
+        tellUser($_REQUEST['user'], "Your Auth Code for McRemote is: " . $_SESSION['authCode']);
+
+        $smarty->assign("return", $_SESSION['message']);
+        unset($_SESSION['message']);
+        $smarty->display('auth.tpl');
+    } else if ($_REQUEST['do'] == "authMe") {
+        if ($_SESSION['authCode'] == $_REQUEST['authCode']) {
+            $_SESSION['message'] = "Logged in!";
+            $_SESSION['loggedIn'] = true;
+        } else {
+            $_SESSION['message'] = "Wrong auth code!";
+        }
+        header("Location: ?");
+    } else {
+        $smarty->assign("return", "");
+        $smarty->display('welcome.tpl');
+    }
+} else if ($_REQUEST['do'] == "logout") {
+    #Log me out
+    setcookie(session_id(), "", time() - 3600);
+    session_destroy();
+    session_write_close();
+    header("Location: ?");
+} else {
     if ($usersOnline == false) {
         $smarty->assign("return", "<b>ERROR:</b> Unable to communicate with server. Please retry");
     } else {
+        $smarty->assign("loggedInUser", $_SESSION['user']);
+
         switch ($_REQUEST['do']) {
             case "giveItem":
-                if ((!empty($_REQUEST['user']) ) && (!empty($_REQUEST['itemId']) )) {
+                if (!empty($_REQUEST['itemId'])) {
                     $name = false;
                     foreach ($items as $item) {
                         if ($item['id'] == $_REQUEST['itemId']) {
@@ -36,8 +75,8 @@ if (empty($_SESSION['loggedIn'])) {
                         }
                     }
                     if (!empty($name)) {
-                        $gave = giveItem($_REQUEST['user'], $_REQUEST['itemId'], $_REQUEST['amount'], $_REQUEST['stackable']);
-                        $smarty->assign("return", "<b>Gave " . $_REQUEST['user'] . " " . $gave . "x " . $name . ".</b>");
+                        $gave = giveItem($_SESSION['user'], $_REQUEST['itemId'], $_REQUEST['amount'], $_REQUEST['stackable']);
+                        $smarty->assign("return", "<b>Gave " . $_SESSION['user'] . " " . $gave . "x " . $name . ".</b>");
                     } else {
                         $smarty->assign("return", "<b>ERROR: ItemID Not available: " . $_REQUEST['itemId']);
                     }
@@ -46,19 +85,19 @@ if (empty($_SESSION['loggedIn'])) {
                 }
                 break;
             case "runScript":
-                runScript($_REQUEST['user'], $scripts[$_REQUEST['script']]);
-                $smarty->assign("return", "Ran script " . $_REQUEST['script'] . " for user " . $_REQUEST['user']);
+                runScript($_SESSION['user'], $scripts[$_REQUEST['script']]);
+                $smarty->assign("return", "Ran script " . $_REQUEST['script'] . " for user " . $_SESSION['user']);
                 break;
 
             case "teleport":
-                teleportUser($_REQUEST['user'], $_REQUEST['dst']);
-                $smarty->assign("return", "Teleported " . $_REQUEST['user'] . " to " . $_REQUEST['dst']);
+                teleportUser($_SESSION['user'], $_REQUEST['dst']);
+                $smarty->assign("return", "Teleported " . $_SESSION['user'] . " to " . $_REQUEST['dst']);
                 break;
 
             default:
                 $smarty->assign("return", "<i>Ready for action</i>");
         }
     }
-    $smarty->display('index.tpl');
+    $smarty->display('loggedin.tpl');
 }
 ?>

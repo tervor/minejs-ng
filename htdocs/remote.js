@@ -130,7 +130,7 @@ function giveItemById(itemID,itemStackable,inputBoxID) {
     var currentItemAmount = document.forms["FormName"].elements[inputBoxID].value; /*prompt("Menge? (1-512)","")*/;
     
     document.getElementById('STdo').value =  "giveItem";
-    document.getElementById('STuser').value =  document.getElementById('STuserlist').value;
+    /* document.getElementById('STuser').value =  document.getElementById('STuserlist').value; */
     document.getElementById('STitem').value =  itemID;
     document.getElementById('STamount').value =  currentItemAmount;
     document.getElementById('STscript').value =  "";
@@ -140,14 +140,14 @@ function giveItemById(itemID,itemStackable,inputBoxID) {
 
 function teleportByName(teleportToUser) {
     document.getElementById('STdo').value =  "teleport";
-    document.getElementById('STuser').value =  document.getElementById('STuserlist').value;
+    /* document.getElementById('STuser').value =  document.getElementById('STuserlist').value; */
     document.getElementById('STdst').value =  teleportToUser;
     sendForm();
 };
 
 function scriptByName(scritpName) {
     document.getElementById('STdo').value =  "runScript";
-    document.getElementById('STuser').value =  document.getElementById('STuserlist').value;
+    /* document.getElementById('STuser').value =  document.getElementById('STuserlist').value; */
     document.getElementById('STscript').value = scritpName;
     sendForm();
 };   
@@ -155,7 +155,7 @@ function scriptByName(scritpName) {
 function sendForm() {
     delivItem =  document.getElementById('STitem').value 
     delivAmount =  document.getElementById('STamount').value 
-    delivUser =  document.getElementById('STuserlist').value
+    /* delivUser =  document.getElementById('STuserlist').value */
     /*document.sendScreen.submit();*/
      document.getElementById('STatus').innerHTML = "Auftrag wird ausgeführt! ..einen klitze kleine moment bitte..."
      document.getElementById('STatus').style.color = "yellow"
@@ -200,6 +200,7 @@ function getCookie(c_name) {
     }
 }
 
+/*
 function checkCookie() {
     var username=getCookie("username");
     if (username!=null && username!="") {
@@ -219,7 +220,7 @@ function changeUsername() {
     newUsername=document.getElementById('STuserlist').value;
     setCookie("username",newUsername,365);
 };
-
+*/
 
 
 
