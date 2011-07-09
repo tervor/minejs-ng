@@ -13,16 +13,54 @@ var sys = require('sys'),
 console.log("minejs - Minecraft Server Wrapper")
 
 
-// Create and start minecraft server
-var mcserver = require('./mcserver.js').createMCServer();
-mcserver.start();
+// Create minecraft server wrapper
+var mcserver = require('./src/mcserver.js').createMCServer();
 
-// Create and start telnet server
-var telnetserver = require('./telnetserver.js').createTelnetServer();
+mcserver.on('exit', function() {
+	process.exit(0);
+});
+
+mcserver.on('user_connect', function(user) {
+	console.log("User '" + user + "' has connected");
+});
+
+mcserver.on('user_disconnect', function(user) {
+	console.log("User '" + user + "' has disconnected");
+});
+
+mcserver.on('user_chat', function(user, text) {
+	console.log("User '" + user + "' has said '" + text + "'");
+});
+
+mcserver.on('user_cmd', function(user, text) {
+	console.log("User '" + user + "' has issued command '" + text + "'");
+
+	// Command starts with a / character, otherwise it's invalid
+	if (text.charAt(0) == '/') {
+		text = text.slice(1, text.length);
+		var ret = cmdhandler.execute(user, text);
+		if (ret != null) {
+			var lines = ret.split('\n');
+			for (var i = 0; i < lines.length; i++)
+				mcserver.tell(user, lines[i]);
+		}
+	}
+});
+
+
+// Create telnet server
+var telnetserver = require('./src/telnetserver.js').createTelnetServer();
+
+
+// Create command handler
+var cmdhandler = require('./src/commandhandler.js').createCommandHandler(mcserver);
+
+
+
+// Start
+mcserver.start();
 telnetserver.start();
 
-
-//sys.puts("Webconsole available on  http://127.0.0.1:1337/ ");
 
 function requestUsers(req, res) {
 	
@@ -138,6 +176,7 @@ function on_signal() {
 }
 
 
+
 /*
 mcserver.process.on('exit', function(code) {
 	if (mcserver.terminate) {
@@ -151,4 +190,4 @@ mcserver.process.on('exit', function(code) {
 var counter = 1;
 setInterval(function() {
 	mcserver.say(counter++);
-}, 2000);
+}, 10000);
