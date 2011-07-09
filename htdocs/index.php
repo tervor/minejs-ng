@@ -105,7 +105,7 @@ if (empty($status)) {
                     echo "Ran script " . $_REQUEST['script'] . " for user " . $_SESSION['user'];
                     break;
 
-                case "list":
+                case "usersOnline":
                     echo json_encode($usersOnline);
                     break;
 
