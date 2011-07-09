@@ -27,7 +27,7 @@
                 <div>Return: {$return}</div>
                 {/if}
                 {if $userCountOnline > 0}
-                <div>Choose your Player to start Auth:</div>
+                <div>Who are you?</div>
                 <div>
                     <select name="user" id="STuserlist" onChange="changeUsername();">
                         {foreach $usersOnline as $key => $value}
