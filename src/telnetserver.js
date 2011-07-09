@@ -1,5 +1,5 @@
 
-var config = require('./config.js').config;
+var config = require('../config.js').config;
 
 var net = require('net');
 
