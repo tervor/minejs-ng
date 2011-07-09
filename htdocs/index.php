@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <?php
 
 session_start();
@@ -14,22 +15,11 @@ $usersOnline = getUsers();
 # assign smarty vars
 $smarty->assign("userCountOnline", count($usersOnline));
 $smarty->assign("usersOnline", $usersOnline);
-$tpTargets = array();
-foreach ($usersOnline as $user) {
-    if ($user != $_SESSION['user']) {
-        array_push($tpTargets, $user);
-    }
-}
-$smarty->assign("teleportTargets", $tpTargets);
-$smarty->assign("availItems", count($items));
-$smarty->assign("maxItems", $GLOBALS['maxitems']);
-$smarty->assign("items", $items);
-$smarty->assign("scripts", $scripts);
 $smarty->assign("versionString", $GLOBALS['versionString']);
 
 $status = sendCommand("status");
 if (empty($status)) {
-    echo "<b>ERROR:</b> Unable to communicate with server. Please retry";
+    echo "<b>ERROR:</b> Unable to connect to Minecraft server. Please retry later.";
     exit();
 } else {
     if (empty($_SESSION['loggedIn'])) {
@@ -66,6 +56,18 @@ if (empty($status)) {
         header("Location: ?");
     } else {
         $smarty->assign("loggedInUser", $_SESSION['user']);
+        
+        $tpTargets = array();
+        foreach ($usersOnline as $user) {
+            if ($user != $_SESSION['user']) {
+                array_push($tpTargets, $user);
+            }
+        }
+        $smarty->assign("teleportTargets", $tpTargets);
+        $smarty->assign("availItems", count($items));
+        $smarty->assign("maxItems", $GLOBALS['maxitems']);
+        $smarty->assign("items", $items);
+        $smarty->assign("scripts", $scripts);
 
         switch ($_REQUEST['do']) {
             case "giveItem":
