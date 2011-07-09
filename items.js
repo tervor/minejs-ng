@@ -1,3 +1,7 @@
+
+
+
+
 <?php
 
 $items = array(
@@ -375,7 +379,6 @@ $scripts = array(
 		"give USER 284 1",
 	    "give USER 285 1",
         "give USER 286 1"
-		 
 		),
 	"Diamond Warrior Gear" => array(
 	    "say USER drop Diamond Warrior Gear",
