@@ -6,7 +6,13 @@ var util = require('util');
 var config = require('../config.js').config;
 
 
-// Constructor
+// The MCServer class implements a wrapper around the minecraft server.
+// The following events are emitted by this class:
+// 'exit' - when the server was terminated by the user (using stop())
+// 'user_connect' (user) - when a user has connected to the minecraft server
+// 'user_disconnect' (user) - when a user has disconnected from the minecraft server
+// 'user_chat' (user, text) - when a user has typed a chat message
+// 'user_cmd' (user, text) - when a user has typed an unknown command
 function MCServer() {
 	// Call super constructor
 	events.EventEmitter.call(this);
@@ -27,14 +33,6 @@ MCServer.prototype.log_handlers = {
 	log_handler_user_cmd: ".*\\[INFO\\] (.*) issued server command: (.*)",
 }
 
-// List of handlers to be called when user commands are executed.
-// Make sure that a handler function of type user_cmd_xxx(user, args) with the same name actually
-// exists in this class for every registered user command handler.
-MCServer.prototype.user_cmd_handlers = {
-	user_cmd_help: "!help",
-	user_cmd_status: "!status",
-}
-
 // Resets the internals (user list etc.)
 MCServer.prototype.reset = function() {
 	this.recv = "";
@@ -53,7 +51,7 @@ MCServer.prototype.start = function() {
 	this.reset();
 	this.running = true;
 
-	args = config.server.java_args.concat(['-jar', config.server.jar]).concat(config.server.server_args);
+	var args = config.server.java_args.concat(['-jar', config.server.jar]).concat(config.server.server_args);
 	console.log('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
 
 	// Spawn the child process
@@ -108,18 +106,53 @@ MCServer.prototype.restart = function() {
 	this.process.stdin.write("\nstop\n");
 }
 
-// Commands that can be issued to the server --------------------------------
+// Minecraft server native commands -----------------------------------------
 
-MCServer.prototype.say = function(text) {
-	this.send_cmd(['say', text]);
+// Commands not yet implemented/obsolete:
+// help, stop, save-all, save-off, save-on, list, time
+
+MCServer.prototype.kick = function(user) {
+	this.send_cmd(['kick', user]);
+}
+
+MCServer.prototype.ban = function(user) {
+	this.send_cmd(['ban', user]);
+}
+
+MCServer.prototype.pardon = function(user) {
+	this.send_cmd(['pardon', user]);
+}
+
+MCServer.prototype.ban_ip = function(user) {
+	this.send_cmd(['ban-ip', user]);
+}
+
+MCServer.prototype.pardon_ip = function(user) {
+	this.send_cmd(['pardon-ip', user]);
+}
+
+MCServer.prototype.op = function(user) {
+	this.send_cmd(['op', user]);
+}
+
+MCServer.prototype.deop = function(user) {
+	this.send_cmd(['deop', user]);
+}
+
+MCServer.prototype.tp = function(user1, user2) {
+	this.send_cmd(['tp', user1, user2]);
+}
+
+MCServer.prototype.give = function(user, id, num) {
+	this.send_cmd(['give', user, id, num]);
 }
 
 MCServer.prototype.tell = function(user, text) {
 	this.send_cmd(['tell', user, text]);
 }
 
-MCServer.prototype.give = function(user, id, num) {
-	this.send_cmd(['give', user, id, num]);
+MCServer.prototype.say = function(text) {
+	this.send_cmd(['say', text]);
 }
 
 // Implementation -----------------------------------------------------------
@@ -128,7 +161,7 @@ MCServer.prototype.give = function(user, id, num) {
 MCServer.prototype.update_monitoring = function() {
 	this.stats_minejs = util.inspect(process.memoryUsage());
 	this.stats_mcserver = "";
-	jstat = spawn('/bin/sh', ['-c', 'jstat -gcutil ' + this.process.pid]); 
+	var jstat = spawn('/bin/sh', ['-c', 'jstat -gcutil ' + this.process.pid]); 
 	jstat.stdout.on('data', function(data) {
 		this.stats_mcserver += data.toString('ascii');
 	}.bind(this));
@@ -140,8 +173,8 @@ MCServer.prototype.update_monitoring = function() {
 	
 // Called for every chunk of data received from the server's STDOUT and STDERR
 MCServer.prototype.receive = function(data) {
-	for (i = 0; i < data.length; i++) {
-		c = data.toString('ascii', i, i + 1);
+	for (var i = 0; i < data.length; i++) {
+		var c = data.toString('ascii', i, i + 1);
 		if (c == '\n') {
 			this.receive_line(this.recv);
 			this.recv = "";
@@ -156,9 +189,9 @@ MCServer.prototype.receive_line = function(line) {
 	
 	// Check log handlers for matches
 	for (handler in this.log_handlers) {
-		m = this.recv.match(this.log_handlers[handler]);
+		var m = this.recv.match(this.log_handlers[handler]);
 		if (m) {
-			args = m.splice(1, m.length - 1);
+			var args = m.splice(1, m.length - 1);
 			this[handler](args);
 		}
 	}
@@ -167,36 +200,24 @@ MCServer.prototype.receive_line = function(line) {
 // Log output handlers ------------------------------------------------------
 	
 MCServer.prototype.log_handler_connect = function(args) {
-	user = args[0];
-	console.log("User " + user + " has connected");
+	var user = args[0];
 	this.users.push(user);
+	this.emit('user_connect', user);
 }
 
 MCServer.prototype.log_handler_disconnect = function(args) {
-	user = args[0];
-	console.log("User " + user + " has disconnected");
+	var user = args[0];
 	this.users.splice(this.users.indexOf(user), 1);
+	this.emit('user_disconnect', user);
 }
 
 MCServer.prototype.log_handler_user_chat = function(args) {
-	this.user_chat(args[0], args[1]);
+	this.emit('user_chat', args[0], args[1]);
 }
 
 MCServer.prototype.log_handler_user_cmd = function(args) {
-	this.user_cmd(args[0], args[1]);
+	this.emit('user_cmd', args[0], args[1]);
 }
-	
-// User command handlers ----------------------------------------------------
-	
-MCServer.prototype.user_cmd_help = function(user, args) {
-	this.tell(user, "Commands available:");
-	this.tell(user, "!help   - Shows this help screen");
-	this.tell(user, "!status - Shows status information of the server");
-},
-
-MCServer.prototype.user_cmd_status = function(user, args) {
-	this.tell(user, this.stats_minejs +"\n" + this.stats_mcserver);
-},
 
 // Implementation -----------------------------------------------------------
 
@@ -204,23 +225,6 @@ MCServer.prototype.send_cmd = function(args) {
 	if (!this.running)
 		return;
 	this.process.stdin.write(args.join(' ') + '\n');
-}
-
-MCServer.prototype.user_chat = function(user, text) {
-	console.log("User " + user + " says " + text);
-}
-
-MCServer.prototype.user_cmd = function(user, text) {
-	console.log("User " + user + " sent command " + text);
-	
-	// Split values into arguments
-	args = text.split(' ');
-	cmd = args[0];
-	args = args.splice(1, args.length - 1);
-	
-	for (handler in this.user_cmd_handlers)
-		if (cmd == this.user_cmd_handlers[handler])
-			this[handler](user, args);
 }
 
 
