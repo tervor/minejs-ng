@@ -10,7 +10,7 @@
 
         <div style="float:left; clear: both;">
             {if $return != ""}
-            <div>Return: {$return}</div>
+            <div><b>{$return}</b></div>
             {/if}
             <form action="?" method="POST">
                 <input type="hidden" name="do" value="requestCode" />

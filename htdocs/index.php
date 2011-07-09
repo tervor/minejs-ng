@@ -46,12 +46,14 @@ if (empty($status)) {
                 $_SESSION['loggedIn'] = true;
             } else {
                 #wrong code recieved
+                $smarty->assign("return", "Wrong auth code!");
                 $_SESSION['message'] = "Wrong auth code!";
             }
             header("Location: ?");
         } else {
             #redirect to load default page
-            $smarty->assign("return", "");
+            $smarty->assign("return", $_SESSION['message']);
+            $_SESSION['message'] = "";
             $smarty->display('welcome.tpl');
         }
     } else if ($_REQUEST['do'] == "logout") {
