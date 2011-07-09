@@ -34,6 +34,8 @@ function getUsers() {
 }
 
 function runScript($user, $lines) {
+    tellUser($_SESSION['user'], "Running script...");
+    //FIXME: I am not working right now
     $cmd = "";
     $first = true;
     foreach ($lines as $line) {
@@ -49,9 +51,12 @@ function runScript($user, $lines) {
     return true;
 }
 
-function teleportUser($src, $dst) {
-    sendCommand("tp " . $src . " " . $dst);
-    return "User " . $src . " to " . $dst . " teleported";
+function teleportUser($dst) {
+    tellUser($_SESSION['user'], "Teleporting you to " . $dst . ".");
+    tellUser($dst, "Teleporting " . $_SESSION['user'] . " to you.");
+    //FIXME: I am not working right now
+    sendCommand("tp", array("user" => $_SESSION['user'], "target" => $dst));
+    return "User " . $_SESSION['user'] . " to " . $dst . " teleported";
 }
 
 function tellUser($user, $text) {
@@ -59,6 +64,7 @@ function tellUser($user, $text) {
 }
 
 function giveItem($user, $id, $amount = 64, $stackable = 0) {
+    tellUser($_SESSION['user'], "Giving you " . $amount . " of " . $id);
     $cmd = "";
     if ($amount > $GLOBALS['maxitems']) {
         $amount = $GLOBALS['maxitems'];
