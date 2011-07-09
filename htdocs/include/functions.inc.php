@@ -23,11 +23,10 @@ function sendCommand($cmd, $opts = array()) {
             } else {
                 $optStr .= "&";
             }
-            $optStr .= $name . "=" . $value;
+            $optStr .= $name . "=" . urlencode($value);
         }
     }
-
-    return file_get_contents($GLOBALS['nodejsServer'] . "/" . $cmd . urlencode($optStr));
+    return file_get_contents($GLOBALS['nodejsServer'] . "/" . $cmd . $optStr);
 }
 
 function getUsers() {
@@ -60,7 +59,6 @@ function tellUser($user, $text) {
 }
 
 function giveItem($user, $id, $amount = 64, $stackable = 0) {
-    sendCommand("tell", array("user" => $user, "text" => "Giving you " . $amount . " of " . $id));
     $cmd = "";
     if ($amount > $GLOBALS['maxitems']) {
         $amount = $GLOBALS['maxitems'];

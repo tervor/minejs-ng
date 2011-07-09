@@ -159,7 +159,7 @@ function sendForm() {
     /*document.sendScreen.submit();*/
      document.getElementById('STatus').innerHTML = "Auftrag wird ausgeführt! ..einen klitze kleine moment bitte..."
      document.getElementById('STatus').style.color = "yellow"
-	new Ajax.Request('http://mc.oom.ch/mcremote/index.php', {
+	new Ajax.Request('index.php', {
 		parameters: $('sendScreen').serialize(true),
 			onFailure: function(){ 
 			alert('Something went wrong') ;
