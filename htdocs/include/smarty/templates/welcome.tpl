@@ -26,6 +26,7 @@
                 {if $return != ""}
                 <div>Return: {$return}</div>
                 {/if}
+                {if $userCountOnline > 0}
                 <div>Choose your Player to start Auth:</div>
                 <div>
                     <select name="user" id="STuserlist" onChange="changeUsername();">
@@ -37,6 +38,11 @@
                     </select>
                     <input type="submit" name="submit" value="go" />
                 </div>
+                {else}
+                <div>
+                    No Users connected. Please connect to the Minecraft Server.
+                </div>
+                {/if}
             </form>
         </div>
     </body>

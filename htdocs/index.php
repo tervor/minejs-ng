@@ -27,41 +27,43 @@ $smarty->assign("items", $items);
 $smarty->assign("scripts", $scripts);
 $smarty->assign("versionString", $GLOBALS['versionString']);
 
-if (empty($_SESSION['loggedIn'])) {
-    #Auth starts here
-    if ($_REQUEST['do'] == "requestCode") {
-        $_SESSION['user'] = $_REQUEST['user'];
-
-        if (empty($_SESSION['authCode'])) {
-            $_SESSION['authCode'] = rand(1000, 9999);
-        }
-
-        tellUser($_REQUEST['user'], "Your Auth Code for McRemote is: " . $_SESSION['authCode']);
-
-        $smarty->assign("return", $_SESSION['message']);
-        unset($_SESSION['message']);
-        $smarty->display('auth.tpl');
-    } else if ($_REQUEST['do'] == "authMe") {
-        if ($_SESSION['authCode'] == $_REQUEST['authCode']) {
-            $_SESSION['message'] = "Logged in!";
-            $_SESSION['loggedIn'] = true;
-        } else {
-            $_SESSION['message'] = "Wrong auth code!";
-        }
-        header("Location: ?");
-    } else {
-        $smarty->assign("return", "");
-        $smarty->display('welcome.tpl');
-    }
-} else if ($_REQUEST['do'] == "logout") {
-    #Log me out
-    setcookie(session_id(), "", time() - 3600);
-    session_destroy();
-    session_write_close();
-    header("Location: ?");
+$status = sendCommand("status");
+if (empty($status)) {
+    echo "<b>ERROR:</b> Unable to communicate with server. Please retry";
+    exit();
 } else {
-    if ($usersOnline == false) {
-        $smarty->assign("return", "<b>ERROR:</b> Unable to communicate with server. Please retry");
+    if (empty($_SESSION['loggedIn'])) {
+        #Auth starts here
+        if ($_REQUEST['do'] == "requestCode") {
+            $_SESSION['user'] = $_REQUEST['user'];
+
+            if (empty($_SESSION['authCode'])) {
+                $_SESSION['authCode'] = rand(1000, 9999);
+            }
+
+            tellUser($_REQUEST['user'], "Your Auth Code for McRemote is: " . $_SESSION['authCode']);
+
+            $smarty->assign("return", $_SESSION['message']);
+            unset($_SESSION['message']);
+            $smarty->display('auth.tpl');
+        } else if ($_REQUEST['do'] == "authMe") {
+            if ($_SESSION['authCode'] == $_REQUEST['authCode']) {
+                $_SESSION['message'] = "Logged in!";
+                $_SESSION['loggedIn'] = true;
+            } else {
+                $_SESSION['message'] = "Wrong auth code!";
+            }
+            header("Location: ?");
+        } else {
+            $smarty->assign("return", "");
+            $smarty->display('welcome.tpl');
+        }
+    } else if ($_REQUEST['do'] == "logout") {
+        #Log me out
+        setcookie(session_id(), "", time() - 3600);
+        session_destroy();
+        session_write_close();
+        header("Location: ?");
     } else {
         $smarty->assign("loggedInUser", $_SESSION['user']);
 
@@ -97,7 +99,8 @@ if (empty($_SESSION['loggedIn'])) {
             default:
                 $smarty->assign("return", "<i>Ready for action</i>");
         }
+
+        $smarty->display('loggedin.tpl');
     }
-    $smarty->display('loggedin.tpl');
 }
 ?>
