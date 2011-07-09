@@ -18,7 +18,7 @@ function sendCommand($cmd, $opts = array()) {
         $first = true;
         foreach ($opts as $name => $value) {
             if ($first) {
-                $optStr .= "?";
+                $optStr .= "?origin=" . urlencode($_SESSION['user']);
                 $first = false;
             } else {
                 $optStr .= "&";
