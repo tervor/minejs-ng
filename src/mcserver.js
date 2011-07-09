@@ -30,7 +30,7 @@ MCServer.prototype.log_handlers = {
 	log_handler_connect: ".*\\[INFO\\] (.*) \\[.*\\] logged in with entity id \\d+ at .*",
 	log_handler_disconnect: ".*\\[INFO\\] (.*) lost connection:.*",
 	log_handler_user_chat: ".*\\[INFO\\] <(.*)> (.*)",
-	log_handler_user_cmd: ".*\\[INFO\\] (.*) issued server command: (.*)",
+	log_handler_user_cmd: ".*\\[INFO\\] (.*) (issued server command|tried command): (.*)",
 }
 
 // Resets the internals (user list etc.)
@@ -215,7 +215,7 @@ MCServer.prototype.log_handler_user_chat = function(args) {
 }
 
 MCServer.prototype.log_handler_user_cmd = function(args) {
-	this.emit('user_cmd', args[0], args[1]);
+	this.emit('user_cmd', args[0], args[2]);
 }
 
 // Implementation -----------------------------------------------------------

@@ -38,7 +38,7 @@ mcserver.on('user_cmd', function(user, text) {
 	// Command starts with a / character, otherwise it's invalid
 	if (text.charAt(0) == '/') {
 		text = text.slice(1, text.length);
-		var ret = cmdhandler.execute(user, text);
+		var ret = cmdhandler.parse_execute(user, 'string', text);
 		if (ret != null) {
 			var lines = ret.split('\n');
 			for (var i = 0; i < lines.length; i++)
@@ -46,7 +46,6 @@ mcserver.on('user_cmd', function(user, text) {
 		}
 	}
 });
-
 
 // Create telnet server
 var telnetserver = require('./src/telnetserver.js').createTelnetServer();
@@ -62,97 +61,33 @@ mcserver.start();
 telnetserver.start();
 
 
-function requestUsers(req, res) {
-	
-}
-
-function requestSay(req, res) {
-	
-}
-
 
 /* http webservice */
 http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': "text/plain;charset=UTF-8"});
 	var u = url.parse(req.url, true);
 	
-	
-    switch (u.pathname) {
-        case "/users":
-		    res.end(JSON.stringify(mcserver.users));
-            break;
-        case "/say":
-            try {
-			    mcserver.say(u.query.text);
-			    res.end("success");
-		    } catch (err) {
-			    res.end("failed");
-		    }
-            break;
-        case "/tell":
-		    try {
-			    mcserver.tell(u.query.user, u.query.text);
-			    res.end("success");
-		    } catch (err) {
-			    res.end("failed");
-		    }
-            break;
-        case "/give":
-      		try {
-			    mcserver.give(u.query.user, u.query.id, u.query.num);
-			    res.end("success");
-		    } catch (err) {
-			    res.end("failed");
-		    }
-            break;
-        case "/tp":
-            res.end("not implemented yet");
-            break;
-        case "/op":
-            res.end("not implemented yet");
-            break;
-        case "/list":
-            res.end("not implemented yet");
-            break;
-        case "/deop":
-            res.end("not implemented yet");
-            break;
-        case "/kick":
-            res.end("not implemented yet");
-            break;
-        case "/ban":
-            res.end("not implemented yet");
-            break;
-        case "/unban":
-             res.end("not implemented yet");
-            break;
-        case "/adduser":
-            /*write user to whitelist.txt*/
-            res.end("not implemented yet");
-            break;
-        case "/deluser":
-            /*delete user from whitelist.txt*/
-            res.end("not implemented yet");
-            break;
-        case "/restart":
-            /* restart minecraft server*/
-            res.end("not implemented yet");
-            break;
-        case "/status":
-            try {
-			    mcserver.status();
-			    console.log("status success");
-			    res.end("success");
-			   
-		    } catch (err) {
-			    console.log("status failed");
-			    res.end("failed");
-		    }
-            break;
-        default:
-            res.end("unknown request");
-            break;
-    }
+	var cmd = u.pathname.substr(1, u.pathname.length);
+	var cmd_handler = cmdhandler.cmd_handler_by_name(cmd);
+	if (cmd_handler == null) {
+		res.end(JSON.stringify("unknown command"));
+	} else {
+		var user = "none";
+		if (u.query.hasOwnProperty("origin"))
+			user = u.query.origin;
+		var args = [];
+		for (var i = 0; i < cmd_handler.args.length; i++) {
+			var arg = cmd_handler.args[i];
+			if (u.query.hasOwnProperty(arg)) {
+				args.push(u.query[arg]);
+			} else {
+				args.push("");
+			}
+		}
+		
+		var ret = cmdhandler.execute(user, 'json', cmd, args);
+		res.end(JSON.stringify(ret));
+	}
 }).listen(config.web.port);
 
 
@@ -175,16 +110,6 @@ function on_signal() {
 	mcserver.stop();
 }
 
-
-
-/*
-mcserver.process.on('exit', function(code) {
-	if (mcserver.terminate) {
-		console.log("Terminated");
-		process.exit(0);
-	}
-});
-*/
 
 
 var counter = 1;
