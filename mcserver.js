@@ -57,17 +57,19 @@ MCServer.prototype.start = function() {
 	console.log('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
 
 	// Spawn the child process
-	   this.process = spawn(config.server.java, args, { cwd: config.server.dir });
+	this.process = spawn(config.server.java, args, { cwd: config.server.dir });
 
+	// Read from STDIN and STDERR
 	this.process.stdout.on('data', function(data) {
 		this.receive(data);
 	}.bind(this));
-
 	this.process.stderr.on('data', function(data) {
 		this.receive(data);
 	}.bind(this));
 
+	// Check for exit
 	this.process.on('exit', function(code) {
+		this.running = false;
 	    console.log("Minecraft server terminated (code=" + code + ")");
 		if (this.terminate) {
 			// Server terminated on user request
@@ -199,6 +201,8 @@ MCServer.prototype.user_cmd_status = function(user, args) {
 // Implementation -----------------------------------------------------------
 
 MCServer.prototype.send_cmd = function(args) {
+	if (!this.running)
+		return;
 	this.process.stdin.write(args.join(' ') + '\n');
 }
 
