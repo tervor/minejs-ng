@@ -1,9 +1,8 @@
 <?php
 session_start();
 
-//require_once("include/facilities.inc.php");
-require_once("include/websettings.inc.php");
-require_once("include/webfunctions.inc.php");
+require_once("include/settings.inc.php");
+require_once("include/functions.inc.php");
 require_once("include/smarty/libs/Smarty.class.php");
 
 # settings:
