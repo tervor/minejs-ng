@@ -34,6 +34,7 @@ function getUsers() {
 }
 
 function runScript($user, $lines) {
+    //FIXME: I am not working right now
     $cmd = "";
     $first = true;
     foreach ($lines as $line) {
@@ -50,6 +51,7 @@ function runScript($user, $lines) {
 }
 
 function teleportUser($src, $dst) {
+    //FIXME: I am not working right now
     sendCommand("tp " . $src . " " . $dst);
     return "User " . $src . " to " . $dst . " teleported";
 }

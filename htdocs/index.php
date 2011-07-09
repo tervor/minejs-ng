@@ -1,7 +1,6 @@
 <?php
 
 session_start();
-header('Access-Control-Allow-Origin: *');
 
 require_once("include/settings.inc.php");
 require_once("include/functions.inc.php");
