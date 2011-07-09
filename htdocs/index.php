@@ -1,6 +1,5 @@
 <!DOCTYPE HTML>
 <?php
-
 session_start();
 
 require_once("include/settings.inc.php");
@@ -56,53 +55,57 @@ if (empty($status)) {
         header("Location: ?");
     } else {
         $smarty->assign("loggedInUser", $_SESSION['user']);
-        
-        $tpTargets = array();
-        foreach ($usersOnline as $user) {
-            if ($user != $_SESSION['user']) {
-                array_push($tpTargets, $user);
-            }
-        }
-        $smarty->assign("teleportTargets", $tpTargets);
-        $smarty->assign("availItems", count($items));
-        $smarty->assign("maxItems", $GLOBALS['maxitems']);
-        $smarty->assign("items", $items);
-        $smarty->assign("scripts", $scripts);
+        if (in_array($_SESSION['user'], $usersOnline)) {
 
-        switch ($_REQUEST['do']) {
-            case "giveItem":
-                if (!empty($_REQUEST['itemId'])) {
-                    $name = false;
-                    foreach ($items as $item) {
-                        if ($item['id'] == $_REQUEST['itemId']) {
-                            $name = $item['name'];
-                        }
-                    }
-                    if (!empty($name)) {
-                        $gave = giveItem($_SESSION['user'], $_REQUEST['itemId'], $_REQUEST['amount'], $_REQUEST['stackable']);
-                        $smarty->assign("return", "<b>Gave " . $_SESSION['user'] . " " . $gave . "x " . $name . ".</b>");
-                    } else {
-                        $smarty->assign("return", "<b>ERROR: ItemID Not available: " . $_REQUEST['itemId']);
-                    }
-                } else {
-                    $smarty->assign("return", "<b>ERROR: Missing fields (user|itemId)</b>");
+            $tpTargets = array();
+            foreach ($usersOnline as $user) {
+                if ($user != $_SESSION['user']) {
+                    array_push($tpTargets, $user);
                 }
-                break;
-            case "runScript":
-                runScript($_SESSION['user'], $scripts[$_REQUEST['script']]);
-                $smarty->assign("return", "Ran script " . $_REQUEST['script'] . " for user " . $_SESSION['user']);
-                break;
+            }
+            $smarty->assign("teleportTargets", $tpTargets);
+            $smarty->assign("availItems", count($items));
+            $smarty->assign("maxItems", $GLOBALS['maxitems']);
+            $smarty->assign("items", $items);
+            $smarty->assign("scripts", $scripts);
 
-            case "teleport":
-                teleportUser($_SESSION['user'], $_REQUEST['dst']);
-                $smarty->assign("return", "Teleported " . $_SESSION['user'] . " to " . $_REQUEST['dst']);
-                break;
+            switch ($_REQUEST['do']) {
+                case "giveItem":
+                    if (!empty($_REQUEST['itemId'])) {
+                        $name = false;
+                        foreach ($items as $item) {
+                            if ($item['id'] == $_REQUEST['itemId']) {
+                                $name = $item['name'];
+                            }
+                        }
+                        if (!empty($name)) {
+                            $gave = giveItem($_SESSION['user'], $_REQUEST['itemId'], $_REQUEST['amount'], $_REQUEST['stackable']);
+                            $smarty->assign("return", "<b>Gave " . $_SESSION['user'] . " " . $gave . "x " . $name . ".</b>");
+                        } else {
+                            $smarty->assign("return", "<b>ERROR: ItemID Not available: " . $_REQUEST['itemId']);
+                        }
+                    } else {
+                        $smarty->assign("return", "<b>ERROR: Missing fields (user|itemId)</b>");
+                    }
+                    break;
+                case "runScript":
+                    runScript($_SESSION['user'], $scripts[$_REQUEST['script']]);
+                    $smarty->assign("return", "Ran script " . $_REQUEST['script'] . " for user " . $_SESSION['user']);
+                    break;
 
-            default:
-                $smarty->assign("return", "<i>Ready for action</i>");
+                case "teleport":
+                    teleportUser($_SESSION['user'], $_REQUEST['dst']);
+                    $smarty->assign("return", "Teleported " . $_SESSION['user'] . " to " . $_REQUEST['dst']);
+                    break;
+
+                default:
+                    $smarty->assign("return", "<i>Ready for action</i>");
+            }
+
+            $smarty->display('loggedin.tpl');
+        } else {
+            $smarty->display('loggedout.tpl');
         }
-
-        $smarty->display('loggedin.tpl');
     }
 }
 ?>
