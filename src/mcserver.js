@@ -166,8 +166,7 @@ MCServer.prototype.update_monitoring = function() {
 		this.stats_mcserver += data.toString('ascii');
 	}.bind(this));
 	jstat.on('exit', function(code) {
-		console.log("stats_minejs = " + this.stats_minejs);
-		console.log("stats_mcserver = " + this.stats_mcserver);
+		// nothing
 	}.bind(this));
 }
 	
