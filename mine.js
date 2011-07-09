@@ -14,7 +14,7 @@ console.log("minejs - Minecraft Server Wrapper")
 
 
 // Create and start minecraft server
-var mcserver = require('./mcserver.js').createMCServer();
+var mcserver = require('./src/mcserver.js').createMCServer();
 mcserver.start();
 
 mcserver.on('exit', function() {
@@ -22,7 +22,7 @@ mcserver.on('exit', function() {
 });
 
 // Create and start telnet server
-var telnetserver = require('./telnetserver.js').createTelnetServer();
+var telnetserver = require('./src/telnetserver.js').createTelnetServer();
 telnetserver.start();
 
 
