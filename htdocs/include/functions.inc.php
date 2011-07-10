@@ -4,7 +4,7 @@
 
 function init() {
     if ($GLOBALS['itemsAge'] < ( time() - $GLOBALS['cacheLifetime'])) {
-        $GLOBALS['items'] = json_decode(file_get_contents("include/items.json"), true);
+        $GLOBALS['items'] = json_decode(sendCommand("items"), true);
         $GLOBALS['itemsAge'] = time();
     }
     if ($GLOBALS['scriptsAge'] < ( time() - $GLOBALS['cacheLifetime'])) {
