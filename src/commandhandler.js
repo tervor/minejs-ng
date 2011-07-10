@@ -75,10 +75,6 @@ CommandHandler.prototype.parse_execute = function(username, mode, text) {
 }
 
 CommandHandler.prototype.execute = function(username, mode, cmd, args) {
-	for (var i = 0; i < args.length; i++)
-		if (args[i] == "")
-			return "invalid params";
-	
 	// Get user
 	user = this.userlist.userByName(username);
 			
@@ -140,12 +136,18 @@ CommandHandler.prototype.cmd_help = function(user, mode, args) {
 CommandHandler.prototype.cmd_say = function(user, mode, args) {
 	if (args.length != 1)
 		return "invalid params";
+	if (args[0] == "")
+		return "invalid params";
 	this.mcserver.say(args[0]);
 	return "success";
 }
 
 CommandHandler.prototype.cmd_tell = function(user, mode, args) {
 	if (args.length != 2)
+		return "invalid params";
+	if (args[0] == "")
+		return "invalid params";
+	if (args[1] == "")
 		return "invalid params";
 	this.mcserver.tell(args[0], args[1]);
 	return "success";
@@ -163,6 +165,8 @@ CommandHandler.prototype.cmd_give = function(user, mode, args) {
 	if (args.length == 1)
 		args.push(1);
 	if (args.length != 2)
+		return "invalid params";
+	if (args[1] == "")
 		return "invalid params";
 	var item = this.item_by_name_or_id(args[0]);
 	if (item == null)
@@ -185,6 +189,8 @@ CommandHandler.prototype.cmd_stack = function(user, mode, args) {
 	if (args.length == 1)
 		args.push(1);
 	if (args.length != 2)
+		return "invalid params";
+	if (args[1] == "")
 		return "invalid params";
 	var item = this.item_by_name_or_id(args[0]);
 	if (item == null)
@@ -214,6 +220,8 @@ CommandHandler.prototype.cmd_items = function(user, mode, args) {
 CommandHandler.prototype.cmd_tp = function(user, mode, args) {
 	if (args.length != 1)
 		return "invalid params";
+	if (args[0] == "")
+		return "invalid params";
 	this.mcserver.tp(user.name, args[0]);
 	return "success";
 }
@@ -241,6 +249,8 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 	case 'add':
 		if (args.length != 2)
 			return "invalid params";
+		if (args[1] == "")
+			return "invalid name";
 		var newuser = this.userlist.add(args[1]);
 		if (newuser == null)
 			return "user already exists";
@@ -273,6 +283,8 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 		var user = this.userlist.userByName(args[1]);
 		if (user == null)
 			return "user '" + args[1] + "' does not exist";
+		if (args[2] == "")
+			return "invalid password";
 		user.password = args[2];
 		this.userlist.save();
 		return "changed password for user '" + args[1] + "'";
