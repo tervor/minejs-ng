@@ -200,19 +200,19 @@ function getCookie(c_name) {
     }
 }
 
-/*
+
 function checkCookie() {
     var username=getCookie("username");
     if (username!=null && username!="") {
         document.getElementById('STuser').value =  username;
         document.getElementById('STuserlist').value = username;
     } else {
-        username=prompt("Dein Minecraft Benutzername:","");
-        if (username!=null && username!="") {
+        //username=prompt("Dein Minecraft Benutzername:","");
+        //if (username!=null && username!="") {
             setCookie("username",username,365);
-        }
-        document.getElementById('STuser').value =  username;
-        document.getElementById('STuserlist').value = username;
+        //}
+        //document.getElementById('STuser').value =  username;
+        //document.getElementById('STuserlist').value = username;
     }
 } 
 
@@ -220,7 +220,7 @@ function changeUsername() {
     newUsername=document.getElementById('STuserlist').value;
     setCookie("username",newUsername,365);
 };
-*/
+
 
 
 
