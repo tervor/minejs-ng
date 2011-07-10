@@ -2,6 +2,8 @@
 var fs = require('fs');
 var util = require('util');
 
+var nbt = require('nbt');
+
 var config = require('../config.js').config;
 
 function User(name) {
@@ -9,10 +11,11 @@ function User(name) {
 	this.password = config.settings.default_user_password;
 	this.datfile = "";
 	this.role = config.settings.default_user_role;
+	this.pos = [ 0.0, 0.0, 0.0 ];
 }
 
 User.prototype.init = function(settings) {
-	var properties = ['password', 'datfile', 'role'];
+	var properties = ['password', 'datfile', 'role', 'pos'];
 	for (var i = 0; i < properties.length; i++) {
 		var property = properties[i];
 		if (settings.hasOwnProperty(property))
@@ -33,6 +36,7 @@ function UserList() {
 	this.filenameWhiteList = config.server.dir + '/white-list.txt';
 	this.load();
 	this.save();
+	//this.updateFromPlayerDat();
 	
 	console.log(util.inspect(this.users));
 }
@@ -81,10 +85,11 @@ UserList.prototype.load = function() {
 	
 	// Load user list from user-list.json
 	try {
-		users = JSON.parse(fs.readFileSync(this.filenameUserList, 'ascii'));
-		for (var user in users)
+		users = JSON.parse(fs.readFileSync(this.filenameUserList));
+		for (var user in users) {
 			this.users[user] = new User(user);
 			this.users[user].init(users[user]);
+		}
 	} catch (error) {
 	}
 	
@@ -101,27 +106,49 @@ UserList.prototype.load = function() {
 	admin.password = config.settings.admin_password;
 	admin.role = "superadmin";
 	
+	return;
+}
+
+// Load additional user properties from player dat files.
+// This currently reads the players position.
+UserList.prototype.updateFromPlayerDat = function() {
 	// Read additional user properties from player dat files
 	// TODO get from server properties
 	var world = 'world';
 	var playerDir = config.server.dir + '/' + world + '/players/';
 
-	// Get a list of available players by searching the player directory
-	var files = fs.readdirSync(playerDir);
-	for (var i = 0; i < files.length; i++) {
-		var file = files[i];
-		if (file != '_tmp_.dat') {
-			var name = files[i].substr(0, files[i].length - 4);
-			//this.users[name] = new User(name, playerDir + file);
+	// Go through all files in the player directory
+	fs.readdir(playerDir, function(error, files) {
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			// Skip _tmp_.dat file
+			if (file == '_tmp_.dat')
+			 	continue;
+			{
+				// Check if user exists
+				var name = files[i].substr(0, files[i].length - 4);
+				var user = this.userByName(name);
+				if (user == null)
+					continue;
+				// Read NBT file
+				var self = this;
+				fs.readFile(playerDir + file, function(error, data) {
+					// Parse NBT file
+					nbt.parse(data, function(error, result) {
+						// Update position
+						user.pos = result.Pos;
+						console.log(user.name + " pos: " + user.pos);
+						self.save();
+					}.bind(user));
+				}.bind(user));
+			}
 		}
-	}
-	
-	return;
+	}.bind(this));
 }
 
 // Saves the user list
 UserList.prototype.save = function() {
-	fs.writeFileSync(this.filenameUserList, JSON.stringify(this.users), 'ascii');
+	fs.writeFileSync(this.filenameUserList, JSON.stringify(this.users));
 	
 	// Create white list based on user list
 	fs.writeFileSync(this.filenameWhiteList, this.userNames().join('\n'), 'ascii');
