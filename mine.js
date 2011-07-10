@@ -20,10 +20,6 @@ var userlist = require('./src/userlist.js').createUserList();
 // Create server properties
 var serverProperties = require('./src/serverproperties.js').createServerProperties();
 
-// Create command handler
-var commandHandler = require('./src/commandhandler.js').createCommandHandler(mcserver, userlist, serverProperties);
-
-
 // Create minecraft server wrapper
 var mcserver = require('./src/mcserver.js').createMCServer();
 
@@ -108,6 +104,9 @@ http.createServer(function (req, res) {
 		res.end(JSON.stringify(ret));
 	}
 }).listen(config.web.port);
+
+// Create command handler
+var commandHandler = require('./src/commandhandler.js').createCommandHandler(mcserver, userlist, serverProperties);
 
 
 // Start
