@@ -18,7 +18,7 @@ var config = {
 
 	// Telnet server configuration options
 	telnet: {
-		port: 1337,
+		port: 1338,
 	},
 	
 };
