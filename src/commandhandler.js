@@ -5,6 +5,7 @@ var fs = require('fs');
 
 var config = require('../config.js').config;
 var whitelist = require('./whitelist.js').createWhiteList();
+var serverproperties = require('./properties.js').createServerProperties();
 
 
 // The CommandHandler class implements all the advanced commands that can be
@@ -55,6 +56,8 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "Save on/off" },
 	cmd_whitelist: 	{	name: 'whitelist', args: ['action', 'name'],
 						info: "Edit whitelist" },
+	cmd_properties: {	name: 'properties', args: ['action', 'name', 'value'],
+						info: "Edit server properties" },
 }
 
 // Parses and executes a command
@@ -242,6 +245,32 @@ CommandHandler.prototype.cmd_whitelist = function(user, mode, args) {
 	default:
 		var text = whitelist.whitelist.join(', ');
 		var objs = whitelist.whitelist;
+		return this.return_by_mode(mode, text, text, objs);
+	}
+	return "success";
+}
+
+CommandHandler.prototype.cmd_properties = function(user, mode, args) {
+	if (args.length < 1) {
+		args.push('');
+	}
+	switch (args[0]) {
+	case 'set':
+		if (args.length != 3)
+			return "invalid params";
+		if (!serverproperties.set(args[1], args[2]))
+			return "invalid name";
+		break;
+	case 'get':
+		if (args.length != 2)
+			return "invalid params";
+		var value = serverproperties.get(args[1]);
+		return value == null ? "invalid name" : value;
+	default:
+		var text = "";
+		for (var property in serverproperties.properties)
+			text += property + "=" + serverproperties.properties[property] + "\n";
+		var objs = serverproperties.properties;
 		return this.return_by_mode(mode, text, text, objs);
 	}
 	return "success";
