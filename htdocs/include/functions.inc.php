@@ -65,7 +65,7 @@ function tellUser($user, $text) {
 
 function giveItem($id, $amount = 64, $stackable = 0) {
     tellUser($_SESSION['user'], "Giving you " . $amount . " of " . $id);
-    sendCommand("give", array("id" => $id, "num" => $amount));
+    sendCommand("give", array("name" => $id, "count" => $amount));
     return "Giving you " . $amount . " of " . $id;
 }
 
