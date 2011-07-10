@@ -6,9 +6,9 @@ var config = require('../config.js').config;
 
 function User(name) {
 	this.name = name;
-	this.password = config.settings.default_password;
+	this.password = config.settings.default_user_password;
 	this.datfile = "";
-	this.role = "guest";
+	this.role = config.settings.default_user_role;
 }
 
 User.prototype.init = function(settings) {
