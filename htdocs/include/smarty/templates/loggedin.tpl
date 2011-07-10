@@ -28,9 +28,9 @@
                 <abbr title="{$item.id}">
                     <div id="box-{$item.id}" class="GridBox ItemGridBox" onmousemove="boxHover('{$item.id}')" onmouseout="boxNormal('{$item.id}')" >
                         <div id="IncDecMinusButton-{$item.id}" class="incdecbuttonbox" onclick="IncDecMinus('IncDecInput-{$item.id}')">-</div>
-                        <input type="text" id="IncDecInput-{$item.id}" value="{if $item.stackable eq '0'}1{else}64{/if}" class="incdecinputbox"  DISABLED  onclick="giveItemById('{$item.id}','{$item.stackable}','IncDecInput-{$item.id}')"  >
+                        <input type="text" id="IncDecInput-{$item.id}" value="{if $item.amount eq '0'}1{else}64{/if}" class="incdecinputbox"  DISABLED  onclick="giveItemById('{$item.id}','{$item.amount}','IncDecInput-{$item.id}')"  >
                         <div id="IncDecPlusButton-{$item.id}" class="incdecbuttonbox" onclick="IncDecPlus('IncDecInput-{$item.id}')">+</div>
-                        <div name="IconLayer-{$item.id}" style="height:100%;width:100%;"  onclick="giveItemById('{$item.id}','{$item.stackable}','IncDecInput-{$item.id}')" >
+                        <div name="IconLayer-{$item.id}" style="height:100%;width:100%;"  onclick="giveItemById('{$item.id}','{$item.amount}','IncDecInput-{$item.id}')" >
                             <div style="padding: 25% 29% 4% 29%;">
                                 <!--- <img src="icons/gate.png" width="32" height="32" border="0"> -->
                                 <img src="icons/{$item.id}.png" id=="ItemImg-{$item.id}" class="STicon" border="0">

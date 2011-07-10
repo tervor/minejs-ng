@@ -4,7 +4,7 @@
 
 function init() {
     if ($GLOBALS['itemsAge'] < ( time() - $GLOBALS['cacheLifetime'])) {
-        $GLOBALS['items'] = json_decode(sendCommand("items"), true);
+        $GLOBALS['items'] = json_decode(sendCommand("items", array("origin" => "admin")), true);
         $GLOBALS['itemsAge'] = time();
     }
     if ($GLOBALS['scriptsAge'] < ( time() - $GLOBALS['cacheLifetime'])) {
@@ -62,7 +62,7 @@ function tellUser($user, $text) {
     sendCommand("tell", array("user" => $user, "text" => $text));
 }
 
-function giveItem($id, $amount = 64, $stackable = 0) {
+function giveItem($id, $amount = 64) {
     tellUser($_SESSION['user'], "Giving you " . $amount . " of " . $id);
     sendCommand("give", array("name" => $id, "count" => $amount));
     return "Giving you " . $amount . " of " . $id;
