@@ -103,7 +103,7 @@ if (empty($status)) {
                     break;
 
                 case "teleport":
-                    echo teleportUser($_SESSION['user'], $_REQUEST['dst']);
+                    echo teleportUser($_REQUEST['dst']);
                     break;
 
                 default:

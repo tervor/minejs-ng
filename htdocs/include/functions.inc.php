@@ -29,7 +29,7 @@ function sendCommand($cmd, $opts = array()) {
         $first = true;
         foreach ($opts as $name => $value) {
             if ($first) {
-                $optStr .= "?origin=" . urlencode($_SESSION['user']) . "&";
+                $optStr = "?origin=" . urlencode($_SESSION['user']) . "&";
                 $first = false;
             } else {
                 $optStr .= "&";
@@ -51,12 +51,11 @@ function runScript($script) {
     return "Running script " . $script;
 }
 
-function teleportUser($dst) {
+function teleportUser($target) {
     //FIXME: I am not working right now
-    tellUser($_SESSION['user'], "Teleporting you to " . $dst . ".");
-    tellUser($dst, "Teleporting " . $_SESSION['user'] . " to you.");
-    sendCommand("tp", array("target" => $dst));
-    return "User " . $_SESSION['user'] . " to " . $dst . " teleported";
+    tellUser($_SESSION['user'], "Teleporting you to " . $target . ".");
+    sendCommand("tp", array("target" => $target));
+    return "User " . $_SESSION['user'] . " to " . $target . " teleported";
 }
 
 function tellUser($user, $text) {
