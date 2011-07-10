@@ -1,20 +1,30 @@
 #!/usr/bin/env node
 
-var config = require('./config.js').config;
-
-
-
 var sys = require('sys'),
     fs = require('fs'),
     http = require('http'),
 	url = require('url'),
     util = require('util');
 
+var config = require('./config.js').config;
 
 // Version number
 var version = "0.1";
 
 console.log("minejs " + version + " - Minecraft Server Wrapper")
+
+
+// Create user list
+var userlist = require('./src/userlist.js').createUserList();
+
+// Create white list
+var whitelist = require('./src/whitelist.js').createWhiteList();
+
+// Create server properties
+var serverProperties = require('./src/serverproperties.js').createServerProperties();
+
+// Create command handler
+var commandHandler = require('./src/commandhandler.js').createCommandHandler(mcserver, userlist, whitelist, serverProperties);
 
 
 // Create minecraft server wrapper
@@ -44,7 +54,7 @@ mcserver.on('user_cmd', function(user, text) {
 	// Command starts with a / character, otherwise it's invalid
 	if (text.charAt(0) == '/') {
 		text = text.slice(1, text.length);
-		var ret = cmdhandler.parse_execute(user, 'console', text);
+		var ret = commandHandler.parse_execute(user, 'console', text);
 		if (ret != null && ret != "success") {
 			var lines = ret.split('\n');
 			for (var i = 0; i < lines.length; i++)
@@ -66,29 +76,18 @@ telnetserver.on('user_disconnect', function(session){
 
 telnetserver.on('user_data', function(session, text) {
 	console.log("User '" + session.user + "' has issued command '" + text + "' via telnet");
-	var ret = cmdhandler.parse_execute(session.user, 'telnet', text);
+	var ret = commandHandler.parse_execute(session.user, 'telnet', text);
 	session.socket.write(ret + "\n");
 });
 
 
-// Create command handler
-var cmdhandler = require('./src/commandhandler.js').createCommandHandler(mcserver);
-
-
-
-// Start
-mcserver.start();
-telnetserver.start();
-
-
-
-/* http webservice */
+// Create web server
 http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': "text/plain;charset=UTF-8"});
 	var u = url.parse(req.url, true);
 	
 	var cmd = u.pathname.substr(1, u.pathname.length);
-	var cmd_handler = cmdhandler.cmd_handler_by_name(cmd);
+	var cmd_handler = commandHandler.cmd_handler_by_name(cmd);
 	if (cmd_handler == null) {
 		res.end(JSON.stringify("unknown command"));
 	} else {
@@ -111,8 +110,12 @@ http.createServer(function (req, res) {
 }).listen(config.web.port);
 
 
+// Start
+mcserver.start();
+telnetserver.start();
 process.stdin.resume();
 
+// Echo STDIN to minecraft server, listen for ctrl-C
 process.stdin.on('data', function (data) {
 	if (data[0] == 0x03) {
 		mcserver.stop();

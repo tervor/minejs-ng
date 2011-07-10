@@ -4,16 +4,17 @@ var util = require('util');
 var fs = require('fs');
 
 var config = require('../config.js').config;
-var whitelist = require('./whitelist.js').createWhiteList();
-var serverproperties = require('./properties.js').createServerProperties();
 
 
 // The CommandHandler class implements all the advanced commands that can be
 // issued through the different interfaces (http, ingame, telnet) to the
 // minejs server.
-function CommandHandler(mcserver) {
+function CommandHandler(mcserver, userlist, whitelist, serverProperties) {
 	events.EventEmitter.call(this);
 	this.mcserver = mcserver;
+	this.userlist = userlist;
+	this.whitelist = whitelist;
+	this.serverProperties = serverProperties;
 	
 	// TODO this should move somewhere else, or to the JSON file itself
 	for (var i = 0; i < this.items.length; i++) {
@@ -24,6 +25,9 @@ function CommandHandler(mcserver) {
 
 util.inherits(CommandHandler, events.EventEmitter);
 
+// List of user roles
+CommandHandler.prototype.roles = { admin: 1, user: 2, all: 3 }
+
 // Load item list
 CommandHandler.prototype.items = JSON.parse(fs.readFileSync('./src/items.json', 'ascii'));
 
@@ -31,32 +35,34 @@ CommandHandler.prototype.items = JSON.parse(fs.readFileSync('./src/items.json', 
 // Make sure that a handler function of type cmd_xxx(user, mode, args) with the same name actually
 // exists in this class for every registered command handler.
 CommandHandler.prototype.cmd_handlers = {
-	cmd_help: 		{	name: "help", args: [],
+	cmd_help: 		{	name: "help", args: [], role: 'guest',
 						info: "Shows help screen" },
-	cmd_say: 		{	name: "say", args: ['text'],
+	cmd_say: 		{	name: "say", args: ['text'], role: 'guest',
 						info: "Say something" },
-	cmd_tell: 		{	name: "tell", args: ['user', 'text'],
+	cmd_tell: 		{	name: "tell", args: ['user', 'text'], role: 'guest',
 						info: "Tells user something" },
-	cmd_users: 		{	name: "users", args: [],
+	cmd_users: 		{	name: "users", args: [], role: 'guest',
 						info: "Shows user list" }, 
-	cmd_status: 	{	name: "status", args: [],
+	cmd_status: 	{	name: "status", args: [], role: 'admin',
 						info: "Shows server status" },
-	cmd_give: 		{	name: 'give', args: ['name', 'count'],
+	cmd_give: 		{	name: 'give', args: ['name', 'count'], role: 'user',
 						info: "Gives items" },
-	cmd_stack: 		{	name: 'stack', args: ['name', 'count'],
+	cmd_stack: 		{	name: 'stack', args: ['name', 'count'], role: 'user',
 						info: "Gives stacks" },
-	cmd_items: 		{	name: 'items', args: ['prefix'],
+	cmd_items: 		{	name: 'items', args: ['prefix'], role: 'user',
 						info: "List items with prefix" },
-	cmd_tp: 		{	name: 'tp', args: ['target'],
+	cmd_tp: 		{	name: 'tp', args: ['target'], role: 'user',
 	 					info: "Teleport to target" },
-	cmd_restart: 	{	name: 'restart', args: [],
+	cmd_restart: 	{	name: 'restart', args: [], role: 'admin',
 						info: "Restarts the server" },
-	cmd_save: 		{	name: 'save', args: ['action'],
+	cmd_save: 		{	name: 'save', args: ['action'], role: 'superadmin',
 						info: "Save on/off" },
-	cmd_whitelist: 	{	name: 'whitelist', args: ['action', 'name'],
+	cmd_whitelist: 	{	name: 'whitelist', args: ['action', 'name'], role: 'admin',
 						info: "Edit whitelist" },
-	cmd_properties: {	name: 'properties', args: ['action', 'name', 'value'],
+	cmd_properties: {	name: 'properties', args: ['action', 'name', 'value'], role: 'superadmin',
 						info: "Edit server properties" },
+	cmd_user: 		{	name: 'user', args: ['action', 'name', 'value'], role: 'admin',
+						info: "Edit user list" },
 }
 
 // Parses and executes a command
@@ -234,16 +240,16 @@ CommandHandler.prototype.cmd_whitelist = function(user, mode, args) {
 	case 'add':
 		if (args.length != 2)
 			return "invalid params";
-		whitelist.add(args[1]);
+		this.whitelist.add(args[1]);
 		break;
 	case 'remove':
 		if (args.length != 2)
 			return "invalid params";
-		whitelist.remove(args[1]);
+		this.whitelist.remove(args[1]);
 		break;
 	default:
-		var text = whitelist.whitelist.join(', ');
-		var objs = whitelist.whitelist;
+		var text = this.whitelist.whitelist.join(', ');
+		var objs = this.whitelist.whitelist;
 		return this.return_by_mode(mode, text, text, objs);
 	}
 	return "success";
@@ -257,19 +263,45 @@ CommandHandler.prototype.cmd_properties = function(user, mode, args) {
 	case 'set':
 		if (args.length != 3)
 			return "invalid params";
-		if (!serverproperties.set(args[1], args[2]))
+		if (!this.serverProperties.set(args[1], args[2]))
 			return "invalid name";
 		break;
 	case 'get':
 		if (args.length != 2)
 			return "invalid params";
-		var value = serverproperties.get(args[1]);
+		var value = this.serverProperties.get(args[1]);
 		return value == null ? "invalid name" : value;
 	default:
 		var text = "";
-		for (var property in serverproperties.properties)
-			text += property + "=" + serverproperties.properties[property] + "\n";
-		var objs = serverproperties.properties;
+		for (var property in this.serverProperties.properties)
+			text += property + "=" + this.serverProperties.properties[property] + "\n";
+		var objs = this.serverProperties.properties;
+		return this.return_by_mode(mode, text, text, objs);
+	}
+	return "success";
+}
+
+CommandHandler.prototype.cmd_user = function(user, mode, args) {
+	if (args.length < 1) {
+		args.push('');
+	}
+	switch (args[0]) {
+	case 'set':
+		if (args.length != 3)
+			return "invalid params";
+		if (!this.serverProperties.set(args[1], args[2]))
+			return "invalid name";
+		break;
+	case 'get':
+		if (args.length != 2)
+			return "invalid params";
+		var value = this.serverProperties.get(args[1]);
+		return value == null ? "invalid name" : value;
+	default:
+		var text = "";
+		for (var property in this.serverProperties.properties)
+			text += property + "=" + this.serverProperties.properties[property] + "\n";
+		var objs = this.serverProperties.properties;
 		return this.return_by_mode(mode, text, text, objs);
 	}
 	return "success";
@@ -290,8 +322,8 @@ CommandHandler.prototype.return_by_mode = function(mode, console, telnet, web)
 }
 
 // Creates a command handler
-function createCommandHandler(mcserver) {
-	return new CommandHandler(mcserver);
+function createCommandHandler(mcserver, userlist, whitelist, serverProperties) {
+	return new CommandHandler(mcserver, userlist, whitelist, serverProperties);
 }
 
 module.exports.createCommandHandler = createCommandHandler;
