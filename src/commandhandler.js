@@ -38,8 +38,14 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "Shows server status" },
 	cmd_give: 		{	name: 'give', args: ['name', 'count'],
 						info: "Gives items" },
+	cmd_stack: 		{	name: 'stack', args: ['name', 'count'],
+						info: "Gives stacks of items" },
 	cmd_items: 		{	name: 'items', args: ['prefix'],
 						info: "List items with prefix" },
+	cmd_tp: 		{	name: 'tp', args: ['target'],
+	 					info: "Teleport to target" },
+	cmd_restart: 	{	name: 'restart', args: [],
+						info: "Restarts the server" },
 }
 
 // Parses and executes a command
@@ -136,6 +142,17 @@ CommandHandler.prototype.cmd_give = function(user, mode, args) {
 	return "success";
 }
 
+CommandHandler.prototype.cmd_stack = function(user, mode, args) {
+	if (args.length != 2)
+		return "invalid params";
+	var item = this.item_by_name_or_id(args[0]);
+	if (item == null)
+		return "invalid item";
+	for (var i = 0; i < args[1]; i++)
+		this.mcserver.give(user, item.id, item.stackable ? 64 : 0);
+	return "success";
+}
+
 CommandHandler.prototype.cmd_items = function(user, mode, args) {
 	var text = "";
 	var objs = [];
@@ -148,6 +165,20 @@ CommandHandler.prototype.cmd_items = function(user, mode, args) {
 		objs.push({ id: item.id, name: item.name, stackable: item.stackable });
 	}
 	return this.return_by_mode(mode, text, text, objs);
+}
+
+CommandHandler.prototype.cmd_tp = function(user, mode, args) {
+	if (args.length != 1)
+		return "invalid params";
+	this.mcserver.tp(user, args[0]);
+	return "success";
+}
+
+CommandHandler.prototype.cmd_restart = function(user, mode, args) {
+	if (args.length != 0)
+		return "invalid params";
+	this.mcserver.restart();
+	return "success";
 }
 
 CommandHandler.prototype.return_by_mode = function(mode, console, telnet, web)
