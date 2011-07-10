@@ -13,12 +13,12 @@ var config = {
 	
 	// Web server configuration options
 	web: {
-		port: 1337,
+		port: 25564,
 	},
 
 	// Telnet server configuration options
 	telnet: {
-		port: 1338,
+		port: 25563,
 	},
 	
 	// Game related settings
