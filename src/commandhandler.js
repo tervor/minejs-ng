@@ -15,6 +15,7 @@ function CommandHandler(mcserver) {
 	this.mcserver = mcserver;
 	
 	for (var i = 0; i < this.items.length; i++) {
+		this.items[i].info = this.items[i].name;
 		this.items[i].name = this.items[i].name.replace(' ', '_').toLowerCase();
 	}
 	
@@ -186,7 +187,7 @@ CommandHandler.prototype.cmd_items = function(user, mode, args) {
 			if (item.name.substr(0, args[0].length) != args[0])
 				continue;
 		text += item.name + " (" + item.id + ")\n";
-		objs.push({ id: item.id, name: item.name, stackable: item.stackable });
+		objs.push({ id: item.id, name: item.name, info: item.info, amount: item.amount });
 	}
 	return this.return_by_mode(mode, text, text, objs);
 }
