@@ -39,7 +39,7 @@ mcserver.on('user_cmd', function(user, text) {
 	if (text.charAt(0) == '/') {
 		text = text.slice(1, text.length);
 		var ret = cmdhandler.parse_execute(user, 'console', text);
-		if (ret != null) {
+		if (ret != null && ret != "success") {
 			var lines = ret.split('\n');
 			for (var i = 0; i < lines.length; i++)
 				mcserver.tell(user, lines[i]);

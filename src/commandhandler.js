@@ -185,7 +185,7 @@ CommandHandler.prototype.return_by_mode = function(mode, console, telnet, web)
 {
 	switch (mode) {
 	case 'console':
-		return string;
+		return console;
 	case 'telnet':
 		return telnet;
 	case 'web':
