@@ -33,13 +33,13 @@ mcserver.on('user_chat', function(user, text) {
 });
 
 mcserver.on('user_cmd', function(user, text) {
-	console.log("User '" + user + "' has issued command '" + text + "'");
+	console.log("User '" + user + "' has issued command '" + text + "' via console");
 
 	// Command starts with a / character, otherwise it's invalid
 	if (text.charAt(0) == '/') {
 		text = text.slice(1, text.length);
-		var ret = cmdhandler.parse_execute(user, 'string', text);
-		if (ret != null) {
+		var ret = cmdhandler.parse_execute(user, 'console', text);
+		if (ret != null && ret != "success") {
 			var lines = ret.split('\n');
 			for (var i = 0; i < lines.length; i++)
 				mcserver.tell(user, lines[i]);
@@ -49,6 +49,13 @@ mcserver.on('user_cmd', function(user, text) {
 
 // Create telnet server
 var telnetserver = require('./src/telnetserver.js').createTelnetServer();
+
+telnetserver.on('data', function(session, text) {
+	console.log("User '" + session.user + "' has issued command '" + text + "' via telnet");
+
+	var ret = cmdhandler.parse_execute(session.user, 'telnet', text);
+	session.socket.write(ret + "\n");
+});
 
 
 // Create command handler
@@ -85,7 +92,7 @@ http.createServer(function (req, res) {
 			}
 		}
 		
-		var ret = cmdhandler.execute(user, 'json', cmd, args);
+		var ret = cmdhandler.execute(user, 'web', cmd, args);
 		res.end(JSON.stringify(ret));
 	}
 }).listen(config.web.port);
