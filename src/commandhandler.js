@@ -24,9 +24,6 @@ function CommandHandler(mcserver, userlist, serverProperties) {
 
 util.inherits(CommandHandler, events.EventEmitter);
 
-// List of user roles
-CommandHandler.prototype.roles = { admin: 1, user: 2, all: 3 }
-
 // Load item list
 CommandHandler.prototype.items = JSON.parse(fs.readFileSync('./src/items.json', 'ascii'));
 
@@ -34,6 +31,7 @@ CommandHandler.prototype.items = JSON.parse(fs.readFileSync('./src/items.json', 
 // Make sure that a handler function of type cmd_xxx(user, mode, args) with the same name actually
 // exists in this class for every registered command handler.
 CommandHandler.prototype.cmd_handlers = {
+	// Guest commands
 	cmd_help: 		{	name: "help", args: [], role: 'guest',
 						info: "Shows help screen" },
 	cmd_say: 		{	name: "say", args: ['text'], role: 'guest',
@@ -42,8 +40,7 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "Tells user something" },
 	cmd_users: 		{	name: "users", args: [], role: 'guest',
 						info: "Shows user list" }, 
-	cmd_status: 	{	name: "status", args: [], role: 'admin',
-						info: "Shows server status" },
+	// User commands
 	cmd_give: 		{	name: 'give', args: ['name', 'count'], role: 'user',
 						info: "Gives items" },
 	cmd_stack: 		{	name: 'stack', args: ['name', 'count'], role: 'user',
@@ -52,34 +49,49 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "List items with prefix" },
 	cmd_tp: 		{	name: 'tp', args: ['target'], role: 'user',
 	 					info: "Teleport to target" },
+	// Admin commands
+	cmd_status: 	{	name: "status", args: [], role: 'admin',
+						info: "Shows server status" },
 	cmd_restart: 	{	name: 'restart', args: [], role: 'admin',
 						info: "Restarts the server" },
+	cmd_user: 		{	name: 'user', args: ['action', 'name', 'value'], role: 'admin',
+						info: "Edit user list" },
+	// Superadmin commands
 	cmd_save: 		{	name: 'save', args: ['action'], role: 'superadmin',
 						info: "Save on/off" },
 	cmd_properties: {	name: 'properties', args: ['action', 'name', 'value'], role: 'superadmin',
 						info: "Edit server properties" },
-	cmd_user: 		{	name: 'user', args: ['action', 'name', 'value'], role: 'admin',
-						info: "Edit user list" },
 }
 
 // Parses and executes a command
 // Returns null if unknown command, returns string otherwise
-CommandHandler.prototype.parse_execute = function(user, mode, text) {
+CommandHandler.prototype.parse_execute = function(username, mode, text) {
 	// Split values into arguments
 	var args = text.split(' ');
 	var cmd = args[0];
 	args = args.splice(1, args.length - 1);
 			
-	return this.execute(user, mode, cmd, args);
+	return this.execute(username, mode, cmd, args);
 }
 
-CommandHandler.prototype.execute = function(user, mode, cmd, args) {
+CommandHandler.prototype.execute = function(username, mode, cmd, args) {
 	for (var i = 0; i < args.length; i++)
 		if (args[i] == "")
 			return "invalid params";
+	
+	// Get user
+	user = this.userlist.userByName(username);
+			
 	for (var handler in this.cmd_handlers)
-		if (cmd == this.cmd_handlers[handler].name)
+		if (cmd == this.cmd_handlers[handler].name) {
+			if (this.cmd_handlers[handler].role != "guest") {
+				if (user == null)
+					return "unknown user";
+				if (!user.hasRole(this.cmd_handlers[handler].role))
+					return "permission denied"
+			}
 			return this[handler](user, mode, args);
+		}
 	return "unknown command";
 }
 
@@ -100,7 +112,7 @@ CommandHandler.prototype.item_by_name_or_id = function(name) {
 	return null;
 }
 
-// Commands -----------------------------------------------------------------
+// Guest commands -----------------------------------------------------------
 
 CommandHandler.prototype.cmd_help = function(user, mode, args) {
 	if (args.length != 0)
@@ -110,6 +122,9 @@ CommandHandler.prototype.cmd_help = function(user, mode, args) {
 	text += "Available commands:\n";
 	for (var cmd in this.cmd_handlers) {
 		var handler = this.cmd_handlers[cmd];
+		// Skip commands which are not accessible by user
+		if (user != null && !user.hasRole(this.cmd_handlers[cmd].role))
+			continue;
 		if (mode == 'console')
 			text += "//";
 		text += handler.name;
@@ -142,11 +157,7 @@ CommandHandler.prototype.cmd_users = function(user, mode, args) {
 	return this.return_by_mode(mode, text, text, objs);
 }
 
-CommandHandler.prototype.cmd_status = function(user, mode, args) {
-	if (args.length != 0)
-		return "invalid params";
-	return this.mcserver.stats_minejs + this.mcserver.stats_mcserver;
-}
+// User commands ------------------------------------------------------------
 
 CommandHandler.prototype.cmd_give = function(user, mode, args) {
 	if (args.length == 1)
@@ -161,7 +172,7 @@ CommandHandler.prototype.cmd_give = function(user, mode, args) {
 	while (left > 0) {
 		var num = left > item.amount ? item.amount : left;
 		console.log("left=" + left + " num=" + num);
-		this.mcserver.give(user, item.id, num);
+		this.mcserver.give(user.name, item.id, num);
 		left -= num;
 		stacks++;
 		if (stacks >= config.settings.max_stacks)
@@ -182,7 +193,7 @@ CommandHandler.prototype.cmd_stack = function(user, mode, args) {
 	if (stacks > config.settings.max_stacks)
 		stacks = config.settings.max_stacks;
 	for (var i = 0; i < stacks; i++)
-		this.mcserver.give(user, item.id, item.amount);
+		this.mcserver.give(user.name, item.id, item.amount);
 	return "success";
 }
 
@@ -203,58 +214,22 @@ CommandHandler.prototype.cmd_items = function(user, mode, args) {
 CommandHandler.prototype.cmd_tp = function(user, mode, args) {
 	if (args.length != 1)
 		return "invalid params";
-	this.mcserver.tp(user, args[0]);
+	this.mcserver.tp(user.name, args[0]);
 	return "success";
+}
+
+// Admin commands -----------------------------------------------------------
+
+CommandHandler.prototype.cmd_status = function(user, mode, args) {
+	if (args.length != 0)
+		return "invalid params";
+	return this.mcserver.stats_minejs + this.mcserver.stats_mcserver;
 }
 
 CommandHandler.prototype.cmd_restart = function(user, mode, args) {
 	if (args.length != 0)
 		return "invalid params";
 	this.mcserver.restart();
-	return "success";
-}
-
-CommandHandler.prototype.cmd_save = function(user, mode, args) {
-	if (args.length != 1)
-		return "invalid params";
-	switch (args[0]) {
-	case 'on':
-		this.mcserver.save_on();
-		this.mcserver.save_all();
-		break;
-	case 'off':
-		this.mcserver.save_off();
-		this.mcserver.save_all();
-		break;
-	default:
-		return "invalid action";
-	}
-	return "success";
-}
-
-CommandHandler.prototype.cmd_properties = function(user, mode, args) {
-	if (args.length < 1) {
-		args.push('');
-	}
-	switch (args[0]) {
-	case 'set':
-		if (args.length != 3)
-			return "invalid params";
-		if (!this.serverProperties.set(args[1], args[2]))
-			return "invalid name";
-		break;
-	case 'get':
-		if (args.length != 2)
-			return "invalid params";
-		var value = this.serverProperties.get(args[1]);
-		return value == null ? "invalid name" : value;
-	default:
-		var text = "";
-		for (var property in this.serverProperties.properties)
-			text += property + "=" + this.serverProperties.properties[property] + "\n";
-		var objs = this.serverProperties.properties;
-		return this.return_by_mode(mode, text, text, objs);
-	}
 	return "success";
 }
 
@@ -306,6 +281,53 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 	}
 	return "success";
 }
+
+// Superadmin commands ------------------------------------------------------
+
+CommandHandler.prototype.cmd_save = function(user, mode, args) {
+	if (args.length != 1)
+		return "invalid params";
+	switch (args[0]) {
+	case 'on':
+		this.mcserver.save_on();
+		this.mcserver.save_all();
+		break;
+	case 'off':
+		this.mcserver.save_off();
+		this.mcserver.save_all();
+		break;
+	default:
+		return "invalid action";
+	}
+	return "success";
+}
+
+CommandHandler.prototype.cmd_properties = function(user, mode, args) {
+	if (args.length < 1) {
+		args.push('');
+	}
+	switch (args[0]) {
+	case 'set':
+		if (args.length != 3)
+			return "invalid params";
+		if (!this.serverProperties.set(args[1], args[2]))
+			return "invalid name";
+		break;
+	case 'get':
+		if (args.length != 2)
+			return "invalid params";
+		var value = this.serverProperties.get(args[1]);
+		return value == null ? "invalid name" : value;
+	default:
+		var text = "";
+		for (var property in this.serverProperties.properties)
+			text += property + "=" + this.serverProperties.properties[property] + "\n";
+		var objs = this.serverProperties.properties;
+		return this.return_by_mode(mode, text, text, objs);
+	}
+	return "success";
+}
+
 
 CommandHandler.prototype.return_by_mode = function(mode, console, telnet, web)
 {

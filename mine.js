@@ -72,6 +72,10 @@ telnetserver.on('user_disconnect', function(session){
 
 telnetserver.on('user_data', function(session, text) {
 	console.log("User '" + session.user + "' has issued command '" + text + "' via telnet");
+	if (text == "exit") {
+		session.socket.end("Terminating\n");
+		return;
+	}
 	var ret = commandHandler.parse_execute(session.user, 'telnet', text);
 	session.socket.write(ret + "\n");
 });

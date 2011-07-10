@@ -20,6 +20,13 @@ User.prototype.init = function(settings) {
 	}
 }
 
+// Returns true if the user has permission for the queried role.
+User.prototype.hasRole = function(role) {
+	if (!(role in UserList.prototype.roles))
+		return false;
+	return (UserList.prototype.roles[role] >= UserList.prototype.roles[this.role]);
+}
+
 function UserList() {
 	this.users = [];
 	this.filenameUserList = config.server.dir + '/user-list.json';
