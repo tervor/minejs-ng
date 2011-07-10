@@ -155,6 +155,20 @@ MCServer.prototype.say = function(text) {
 	this.send_cmd(['say', text]);
 }
 
+MCServer.prototype.save_all = function() {
+	this.send_cmd(['save-all']);
+}
+
+MCServer.prototype.save_off = function() {
+	this.send_cmd(['save-off']);
+}
+
+MCServer.prototype.save_on = function() {
+	this.send_cmd(['save-on']);
+}
+
+
+
 // Implementation -----------------------------------------------------------
 
 // Called regularly to collect monitoring information

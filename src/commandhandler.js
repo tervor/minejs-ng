@@ -49,6 +49,8 @@ CommandHandler.prototype.cmd_handlers = {
 	 					info: "Teleport to target" },
 	cmd_restart: 	{	name: 'restart', args: [],
 						info: "Restarts the server" },
+	cmd_save: 		{	name: 'save', args: ['action'],
+						info: "Save on/off" },
 }
 
 // Parses and executes a command
@@ -197,6 +199,24 @@ CommandHandler.prototype.cmd_restart = function(user, mode, args) {
 	if (args.length != 0)
 		return "invalid params";
 	this.mcserver.restart();
+	return "success";
+}
+
+CommandHandler.prototype.cmd_save = function(user, mode, args) {
+	if (args.length != 1)
+		return "invalid params";
+	switch (args[0]) {
+	case 'on':
+		this.mcserver.save_on();
+		this.mcserver.save_all();
+		break;
+	case 'off':
+		this.mcserver.save_off();
+		this.mcserver.save_all();
+		break;
+	default:
+		return "invalid action";
+	}
 	return "success";
 }
 
