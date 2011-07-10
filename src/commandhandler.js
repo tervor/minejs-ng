@@ -15,12 +15,11 @@ function CommandHandler(mcserver) {
 	events.EventEmitter.call(this);
 	this.mcserver = mcserver;
 	
+	// TODO this should move somewhere else, or to the JSON file itself
 	for (var i = 0; i < this.items.length; i++) {
 		this.items[i].info = this.items[i].name;
 		this.items[i].name = this.items[i].name.replace(' ', '_').toLowerCase();
 	}
-	
-	console.log(util.inspect(this.items));
 }
 
 util.inherits(CommandHandler, events.EventEmitter);
