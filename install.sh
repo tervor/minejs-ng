@@ -97,5 +97,5 @@ function startAll() {
 #program start
 main
 
-echo -e "I hope the installation did work, if not, please review the output in detail and have a look at this install script."
+echo -e "If everything worked well the web interface should ne available under http://localhost/minejs"
 
