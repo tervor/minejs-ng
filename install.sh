@@ -6,7 +6,7 @@
 # 
 # 10.7.2011 escii -
 #
-# note mcport: 25565 -> nodejs port: 25564
+# default ports: 25565 minecraft, 25564 nodeJS HTTP, 25563 nodeJS Telnet
 #
 
 function main() {
@@ -89,6 +89,7 @@ function installmineJS () {
 }
 
 function startAll() {
+    cd /opt/minejs/
     /usr/bin/node /opt/minejs/mine.js
     #ask if should restart apache
 }
