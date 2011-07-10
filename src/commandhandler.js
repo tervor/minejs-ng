@@ -241,28 +241,30 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 	case 'add':
 		if (args.length != 2)
 			return "invalid params";
-		var user = this.userlist.add(args[1]);
-		if (user == null)
+		var newuser = this.userlist.add(args[1]);
+		if (newuser == null)
 			return "user already exists";
 		this.userlist.save();
 		return "added user '" + args[1] + "'";
 	case 'remove':
 		if (args.length != 2)
 			return "invalid params";
-		var user = this.userlist.remove(args[1]);
-		if (user == null)
+		var removeduser = this.userlist.remove(args[1]);
+		if (removeduser == null)
 			return "user '" + args[1] + "' does not exist";
 		this.userlist.save();
 		return "removed user '" + args[1] + "'";
 	case 'role':
 		if (args.length != 3)
 			return "invalid params";
-		var user = this.userlist.userByName(args[1]);
-		if (user == null)
+		var changeuser = this.userlist.userByName(args[1]);
+		if (changeuser == null)
 			return "user '" + args[1] + "' does not exist";
 		if (!(args[2] in this.userlist.roles))
 			return "'" + args[2] + "' is not a valid role";
-		user.role = args[2];
+		if (!user.hasRole(args[2]))
+			return "no permission to set role '" + args[2] + "'";
+		changeuser.role = args[2];
 		this.userlist.save();
 		return "changed role for user '" + args[1] + "' to '" + args[2] + "'";
 	case 'password':
