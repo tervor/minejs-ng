@@ -84,7 +84,7 @@ function installmineJS () {
     ln -s /opt/minejs/htdocs /var/www/minejs
     
     cp /opt/minejs/config.js.example /opt/minejs/config.js
-    
+    cp /opt/minejs/htdocs/include/settings.inc.php.example /opt/minejs/htdocs/include/settings.inc.php
     echo -e "\n mineJS installed \n\n"
 }
 
