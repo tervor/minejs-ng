@@ -8,6 +8,7 @@ require_once("include/functions.inc.php");
 require_once("include/smarty/libs/Smarty.class.php");
 
 ## magic starts here ##
+init();
 $smarty = getSmarty();
 $usersOnline = getUsers();
 
@@ -75,34 +76,18 @@ if (empty($status)) {
                 }
             }
             $smarty->assign("teleportTargets", $tpTargets);
-            $smarty->assign("availItems", count($items));
+            $smarty->assign("availItems", count($GLOBALS['items']));
             $smarty->assign("maxItems", $GLOBALS['maxitems']);
-            $smarty->assign("items", $items);
-            $smarty->assign("scripts", $scripts);
+            $smarty->assign("items", $GLOBALS['items']);
+            $smarty->assign("scripts", $GLOBALS['scripts']);
 
             switch ($_REQUEST['do']) {
                 case "giveItem":
-                    if (!empty($_REQUEST['itemId'])) {
-                        $name = false;
-                        foreach ($items as $item) {
-                            if ($item['id'] == $_REQUEST['itemId']) {
-                                $name = $item['name'];
-                            }
-                        }
-                        if (!empty($name)) {
-                            $gave = giveItem($_SESSION['user'], $_REQUEST['itemId'], $_REQUEST['amount'], $_REQUEST['stackable']);
-                            echo "<b>Gave " . $_SESSION['user'] . " " . $gave . "x " . $name . ".</b>";
-                        } else {
-                            echo "<b>ERROR: ItemID Not available: " . $_REQUEST['itemId'];
-                        }
-                    } else {
-                        echo "<b>ERROR: Missing fields (user|itemId)</b>";
-                    }
+                    echo giveItem($_REQUEST['itemId'], $_REQUEST['amount']);
                     break;
-                    
+
                 case "runScript":
-                    runScript($_SESSION['user'], $scripts[$_REQUEST['script']]);
-                    echo "Ran script " . $_REQUEST['script'] . " for user " . $_SESSION['user'];
+                    echo runScript($GLOBALS['scripts'][$_REQUEST['script']]);
                     break;
 
                 case "usersOnline":
@@ -110,24 +95,21 @@ if (empty($status)) {
                     break;
 
                 case "listItems":
-                    echo json_encode($items);
+                    echo json_encode($GLOBALS['items']);
                     break;
 
                 case "listScripts":
-                    echo json_encode($scripts);
+                    echo json_encode($GLOBALS['scripts']);
                     break;
 
                 case "teleport":
-                    teleportUser($_SESSION['user'], $_REQUEST['dst']);
-                    echo "Teleported " . $_SESSION['user'] . " to " . $_REQUEST['dst'];
+                    echo teleportUser($_SESSION['user'], $_REQUEST['dst']);
                     break;
 
                 default:
                     $smarty->assign("return", "<i>Ready for action</i>");
                     $smarty->display('loggedin.tpl');
             }
-
-            
         } else {
             #this user is not online on the minecraft server
             $smarty->assign("return", "Please login to the Minecraft Server.");
