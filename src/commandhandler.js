@@ -4,6 +4,7 @@ var util = require('util');
 var fs = require('fs');
 
 var config = require('../config.js').config;
+var whitelist = require('./whitelist.js').createWhiteList();
 
 
 // The CommandHandler class implements all the advanced commands that can be
@@ -51,6 +52,8 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "Restarts the server" },
 	cmd_save: 		{	name: 'save', args: ['action'],
 						info: "Save on/off" },
+	cmd_whitelist: 	{	name: 'whitelist', args: ['action', 'name'],
+						info: "Edit whitelist" },
 }
 
 // Parses and executes a command
@@ -216,6 +219,29 @@ CommandHandler.prototype.cmd_save = function(user, mode, args) {
 		break;
 	default:
 		return "invalid action";
+	}
+	return "success";
+}
+
+CommandHandler.prototype.cmd_whitelist = function(user, mode, args) {
+	if (args.length < 1) {
+		args.push('');
+	}
+	switch (args[0]) {
+	case 'add':
+		if (args.length != 2)
+			return "invalid params";
+		whitelist.add(args[1]);
+		break;
+	case 'remove':
+		if (args.length != 2)
+			return "invalid params";
+		whitelist.remove(args[1]);
+		break;
+	default:
+		var text = whitelist.whitelist.join(', ');
+		var objs = whitelist.whitelist;
+		return this.return_by_mode(mode, text, text, objs);
 	}
 	return "success";
 }
