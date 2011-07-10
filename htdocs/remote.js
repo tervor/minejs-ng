@@ -157,7 +157,7 @@ function sendForm() {
     delivAmount =  document.getElementById('STamount').value 
     /* delivUser =  document.getElementById('STuserlist').value */
     /*document.sendScreen.submit();*/
-     document.getElementById('STatus').innerHTML = "Auftrag wird ausgeführt! ..einen klitze kleine moment bitte..."
+     document.getElementById('STatus').innerHTML = "Auftrag wird ausgef&uuml;hrt! ..einen klitze kleinen moment bitte..."
      document.getElementById('STatus').style.color = "yellow"
 	new Ajax.Request('index.php', {
 		parameters: $('sendScreen').serialize(true),
