@@ -10,7 +10,11 @@ var sys = require('sys'),
 	url = require('url'),
     util = require('util');
 
-console.log("minejs - Minecraft Server Wrapper")
+
+// Version number
+var version = "0.1";
+
+console.log("minejs " + version + " - Minecraft Server Wrapper")
 
 
 // Create minecraft server wrapper
@@ -21,11 +25,13 @@ mcserver.on('exit', function() {
 });
 
 mcserver.on('user_connect', function(user) {
-	console.log("User '" + user + "' has connected");
+	console.log("User '" + user + "' has connected to minecraft");
+	mcserver.tell(user, "This server runs minejs " + version);
+	mcserver.tell(user, "Enter '//help' for more information");
 });
 
 mcserver.on('user_disconnect', function(user) {
-	console.log("User '" + user + "' has disconnected");
+	console.log("User '" + user + "' has disconnected to minecraft");
 });
 
 mcserver.on('user_chat', function(user, text) {
@@ -50,9 +56,16 @@ mcserver.on('user_cmd', function(user, text) {
 // Create telnet server
 var telnetserver = require('./src/telnetserver.js').createTelnetServer();
 
-telnetserver.on('data', function(session, text) {
-	console.log("User '" + session.user + "' has issued command '" + text + "' via telnet");
+telnetserver.on('user_connect', function(session) {
+	console.log("User '" + session.user + "' has connected via telnet");
+});
 
+telnetserver.on('user_disconnect', function(session){
+	console.log("User '" + session.user + "' has disconnected via telnet");
+});
+
+telnetserver.on('user_data', function(session, text) {
+	console.log("User '" + session.user + "' has issued command '" + text + "' via telnet");
 	var ret = cmdhandler.parse_execute(session.user, 'telnet', text);
 	session.socket.write(ret + "\n");
 });

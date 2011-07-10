@@ -11,10 +11,14 @@ function Session(server, socket) {
 	this.socket = socket;
 	this.user = null;
 	
-	this.socket.write("Welcome to minejs, enter help for more information\n");
+	this.socket.write("Welcome to minejs, enter 'help' for more information\n");
 	this.socket.write("Please enter your username: ");
+	
 	this.socket.on('data', function(data) {
 		this.receive_line(data.toString('ascii').replace('\n', '').replace('\r', ''));
+	}.bind(this));
+	this.socket.on('close', function() {
+		this.server.emit('user_disconnect', this);
 	}.bind(this));
 	socket.on('end', function() {
 		// TODO anything to do?
@@ -24,8 +28,9 @@ function Session(server, socket) {
 Session.prototype.receive_line = function(line) {
 	if (this.user == null) {
 		this.user = line;
+		this.server.emit('user_connect', this);
 	} else {
-		this.server.emit('data', this, line);
+		this.server.emit('user_data', this, line);
 	}
 }
 
