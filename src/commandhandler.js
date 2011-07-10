@@ -3,6 +3,9 @@ var events = require('events');
 var util = require('util');
 var fs = require('fs');
 
+var config = require('../config.js').config;
+
+
 // The CommandHandler class implements all the advanced commands that can be
 // issued through the different interfaces (http, ingame, telnet) to the
 // minejs server.
@@ -39,7 +42,7 @@ CommandHandler.prototype.cmd_handlers = {
 	cmd_give: 		{	name: 'give', args: ['name', 'count'],
 						info: "Gives items" },
 	cmd_stack: 		{	name: 'stack', args: ['name', 'count'],
-						info: "Gives stacks of items" },
+						info: "Gives stacks" },
 	cmd_items: 		{	name: 'items', args: ['prefix'],
 						info: "List items with prefix" },
 	cmd_tp: 		{	name: 'tp', args: ['target'],
@@ -132,24 +135,40 @@ CommandHandler.prototype.cmd_status = function(user, mode, args) {
 }
 
 CommandHandler.prototype.cmd_give = function(user, mode, args) {
+	if (args.length == 1)
+		args.push(1);
 	if (args.length != 2)
 		return "invalid params";
 	var item = this.item_by_name_or_id(args[0]);
 	if (item == null)
 		return "invalid item";
-	for (var i = 0; i < args[1]; i++)
-		this.mcserver.give(user, item.id, item.stackable ? 64 : 0);
+	var left = args[1];
+	var stacks = 0;
+	while (left > 0) {
+		var num = left > item.amount ? item.amount : left;
+		console.log("left=" + left + " num=" + num);
+		this.mcserver.give(user, item.id, num);
+		left -= num;
+		stacks++;
+		if (stacks >= config.settings.max_stacks)
+			break;
+	}
 	return "success";
 }
 
 CommandHandler.prototype.cmd_stack = function(user, mode, args) {
+	if (args.length == 1)
+		args.push(1);
 	if (args.length != 2)
 		return "invalid params";
 	var item = this.item_by_name_or_id(args[0]);
 	if (item == null)
 		return "invalid item";
-	for (var i = 0; i < args[1]; i++)
-		this.mcserver.give(user, item.id, item.stackable ? 64 : 0);
+	var stacks = args[1];
+	if (stacks > config.settings.max_stacks)
+		stacks = config.settings.max_stacks;
+	for (var i = 0; i < stacks; i++)
+		this.mcserver.give(user, item.id, item.amount);
 	return "success";
 }
 
