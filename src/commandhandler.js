@@ -9,11 +9,10 @@ var config = require('../config.js').config;
 // The CommandHandler class implements all the advanced commands that can be
 // issued through the different interfaces (http, ingame, telnet) to the
 // minejs server.
-function CommandHandler(mcserver, userlist, whitelist, serverProperties) {
+function CommandHandler(mcserver, userlist, serverProperties) {
 	events.EventEmitter.call(this);
 	this.mcserver = mcserver;
 	this.userlist = userlist;
-	this.whitelist = whitelist;
 	this.serverProperties = serverProperties;
 	
 	// TODO this should move somewhere else, or to the JSON file itself
@@ -57,8 +56,6 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "Restarts the server" },
 	cmd_save: 		{	name: 'save', args: ['action'], role: 'superadmin',
 						info: "Save on/off" },
-	cmd_whitelist: 	{	name: 'whitelist', args: ['action', 'name'], role: 'admin',
-						info: "Edit whitelist" },
 	cmd_properties: {	name: 'properties', args: ['action', 'name', 'value'], role: 'superadmin',
 						info: "Edit server properties" },
 	cmd_user: 		{	name: 'user', args: ['action', 'name', 'value'], role: 'admin',
@@ -77,6 +74,9 @@ CommandHandler.prototype.parse_execute = function(user, mode, text) {
 }
 
 CommandHandler.prototype.execute = function(user, mode, cmd, args) {
+	for (var i = 0; i < args.length; i++)
+		if (args[i] == "")
+			return "invalid params";
 	for (var handler in this.cmd_handlers)
 		if (cmd == this.cmd_handlers[handler].name)
 			return this[handler](user, mode, args);
@@ -232,29 +232,6 @@ CommandHandler.prototype.cmd_save = function(user, mode, args) {
 	return "success";
 }
 
-CommandHandler.prototype.cmd_whitelist = function(user, mode, args) {
-	if (args.length < 1) {
-		args.push('');
-	}
-	switch (args[0]) {
-	case 'add':
-		if (args.length != 2)
-			return "invalid params";
-		this.whitelist.add(args[1]);
-		break;
-	case 'remove':
-		if (args.length != 2)
-			return "invalid params";
-		this.whitelist.remove(args[1]);
-		break;
-	default:
-		var text = this.whitelist.whitelist.join(', ');
-		var objs = this.whitelist.whitelist;
-		return this.return_by_mode(mode, text, text, objs);
-	}
-	return "success";
-}
-
 CommandHandler.prototype.cmd_properties = function(user, mode, args) {
 	if (args.length < 1) {
 		args.push('');
@@ -286,22 +263,45 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 		args.push('');
 	}
 	switch (args[0]) {
-	case 'set':
-		if (args.length != 3)
-			return "invalid params";
-		if (!this.serverProperties.set(args[1], args[2]))
-			return "invalid name";
-		break;
-	case 'get':
+	case 'add':
 		if (args.length != 2)
 			return "invalid params";
-		var value = this.serverProperties.get(args[1]);
-		return value == null ? "invalid name" : value;
+		var user = this.userlist.add(args[1]);
+		if (user == null)
+			return "user already exists";
+		this.userlist.save();
+		return "added user '" + args[1] + "'";
+	case 'remove':
+		if (args.length != 2)
+			return "invalid params";
+		var user = this.userlist.remove(args[1]);
+		if (user == null)
+			return "user '" + args[1] + "' does not exist";
+		this.userlist.save();
+		return "removed user '" + args[1] + "'";
+	case 'role':
+		if (args.length != 3)
+			return "invalid params";
+		var user = this.userlist.userByName(args[1]);
+		if (user == null)
+			return "user '" + args[1] + "' does not exist";
+		if (!(args[2] in this.userlist.roles))
+			return "'" + args[2] + "' is not a valid role";
+		user.role = args[2];
+		this.userlist.save();
+		return "changed role for user '" + args[1] + "' to '" + args[2] + "'";
+	case 'password':
+		if (args.length != 3)
+			return "invalid params";
+		var user = this.userlist.userByName(args[1]);
+		if (user == null)
+			return "user '" + args[1] + "' does not exist";
+		user.password = args[2];
+		this.userlist.save();
+		return "changed password for user '" + args[1] + "'";
 	default:
-		var text = "";
-		for (var property in this.serverProperties.properties)
-			text += property + "=" + this.serverProperties.properties[property] + "\n";
-		var objs = this.serverProperties.properties;
+		var text = this.userlist.userNames().join(', ');
+		var objs = this.userlist.users;
 		return this.return_by_mode(mode, text, text, objs);
 	}
 	return "success";
@@ -322,8 +322,8 @@ CommandHandler.prototype.return_by_mode = function(mode, console, telnet, web)
 }
 
 // Creates a command handler
-function createCommandHandler(mcserver, userlist, whitelist, serverProperties) {
-	return new CommandHandler(mcserver, userlist, whitelist, serverProperties);
+function createCommandHandler(mcserver, userlist, serverProperties) {
+	return new CommandHandler(mcserver, userlist, serverProperties);
 }
 
 module.exports.createCommandHandler = createCommandHandler;

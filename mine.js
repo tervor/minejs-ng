@@ -17,14 +17,11 @@ console.log("minejs " + version + " - Minecraft Server Wrapper")
 // Create user list
 var userlist = require('./src/userlist.js').createUserList();
 
-// Create white list
-var whitelist = require('./src/whitelist.js').createWhiteList();
-
 // Create server properties
 var serverProperties = require('./src/serverproperties.js').createServerProperties();
 
 // Create command handler
-var commandHandler = require('./src/commandhandler.js').createCommandHandler(mcserver, userlist, whitelist, serverProperties);
+var commandHandler = require('./src/commandhandler.js').createCommandHandler(mcserver, userlist, serverProperties);
 
 
 // Create minecraft server wrapper
@@ -68,6 +65,9 @@ var telnetserver = require('./src/telnetserver.js').createTelnetServer();
 
 telnetserver.on('user_connect', function(session) {
 	console.log("User '" + session.user + "' has connected via telnet");
+	if (userlist.userByName(session.user) == null) {
+		session.socket.end("Unknown user!\n");
+	}
 });
 
 telnetserver.on('user_disconnect', function(session){
@@ -104,7 +104,7 @@ http.createServer(function (req, res) {
 			}
 		}
 		
-		var ret = cmdhandler.execute(user, 'web', cmd, args);
+		var ret = commandHandler.execute(user, 'web', cmd, args);
 		res.end(JSON.stringify(ret));
 	}
 }).listen(config.web.port);

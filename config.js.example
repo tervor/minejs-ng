@@ -23,6 +23,8 @@ var config = {
 	
 	// Game related settings
 	settings: {
+		admin_password: 'minejs',
+		default_password: 'changeme',
 		max_stacks: 16,
 	},
 	
