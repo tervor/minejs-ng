@@ -40,13 +40,13 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "Tells user something" },
 	cmd_users: 		{	name: "users", args: [], role: 'guest',
 						info: "Shows user list" }, 
+	cmd_items: 		{	name: 'items', args: ['prefix'], role: 'guest',
+						info: "List items with prefix" },
 	// User commands
 	cmd_give: 		{	name: 'give', args: ['name', 'count'], role: 'user',
 						info: "Gives items" },
 	cmd_stack: 		{	name: 'stack', args: ['name', 'count'], role: 'user',
 						info: "Gives stacks" },
-	cmd_items: 		{	name: 'items', args: ['prefix'], role: 'user',
-						info: "List items with prefix" },
 	cmd_tp: 		{	name: 'tp', args: ['target'], role: 'user',
 	 					info: "Teleport to target" },
 	// Admin commands
@@ -159,6 +159,20 @@ CommandHandler.prototype.cmd_users = function(user, mode, args) {
 	return this.return_by_mode(mode, text, text, objs);
 }
 
+CommandHandler.prototype.cmd_items = function(user, mode, args) {
+	var text = "";
+	var objs = [];
+	for (var i = 0; i < this.items.length; i++) {
+		var item = this.items[i];
+		if (args.length > 0)
+			if (item.name.substr(0, args[0].length) != args[0])
+				continue;
+		text += item.name + " (" + item.id + ")\n";
+		objs.push({ id: item.id, name: item.name, info: item.info, amount: item.amount });
+	}
+	return this.return_by_mode(mode, text, text, objs);
+}
+
 // User commands ------------------------------------------------------------
 
 CommandHandler.prototype.cmd_give = function(user, mode, args) {
@@ -201,20 +215,6 @@ CommandHandler.prototype.cmd_stack = function(user, mode, args) {
 	for (var i = 0; i < stacks; i++)
 		this.mcserver.give(user.name, item.id, item.amount);
 	return "success";
-}
-
-CommandHandler.prototype.cmd_items = function(user, mode, args) {
-	var text = "";
-	var objs = [];
-	for (var i = 0; i < this.items.length; i++) {
-		var item = this.items[i];
-		if (args.length > 0)
-			if (item.name.substr(0, args[0].length) != args[0])
-				continue;
-		text += item.name + " (" + item.id + ")\n";
-		objs.push({ id: item.id, name: item.name, info: item.info, amount: item.amount });
-	}
-	return this.return_by_mode(mode, text, text, objs);
 }
 
 CommandHandler.prototype.cmd_tp = function(user, mode, args) {
