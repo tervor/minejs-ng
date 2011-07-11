@@ -1,0 +1,25 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="utf-8">
+   <title>jQuery demo</title>
+    <style>
+    .hover { font-weight: bold; }
+ </style>
+    <script src="lib/jquery.js"></script>
+   <script>
+     $(document).ready(function(){
+
+       $("#arschlochsauscheisssdreckfickkack").hover(function(event){
+             $('#arschlochsauscheisssdreckfickkack').toggleClass("hover", true);
+         event.preventDefault();
+       });
+     });
+   </script>
+ 
+ </head>
+ <body>
+   <a id="arschlochsauscheisssdreckfickkack" href="http://jquery.com/">jQuery</a>
+
+ </body>
+ </html>
