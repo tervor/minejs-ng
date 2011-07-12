@@ -33,6 +33,12 @@ var serverProperties = require('./src/serverproperties.js').createServerProperti
 // Create minecraft server wrapper
 var mcserver = require('./src/mcserver.js').createMCServer();
 
+mcserver.on('data', function(data) {
+	log.info("minecraft: " + this.recv);
+	for (var i = 0; i < monitorSessions.length; i++)
+		monitorSessions[i].socket.write(data + "\n");
+});
+
 mcserver.on('exit', function() {
 	process.exit(0);
 });
@@ -69,9 +75,15 @@ mcserver.on('user_cmd', function(user, text) {
 // Create telnet server
 var telnetserver = require('./src/telnetserver.js').createTelnetServer();
 
+// List of telnet monitor sessions
+var monitorSessions = [];
+
 telnetserver.on('user_connect', function(session) {
 	log.info("User '" + session.user + "' has connected via telnet");
-	if (userlist.userByName(session.user) == null) {
+	if (session.user == "monitor") {
+		session.socket.write("Monitoring minecraft server\n");
+		monitorSessions.push(session);
+	} else if (userlist.userByName(session.user) == null) {
 		session.socket.end("Unknown user!\n");
 	}
 });
@@ -81,13 +93,25 @@ telnetserver.on('user_disconnect', function(session){
 });
 
 telnetserver.on('user_data', function(session, text) {
-	log.info("User '" + session.user + "' has issued command '" + text + "' via telnet");
 	if (text == "exit") {
 		session.socket.end("Terminating\n");
 		return;
 	}
+
+	if (session.user == "monitor") {
+		mcserver.process.stdin.write(text + "\n");
+		return;
+	}
+	
+	log.info("User '" + session.user + "' has issued command '" + text + "' via telnet");
 	var ret = commandHandler.parse_execute(session.user, 'telnet', text);
 	session.socket.write(ret + "\n");
+});
+
+telnetserver.on('end', function(session) {
+	log.debug("closing telnet client");
+	if (session.user == "monitor")
+		monitorSessions.splice(monitorSessions.indexOf(session), 1);
 });
 
 

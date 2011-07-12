@@ -21,7 +21,7 @@ function Session(server, socket) {
 		this.server.emit('user_disconnect', this);
 	}.bind(this));
 	socket.on('end', function() {
-		// TODO anything to do?
+		this.server.emit('end', this);
 	}.bind(this));
 }
 

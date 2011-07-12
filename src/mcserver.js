@@ -198,7 +198,7 @@ MCServer.prototype.receive = function(data) {
 
 // Called for every new received line from the server's STDOUT and STDERR
 MCServer.prototype.receive_line = function(line) {
-	log.info("minecraft: " + this.recv);
+	this.emit('data', this.recv);
 	
 	// Check log handlers for matches
 	for (handler in this.log_handlers) {
