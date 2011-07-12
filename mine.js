@@ -175,10 +175,3 @@ process.on('SIGKILL', on_signal);
 function on_signal() {
 	mcserver.stop();
 }
-
-
-
-var counter = 1;
-setInterval(function() {
-	mcserver.say(counter++);
-}, 10000);
