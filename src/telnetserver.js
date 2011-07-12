@@ -21,7 +21,7 @@ function Session(server, socket) {
 		this.server.emit('user_disconnect', this);
 	}.bind(this));
 	socket.on('end', function() {
-		// TODO anything to do?
+		this.server.emit('end', this);
 	}.bind(this));
 }
 
@@ -53,7 +53,7 @@ TelnetServer.prototype.start = function() {
 	if (this.running)
 		return;
 		
-	console.log("Starting telnet server on port " + config.telnet.port);
+	log.info("Starting telnet server on port " + config.telnet.port);
 	
 	this.reset();
 	this.running = true;

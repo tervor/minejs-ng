@@ -6,12 +6,29 @@ var sys = require('sys'),
 	url = require('url'),
     util = require('util');
 
-var config = require('./config.js').config;
+// TODO move to utils or something
+Array.prototype.has = function(v) {
+	for (i = 0; i < this.length; i++)
+		if (this[i] == v) return true;
+	return false;
+}
 
 // Version number
-var version = "0.1";
+var version = "0.0.1";
 
-console.log("minejs " + version + " - Minecraft Server Wrapper")
+// Load configuration
+var config = require('./config.js').config;
+
+// Create global logger
+var Log = require('./src/log.js');
+log = new Log(config.log.level, fs.createWriteStream(config.log.file));
+log.on('log', function(level, str) {
+	console.log(str);
+});
+
+
+
+log.info("minejs " + version + " - Minecraft Server Wrapper")
 
 
 // Create user list
@@ -23,26 +40,32 @@ var serverProperties = require('./src/serverproperties.js').createServerProperti
 // Create minecraft server wrapper
 var mcserver = require('./src/mcserver.js').createMCServer();
 
+mcserver.on('data', function(data) {
+	log.info("minecraft: " + this.recv);
+	for (var i = 0; i < monitorSessions.length; i++)
+		monitorSessions[i].socket.write(data + "\n");
+});
+
 mcserver.on('exit', function() {
 	process.exit(0);
 });
 
 mcserver.on('user_connect', function(user) {
-	console.log("User '" + user + "' has connected to minecraft");
+	log.info("User '" + user + "' has connected to minecraft");
 	mcserver.tell(user, "This server runs minejs " + version);
 	mcserver.tell(user, "Enter '//help' for more information");
 });
 
 mcserver.on('user_disconnect', function(user) {
-	console.log("User '" + user + "' has disconnected to minecraft");
+	log.info("User '" + user + "' has disconnected to minecraft");
 });
 
 mcserver.on('user_chat', function(user, text) {
-	console.log("User '" + user + "' has said '" + text + "'");
+	log.info("User '" + user + "' has said '" + text + "'");
 });
 
 mcserver.on('user_cmd', function(user, text) {
-	console.log("User '" + user + "' has issued command '" + text + "' via console");
+	log.info("User '" + user + "' has issued command '" + text + "' via console");
 
 	// Command starts with a / character, otherwise it's invalid
 	if (text.charAt(0) == '/') {
@@ -59,25 +82,42 @@ mcserver.on('user_cmd', function(user, text) {
 // Create telnet server
 var telnetserver = require('./src/telnetserver.js').createTelnetServer();
 
+// List of telnet monitor sessions
+var monitorSessions = [];
+
 telnetserver.on('user_connect', function(session) {
-	console.log("User '" + session.user + "' has connected via telnet");
-	if (userlist.userByName(session.user) == null) {
+	log.info("User '" + session.user + "' has connected via telnet");
+	if (session.user == "monitor") {
+		session.socket.write("Monitoring minecraft server\n");
+		monitorSessions.push(session);
+	} else if (userlist.userByName(session.user) == null) {
 		session.socket.end("Unknown user!\n");
 	}
 });
 
 telnetserver.on('user_disconnect', function(session){
-	console.log("User '" + session.user + "' has disconnected via telnet");
+	log.info("User '" + session.user + "' has disconnected via telnet");
 });
 
 telnetserver.on('user_data', function(session, text) {
-	console.log("User '" + session.user + "' has issued command '" + text + "' via telnet");
 	if (text == "exit") {
 		session.socket.end("Terminating\n");
 		return;
 	}
+
+	if (session.user == "monitor") {
+		mcserver.process.stdin.write(text + "\n");
+		return;
+	}
+	
+	log.info("User '" + session.user + "' has issued command '" + text + "' via telnet");
 	var ret = commandHandler.parse_execute(session.user, 'telnet', text);
 	session.socket.write(ret + "\n");
+});
+
+telnetserver.on('end', function(session) {
+	if (session.user == "monitor")
+		monitorSessions.splice(monitorSessions.indexOf(session), 1);
 });
 
 
@@ -135,10 +175,3 @@ process.on('SIGKILL', on_signal);
 function on_signal() {
 	mcserver.stop();
 }
-
-
-
-var counter = 1;
-setInterval(function() {
-	mcserver.say(counter++);
-}, 10000);

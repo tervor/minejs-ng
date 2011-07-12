@@ -49,13 +49,13 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "Gives stacks" },
 	cmd_tp: 		{	name: 'tp', args: ['target'], role: 'user',
 	 					info: "Teleport to target" },
+	cmd_user: 		{	name: 'user', args: ['action', 'name', 'value'], role: 'user',
+						info: "Edit user list" },
 	// Admin commands
 	cmd_status: 	{	name: "status", args: [], role: 'admin',
 						info: "Shows server status" },
 	cmd_restart: 	{	name: 'restart', args: [], role: 'admin',
 						info: "Restarts the server" },
-	cmd_user: 		{	name: 'user', args: ['action', 'name', 'value'], role: 'admin',
-						info: "Edit user list" },
 	// Superadmin commands
 	cmd_save: 		{	name: 'save', args: ['action'], role: 'superadmin',
 						info: "Save on/off" },
@@ -189,7 +189,6 @@ CommandHandler.prototype.cmd_give = function(user, mode, args) {
 	var stacks = 0;
 	while (left > 0) {
 		var num = left > item.amount ? item.amount : left;
-		console.log("left=" + left + " num=" + num);
 		this.mcserver.give(user.name, item.id, num);
 		left -= num;
 		stacks++;
@@ -259,9 +258,18 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 	case 'remove':
 		if (args.length != 2)
 			return "invalid params";
-		var removeduser = this.userlist.remove(args[1]);
-		if (removeduser == null)
+		var removeuser = this.userlist.userByName(args[1]);
+		if (removeuser == null)
 			return "user '" + args[1] + "' does not exist";
+		var permission = false;
+		switch (user.role) {
+		case 'user': permission = ['guest'].has(removeuser.role); break;
+		case 'admin': permission = ['guest', 'user'].has(removeuser.role); break;
+		case 'superadmin': permission = true; break;
+		}
+		if (!permission)
+			return "no permission to remove user with '" + removeuser.role + "' role"
+		this.userlist.remove(args[1]);
 		this.userlist.save();
 		return "removed user '" + args[1] + "'";
 	case 'role':
@@ -270,13 +278,20 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 		var changeuser = this.userlist.userByName(args[1]);
 		if (changeuser == null)
 			return "user '" + args[1] + "' does not exist";
-		if (!(args[2] in this.userlist.roles))
-			return "'" + args[2] + "' is not a valid role";
-		if (!user.hasRole(args[2]))
-			return "no permission to set role '" + args[2] + "'";
-		changeuser.role = args[2];
+		var role = args[2];
+		if (!(role in this.userlist.roles))
+			return "'" + role + "' is not a valid role";
+		var permission = false;
+		switch (user.role) {
+		case 'user': permission = ['guest'].has(role); break;
+		case 'admin': permission = ['guest', 'user'].has(role); break;
+		case 'superadmin': permission = true;
+		}
+		if (!permission)
+			return "no permission to set role '" + role + "'";
+		changeuser.role = role;
 		this.userlist.save();
-		return "changed role for user '" + args[1] + "' to '" + args[2] + "'";
+		return "changed role for user '" + changeuser.name + "' to '" + role + "'";
 	case 'password':
 		if (args.length != 3)
 			return "invalid params";
@@ -289,7 +304,10 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 		this.userlist.save();
 		return "changed password for user '" + args[1] + "'";
 	default:
-		var text = this.userlist.userNames().join(', ');
+		var text = "";
+		for (key in this.userlist.users)
+			text += this.userlist.users[key].name + " (" + this.userlist.users[key].role + "), ";
+		text = text.substr(0, text.length - 2);
 		var objs = this.userlist.users;
 		return this.return_by_mode(mode, text, text, objs);
 	}

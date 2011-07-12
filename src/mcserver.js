@@ -52,7 +52,7 @@ MCServer.prototype.start = function() {
 	this.running = true;
 
 	var args = config.server.java_args.concat(['-jar', config.server.jar]).concat(config.server.server_args);
-	console.log('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
+	log.info('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
 
 	// Spawn the child process
 	this.process = spawn(config.server.java, args, { cwd: config.server.dir });
@@ -68,13 +68,13 @@ MCServer.prototype.start = function() {
 	// Check for exit
 	this.process.on('exit', function(code) {
 		this.running = false;
-	    console.log("Minecraft server terminated (code=" + code + ")");
+	    log.info("Minecraft server terminated (code=" + code + ")");
 		if (this.terminate) {
 			// Server terminated on user request
 			this.emit('exit');
 		} else {
 			// Server terminated unexpectedly -> restart
-			console.log("Minecraft server terminated unexpectedly -> restarting server");
+			log.info("Minecraft server terminated unexpectedly -> restarting server");
 			this.start();
 		}
 	}.bind(this));
@@ -90,7 +90,7 @@ MCServer.prototype.stop = function() {
 	if (!this.running)
 		return;
 		
-	console.log('Stopping minecraft server');
+	log.info('Stopping minecraft server');
 	this.running = false;
 	this.terminate = true;
 	this.process.stdin.write("\nstop\n");
@@ -101,7 +101,7 @@ MCServer.prototype.restart = function() {
 	if (!this.running)
 		return;
 		
-	console.log('Restarting minecraft server');
+	log.info('Restarting minecraft server');
 	this.running = false;
 	this.process.stdin.write("\nstop\n");
 }
@@ -198,7 +198,7 @@ MCServer.prototype.receive = function(data) {
 
 // Called for every new received line from the server's STDOUT and STDERR
 MCServer.prototype.receive_line = function(line) {
-	console.log("minecraft: " + this.recv);
+	this.emit('data', this.recv);
 	
 	// Check log handlers for matches
 	for (handler in this.log_handlers) {

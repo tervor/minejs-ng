@@ -29,6 +29,12 @@ var config = {
 		max_stacks: 16,
 	},
 	
+	// Logging related settings
+	log: {
+		level: 'info',
+		file: 'minejs.log'
+	},
+	
 };
 
 

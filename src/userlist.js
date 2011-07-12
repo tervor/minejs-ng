@@ -31,14 +31,14 @@ User.prototype.hasRole = function(role) {
 }
 
 function UserList() {
-	this.users = [];
+	this.users = {};
 	this.filenameUserList = config.server.dir + '/user-list.json';
 	this.filenameWhiteList = config.server.dir + '/white-list.txt';
 	this.load();
 	this.save();
-	//this.updateFromPlayerDat();
+	this.updateFromPlayerDat();
 	
-	console.log(util.inspect(this.users));
+	log.debug(util.inspect(this.users));
 }
 
 // All available user roles
@@ -124,24 +124,23 @@ UserList.prototype.updateFromPlayerDat = function() {
 			// Skip _tmp_.dat file
 			if (file == '_tmp_.dat')
 			 	continue;
-			{
+			(function() {
 				// Check if user exists
 				var name = files[i].substr(0, files[i].length - 4);
 				var user = this.userByName(name);
 				if (user == null)
-					continue;
+					return;
 				// Read NBT file
-				var self = this;
 				fs.readFile(playerDir + file, function(error, data) {
 					// Parse NBT file
 					nbt.parse(data, function(error, result) {
 						// Update position
 						user.pos = result.Pos;
-						console.log(user.name + " pos: " + user.pos);
-						self.save();
-					}.bind(user));
-				}.bind(user));
-			}
+						log.debug(user.name + " pos: " + user.pos);
+						this.save();
+					}.bind(this));
+				}.bind(this));
+			}.bind(this))();
 		}
 	}.bind(this));
 }
