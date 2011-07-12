@@ -189,7 +189,6 @@ CommandHandler.prototype.cmd_give = function(user, mode, args) {
 	var stacks = 0;
 	while (left > 0) {
 		var num = left > item.amount ? item.amount : left;
-		console.log("left=" + left + " num=" + num);
 		this.mcserver.give(user.name, item.id, num);
 		left -= num;
 		stacks++;

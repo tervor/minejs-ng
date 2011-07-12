@@ -6,12 +6,22 @@ var sys = require('sys'),
 	url = require('url'),
     util = require('util');
 
+var Log = require('./src/log.js');
+
+// Create global logger
+log = new Log(Log.DEBUG, fs.createWriteStream('minejs.log'));
+log.on('log', function(level, str) {
+	console.log(str);
+})
+
+log.info("just some logging ...");
+
 var config = require('./config.js').config;
 
 // Version number
 var version = "0.1";
 
-console.log("minejs " + version + " - Minecraft Server Wrapper")
+log.info("minejs " + version + " - Minecraft Server Wrapper")
 
 
 // Create user list
@@ -28,21 +38,21 @@ mcserver.on('exit', function() {
 });
 
 mcserver.on('user_connect', function(user) {
-	console.log("User '" + user + "' has connected to minecraft");
+	log.info("User '" + user + "' has connected to minecraft");
 	mcserver.tell(user, "This server runs minejs " + version);
 	mcserver.tell(user, "Enter '//help' for more information");
 });
 
 mcserver.on('user_disconnect', function(user) {
-	console.log("User '" + user + "' has disconnected to minecraft");
+	log.info("User '" + user + "' has disconnected to minecraft");
 });
 
 mcserver.on('user_chat', function(user, text) {
-	console.log("User '" + user + "' has said '" + text + "'");
+	log.info("User '" + user + "' has said '" + text + "'");
 });
 
 mcserver.on('user_cmd', function(user, text) {
-	console.log("User '" + user + "' has issued command '" + text + "' via console");
+	log.info("User '" + user + "' has issued command '" + text + "' via console");
 
 	// Command starts with a / character, otherwise it's invalid
 	if (text.charAt(0) == '/') {
@@ -60,18 +70,18 @@ mcserver.on('user_cmd', function(user, text) {
 var telnetserver = require('./src/telnetserver.js').createTelnetServer();
 
 telnetserver.on('user_connect', function(session) {
-	console.log("User '" + session.user + "' has connected via telnet");
+	log.info("User '" + session.user + "' has connected via telnet");
 	if (userlist.userByName(session.user) == null) {
 		session.socket.end("Unknown user!\n");
 	}
 });
 
 telnetserver.on('user_disconnect', function(session){
-	console.log("User '" + session.user + "' has disconnected via telnet");
+	log.info("User '" + session.user + "' has disconnected via telnet");
 });
 
 telnetserver.on('user_data', function(session, text) {
-	console.log("User '" + session.user + "' has issued command '" + text + "' via telnet");
+	log.info("User '" + session.user + "' has issued command '" + text + "' via telnet");
 	if (text == "exit") {
 		session.socket.end("Terminating\n");
 		return;

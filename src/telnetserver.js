@@ -53,7 +53,7 @@ TelnetServer.prototype.start = function() {
 	if (this.running)
 		return;
 		
-	console.log("Starting telnet server on port " + config.telnet.port);
+	log.info("Starting telnet server on port " + config.telnet.port);
 	
 	this.reset();
 	this.running = true;
