@@ -6,6 +6,13 @@ var sys = require('sys'),
 	url = require('url'),
     util = require('util');
 
+// TODO move to utils or something
+Array.prototype.has = function(v) {
+	for (i = 0; i < this.length; i++)
+		if (this[i] == v) return true;
+	return false;
+}
+
 // Version number
 var version = "0.0.1";
 
@@ -109,7 +116,6 @@ telnetserver.on('user_data', function(session, text) {
 });
 
 telnetserver.on('end', function(session) {
-	log.debug("closing telnet client");
 	if (session.user == "monitor")
 		monitorSessions.splice(monitorSessions.indexOf(session), 1);
 });

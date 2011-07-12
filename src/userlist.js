@@ -31,7 +31,7 @@ User.prototype.hasRole = function(role) {
 }
 
 function UserList() {
-	this.users = [];
+	this.users = {};
 	this.filenameUserList = config.server.dir + '/user-list.json';
 	this.filenameWhiteList = config.server.dir + '/white-list.txt';
 	this.load();
