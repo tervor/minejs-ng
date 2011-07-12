@@ -1,47 +1,44 @@
 body {
     text-align: left;
-    margin: 20 ;
+    margin: 20;
     margin-top: 8px;
     color: #c7c7c7;
-    font-family: verdana, arial; 
+    font-family: verdana, arial;
     /*background: #18130f url('../../icons/bgtop.png') repeat-x;*/
 }
-
-
-
 
 .STlabel {
     width: 100px;
     float: left;
-    padding-left:20px;
+    padding-left: 20px;
 }
 
 .STinput {
     width: 300px;
-    float: clear;
 }
 
 .spaceHR {
-    border:0px;
-    height:0px;
+    border: 0px;
+    height: 0px;
 }
 
 .IDlabel {
-    font-size:12px;
-    line-height:18px;
+    font-size: 12px;
+    line-height: 18px;
 }
 
 .Namelabel {
     padding: 3%;
-    font-size:10px;
-    line-height:10px;
+    font-size: 10px;
+    line-height: 10px;
     text-align: center;
 
 }
+
 .GridBox {
     cursor: pointer;
-    width:85px;
-    height:85px;
+    width: 85px;
+    height: 85px;
     float: left;
     padding: 2px;
     border: 1px solid #151515;
@@ -51,13 +48,15 @@ body {
 
 
 
+
 .ItemGridBox {
     cursor: pointer;
     background-color: #2f2f2f;
     border: 1px solid #151515;
     opacity: .7;
 }
-.ItemGridBoxHover {
+
+#GridBox:hover  {
     background-color: #3c443a;
     border: 1px solid green;
     opacity: 1;
@@ -68,6 +67,7 @@ body {
     border: 1px solid #151515;
     opacity: .7;
 }
+
 .ScriptGridBoxHover {
     background-color: #443a3a;
     border: 1px solid red;
@@ -80,6 +80,7 @@ body {
     border: 1px solid #151515;
     opacity: .7;
 }
+
 .TeleportGridBoxHover {
     background-color: #3a3b44;
     border: 1px solid blue;
@@ -87,159 +88,169 @@ body {
 }
 
 .STicon {
-    width:32px;
-    height:32px;
+    width: 32px;
+    height: 32pxs;
 }
 
 .STiconHover {
-    width:64px;
-    height:64px;
+    width: 64px;
+    height: 64px;
 }
 
-
-
-
-
-.incdecbuttonbox {
-    float:left;
-
-    width:20%;
-    height:20%;
-    padding:0;
-    font-size:10px; 
-    border:0; 
-    font-width:600;
-    vertical-align:middle;
-    text-align:center;
+.ctlPlMi {
+    float: left;
+    width: 20%;
+    height: 20%;
+    padding: 0;
+    font-size: 10px;
+    border: 0;
+    vertical-align: middle;
+    text-align: center;
     cursor: crosshair;
-    color:#fff; 
+
+    background-color: #2f2f2f;
+
 }
 
-.incdecbuttonboxHOVER {
-    float:left;
-    background-color:gray;
-    width:20%;
-    height:20%;
-    padding:0;
-    font-size:11px;
-    font-weight: bolder; 
-    border:1; 
-    font-width:600;
-    vertical-align:middle;
-    text-align:center;
+#ctlMinus, #ctlPlus {
+    opacity: .4;
+}
+
+#ctlMinus:hover {
+    float: left;
+    background-color: gray;
+    width: 20%;
+    height: 20%;
+    padding: 0;
+    font-size: 11px;
+    font-weight: bolder;
+    border: 1;
+    vertical-align: middle;
+    text-align: center;
     cursor: crosshair;
-    visibility:visible;
+    visibility: visible;
     -moz-border-radius: 2px;
     border-radius: 2px;
-    color:#fff;
+    color: #fff;
+        visibility: visible;
 }
-
-
+#ctlPlus:hover {
+    float: left;
+    background-color: gray;
+    width: 20%;
+    height: 20%;
+    padding: 0;
+    font-size: 11px;
+    font-weight: bolder;
+    border: 1;
+    vertical-align: middle;
+    text-align: center;
+    cursor: crosshair;
+    visibility: visible;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    color: #fff;
+            visibility: visible;
+}
 
 .incdecinputbox {
     color: white;
-    float:left;
-    font-size:11px;
-    background-color:transparent;
-    height:20%;
-    width:60%;
-    border:0;
-    vertical-align:middle;
+    float: left;
+    font-size: 11px;
+    background-color: transparent;
+    height: 20%;
+    width: 60%;
+    border: 1;
+    vertical-align: middle;
     font-weight: bold;
-    text-align:center;
+    text-align: center;
 }
 
-.StatusText { 
+.StatusText {
     text-shadow: #000 2px -2px 1px, #ffa500 -0.1em 0.1em 0.1em, #cc6600 -1px -2px 0px;
     color: #ffff00;
- 
+
     font-weight: 600;
     font-size: 20px;
-    float:left;
+    float: left;
 
     padding-left: 100px;
     padding-right: 10px;
     padding-top: 3px;
-    padding-bottom:10px;
-    -webkit-transform: rotate(-2deg); 
+    padding-bottom: 10px;
+    -webkit-transform: rotate(-2deg);
     -moz-transform: rotate(-2deg);
     -o-transform: rotate(-2deg);
-    transform: rotate(-2deg); 
+    transform: rotate(-2deg);
 }
 
 .titleLink {
-    text-decoration:none; 
-    color:#fff; 
-    font-weight:bold;
-    padding-left:13px;
-    float: left; 
-}
-
-
-a {
-    color: lime;
-    text-decoration:none;
-}
-
-
-.McTopNavigation  {
-    padding-top: 3px;
-    width:100%;
-    height:20px;
-    clear:both;
-    float:none;
-}
-
-.navDivBtn {
-    color:lime;
-    font-size:12px;
-    font-weight:bolder;
-    background-color:transparent;
-    width:10%;
-    height:16px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    padding-left: 13px;
     float: left;
 }
 
+a {
+    color: lime;
+    text-decoration: none;
+}
 
+.McTopNavigation {
+    padding-top: 3px;
+    width: 100%;
+    height: 20px;
+    clear: both;
+    float: none;
+}
+
+.navDivBtn {
+    color: lime;
+    font-size: 12px;
+    font-weight: bolder;
+    background-color: transparent;
+    width: 10%;
+    height: 16px;
+    float: left;
+}
 
 .maintcontentbox {
-    width:320px;
-    height:320px;
-    padding:16px;
-    float:left;
+    width: 320px;
+    height: 320px;
+    padding: 16px;
+    float: left;
     background-color: #2f2f2f;
     border: 3px solid #726551;
-    margin:3px;
+    margin: 3px;
     box-shadow: inset 0 0 100px 1px #151515;
-
     -moz-border-radius: 20px;
     -o-border-radius: 20px;
     border-radius: 20px;
-    -webkit-transform: rotate(2deg); 
+    -webkit-transform: rotate(2deg);
     -moz-transform: rotate(2deg);
     -o-transform: rotate(2deg);
-    transform: rotate(2deg); 
+    transform: rotate(2deg);
 }
 
 .topface, .rightface, .leftface {
-    position : absolute ;
+    position: absolute;
 }
 
-.topface div {	
+.topface div {
     -webkit-transform: skew(0deg, -30deg) scale(1, 1.16);
     -moz-transform: skew(0deg, -30deg) scale(1, 1.16);
-       -o-transform: skew(0deg, -30deg) scale(1, 1.16);
-    background: -moz-linear-gradient(-90deg,#F8F9F9,#2f2f2f);
+    -o-transform: skew(0deg, -30deg) scale(1, 1.16);
+    background: -moz-linear-gradient(-90deg, #F8F9F9, #2f2f2f);
     background: -webkit-gradient(linear, left top, left bottom, from(#726551), to(#2f2f2f));
     font-size: 0.862em;
-    padding : 10px ;
+    padding: 10px;
     width: 200px;
     height: 200px;
-    background-image:url(bigdirt.png) ;
+    background-image: url(bigdirt.png);
     background-repeat: no-repeat;
     background-size: 100%;
     box-shadow: inset 0px 5px 150px 20px #151515;
-
 
 }
 
@@ -247,22 +258,22 @@ a {
     -webkit-transform: rotate(60deg);
     -moz-transform: rotate(60deg);
     -o-transform: rotate(60deg);
-    left: 130px;	
+    left: 130px;
     padding: 10px;
-    top :65px ;
+    top: 65px;
 }
 
-.rightface div {	
+.rightface div {
     -webkit-transform: skew(0deg, -30deg) scale(1, 1.16);
     -moz-transform: skew(0deg, -30deg) scale(1, 1.16);
     -o-transform: skew(0deg, -30deg) scale(1, 1.16);
-    background: -moz-linear-gradient(#726551,#2f2f2f);
+    background: -moz-linear-gradient(#726551, #2f2f2f);
     background: -webkit-gradient(linear, left top, left bottom, from(#726551), to(#2f2f2f));
     font-size: 0.862em;
-    padding : 10px ;
+    padding: 10px;
     width: 200px;
     height: 200px;
-    background-image:url(bigdirt.png) ;
+    background-image: url(bigdirt.png);
     background-repeat: no-repeat;
     background-size: 100%;
     box-shadow: inset -60px -60px 150px 40px #151515;
@@ -271,79 +282,56 @@ a {
 }
 
 .rightface {
-    left: 240px;	
+    left: 240px;
     padding: 10px;
-    top : 258px ;
+    top: 258px;
 }
 
-.leftface div {	
+.leftface div {
     -webkit-transform: skew(0deg, 30deg) scale(1, 1.16);
     -moz-transform: skew(0deg, 30deg) scale(1, 1.16);
     -o-transform: skew(0deg, 30deg) scale(1, 1.16);
-    background: -moz-linear-gradient(-60deg,#726551,#2f2f2f);
+    background: -moz-linear-gradient(-60deg, #726551, #2f2f2f);
     background: -webkit-gradient(linear, left top, left bottom, from(#726551), to(#2f2f2f));
     font-size: 0.862em;
-    padding : 10px ;
+    padding: 10px;
     width: 200px;
     height: 200px;
-    background-image:url(bigdirt.png) ;
+    background-image: url(bigdirt.png);
     background-repeat: no-repeat;
     background-size: 100%;
     box-shadow: inset 0px 5px 150px 80px #151515;
 }
 
 .leftface {
-    left: 18px;	
+    left: 18px;
     padding: 10px;
-    top : 258px ;
+    top: 258px;
 }
-
 
 .leftface div:hover, .rightface div:hover, .topface div:hover {
-    background-image:url(stone.png);
+    background-image: url(stone.png);
     background-color: gray;
-} 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.topface2, .rightface2, .leftface2 {
-    position : absolute ;
 }
 
-.topface2 div {	
+.topface2, .rightface2, .leftface2 {
+    position: absolute;
+}
+
+.topface2 div {
     -webkit-transform: skew(0deg, -30deg) scale(1, 1.16);
     -moz-transform: skew(0deg, -30deg) scale(1, 1.16);
-       -o-transform: skew(0deg, -30deg) scale(1, 1.16);
-    background: -moz-linear-gradient(-90deg,#F8F9F9,#2f2f2f);
+    -o-transform: skew(0deg, -30deg) scale(1, 1.16);
+    background: -moz-linear-gradient(-90deg, #F8F9F9, #2f2f2f);
     background: -webkit-gradient(linear, left top, left bottom, from(#726551), to(#2f2f2f));
     font-size: 0.862em;
-    padding : 10px ;
+    padding: 10px;
     width: 200px;
     height: 200px;
-    background-image:url(bigdirt.png) ;
+    background-image: url(bigdirt.png);
     background-repeat: no-repeat;
     background-size: 100%;
     box-shadow: inset 0px 5px 150px 20px #151515;
-
 
 }
 
@@ -351,22 +339,22 @@ a {
     -webkit-transform: rotate(60deg);
     -moz-transform: rotate(60deg);
     -o-transform: rotate(60deg);
-    left: 573px;	
+    left: 573px;
     padding: 10px;
-    top :65px ;
+    top: 65px;
 }
 
-.rightface2 div {	
+.rightface2 div {
     -webkit-transform: skew(0deg, -30deg) scale(1, 1.16);
     -moz-transform: skew(0deg, -30deg) scale(1, 1.16);
     -o-transform: skew(0deg, -30deg) scale(1, 1.16);
-    background: -moz-linear-gradient(#726551,#2f2f2f);
+    background: -moz-linear-gradient(#726551, #2f2f2f);
     background: -webkit-gradient(linear, left top, left bottom, from(#726551), to(#2f2f2f));
     font-size: 0.862em;
-    padding : 10px ;
+    padding: 10px;
     width: 200px;
     height: 200px;
-    background-image:url(bigdirt.png) ;
+    background-image: url(bigdirt.png);
     background-repeat: no-repeat;
     background-size: 100%;
     box-shadow: inset 0px 5px 150px 40px #151515;
@@ -375,90 +363,56 @@ a {
 }
 
 .rightface2 {
-    left: 683px;	
+    left: 683px;
     padding: 10px;
-    top : 258px ;
+    top: 258px;
 }
 
-.leftface2 div {	
+.leftface2 div {
     -webkit-transform: skew(0deg, 30deg) scale(1, 1.16);
     -moz-transform: skew(0deg, 30deg) scale(1, 1.16);
     -o-transform: skew(0deg, 30deg) scale(1, 1.16);
-    background: -moz-linear-gradient(-60deg,#726551,#2f2f2f);
+    background: -moz-linear-gradient(-60deg, #726551, #2f2f2f);
     background: -webkit-gradient(linear, left top, left bottom, from(#726551), to(#2f2f2f));
     font-size: 0.862em;
-    padding : 10px ;
+    padding: 10px;
     width: 200px;
     height: 200px;
-    background-image:url(bigdirt.png) ;
+    background-image: url(bigdirt.png);
     background-repeat: no-repeat;
     background-size: 100%;
     box-shadow: inset 0px 5px 150px 80px #151515;
 }
 
 .leftface2 {
-    left: 461px;	
+    left: 461px;
     padding: 10px;
-    top : 258px ;
+    top: 258px;
 }
-
 
 .leftface2 div:hover, .rightface2 div:hover, .topface2 div:hover {
-    background-image:url(stone.png);
+    background-image: url(stone.png);
     background-color: gray;
-} 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.topface3, .rightface3, .leftface3 {
-    position : absolute ;
 }
 
-.topface3 div {	
+.topface3, .rightface3, .leftface3 {
+    position: absolute;
+}
+
+.topface3 div {
     -webkit-transform: skew(0deg, -30deg) scale(1, 1.16);
     -moz-transform: skew(0deg, -30deg) scale(1, 1.16);
-       -o-transform: skew(0deg, -30deg) scale(1, 1.16);
-    background: -moz-linear-gradient(-90deg,#F8F9F9,#2f2f2f);
+    -o-transform: skew(0deg, -30deg) scale(1, 1.16);
+    background: -moz-linear-gradient(-90deg, #F8F9F9, #2f2f2f);
     background: -webkit-gradient(linear, left top, left bottom, from(#726551), to(#2f2f2f));
     font-size: 0.862em;
-    padding : 10px ;
+    padding: 10px;
     width: 200px;
     height: 200px;
-    background-image:url(bigdirt.png) ;
+    background-image: url(bigdirt.png);
     background-repeat: no-repeat;
     background-size: 100%;
     box-shadow: inset 80px 100px 150px 40px #151515;
-
 
 }
 
@@ -466,22 +420,22 @@ a {
     -webkit-transform: rotate(60deg);
     -moz-transform: rotate(60deg);
     -o-transform: rotate(60deg);
-    left: 349px;	
+    left: 349px;
     padding: 10px;
-    top :445px ;
+    top: 445px;
 }
 
-.rightface3 div {	
+.rightface3 div {
     -webkit-transform: skew(0deg, -30deg) scale(1, 1.16);
     -moz-transform: skew(0deg, -30deg) scale(1, 1.16);
     -o-transform: skew(0deg, -30deg) scale(1, 1.16);
-    background: -moz-linear-gradient(#726551,#2f2f2f);
+    background: -moz-linear-gradient(#726551, #2f2f2f);
     background: -webkit-gradient(linear, left top, left bottom, from(#726551), to(#2f2f2f));
     font-size: 0.862em;
-    padding : 10px ;
+    padding: 10px;
     width: 200px;
     height: 200px;
-    background-image:url(bigdirt.png) ;
+    background-image: url(bigdirt.png);
     background-repeat: no-repeat;
     background-size: 100%;
     box-shadow: inset 0px 5px 150px 40px #151515;
@@ -490,36 +444,35 @@ a {
 }
 
 .rightface3 {
-    left: 459px;	
+    left: 459px;
     padding: 10px;
-    top : 638px ;
+    top: 638px;
 }
 
-.leftface3 div {	
+.leftface3 div {
     -webkit-transform: skew(0deg, 30deg) scale(1, 1.16);
     -moz-transform: skew(0deg, 30deg) scale(1, 1.16);
     -o-transform: skew(0deg, 30deg) scale(1, 1.16);
-    background: -moz-linear-gradient(-60deg,#726551,#2f2f2f);
+    background: -moz-linear-gradient(-60deg, #726551, #2f2f2f);
     background: -webkit-gradient(linear, left top, left bottom, from(#726551), to(#2f2f2f));
     font-size: 0.862em;
-    padding : 10px ;
+    padding: 10px;
     width: 200px;
     height: 200px;
-    background-image:url(bigdirt.png) ;
+    background-image: url(bigdirt.png);
     background-repeat: no-repeat;
     background-size: 100%;
     box-shadow: inset 0px 5px 150px 80px #151515;
 }
 
 .leftface3 {
-    left: 237px;	
+    left: 237px;
     padding: 10px;
-    top : 638px ;
+    top: 638px;
 }
 
-
 .leftface3 div:hover, .rightface3 div:hover, .topface3 div:hover {
-    background-image:url(stone.png);
+    background-image: url(stone.png);
     background-color: gray;
 } 
 
