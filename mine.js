@@ -6,20 +6,20 @@ var sys = require('sys'),
 	url = require('url'),
     util = require('util');
 
-var Log = require('./src/log.js');
+// Version number
+var version = "0.0.1";
 
-// Create global logger
-log = new Log(Log.DEBUG, fs.createWriteStream('minejs.log'));
-log.on('log', function(level, str) {
-	console.log(str);
-})
-
-log.info("just some logging ...");
-
+// Load configuration
 var config = require('./config.js').config;
 
-// Version number
-var version = "0.1";
+// Create global logger
+var Log = require('./src/log.js');
+log = new Log(config.log.level, fs.createWriteStream(config.log.file));
+log.on('log', function(level, str) {
+	console.log(str);
+});
+
+
 
 log.info("minejs " + version + " - Minecraft Server Wrapper")
 
