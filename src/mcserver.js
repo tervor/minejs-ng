@@ -31,6 +31,7 @@ MCServer.prototype.log_handlers = {
 	log_handler_disconnect: ".*\\[INFO\\] (.*) lost connection:.*",
 	log_handler_user_chat: ".*\\[INFO\\] <(.*)> (.*)",
 	log_handler_user_cmd: ".*\\[INFO\\] (.*) (issued server command|tried command): (.*)",
+	log_handler_save_complete: ".*\\[INFO\\] CONSOLE: Save complete\.",
 }
 
 // Resets the internals (user list etc.)
@@ -230,6 +231,10 @@ MCServer.prototype.log_handler_user_chat = function(args) {
 
 MCServer.prototype.log_handler_user_cmd = function(args) {
 	this.emit('user_cmd', args[0], args[2]);
+}
+
+MCServer.prototype.log_handler_save_complete = function(args) {
+	this.emit('save_complete');
 }
 
 // Implementation -----------------------------------------------------------

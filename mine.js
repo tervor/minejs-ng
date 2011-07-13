@@ -79,6 +79,14 @@ mcserver.on('user_cmd', function(user, text) {
 	}
 });
 
+mcserver.on('save_complete', function(user, text) {
+	userlist.updateFromPlayerDat();
+});
+
+userlist.on('userAchievedItem', function(user, id) {
+	mcserver.tell(user.name, "You have achieved item " + id);
+});
+
 // Create telnet server
 var telnetserver = require('./src/telnetserver.js').createTelnetServer();
 
@@ -175,3 +183,7 @@ process.on('SIGKILL', on_signal);
 function on_signal() {
 	mcserver.stop();
 }
+
+setInterval(function() {
+	mcserver.save_all();
+}, config.settings.save_interval * 1000);

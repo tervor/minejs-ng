@@ -27,6 +27,7 @@ var config = {
 		default_user_password: 'changeme',
 		default_user_role: 'guest',
 		max_stacks: 16,
+		save_interval: 60,
 	},
 	
 	// Logging related settings

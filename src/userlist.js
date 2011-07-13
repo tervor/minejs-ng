@@ -1,6 +1,7 @@
 
 var fs = require('fs');
 var util = require('util');
+var events = require('events');
 
 var nbt = require('nbt');
 
@@ -12,6 +13,7 @@ function User(name) {
 	this.datfile = "";
 	this.role = config.settings.default_user_role;
 	this.pos = [ 0.0, 0.0, 0.0 ];
+	this.achievedItems = [];
 }
 
 User.prototype.init = function(settings) {
@@ -31,6 +33,7 @@ User.prototype.hasRole = function(role) {
 }
 
 function UserList() {
+	events.EventEmitter.call(this);
 	this.users = {};
 	this.filenameUserList = config.server.dir + '/user-list.json';
 	this.filenameWhiteList = config.server.dir + '/white-list.txt';
@@ -40,6 +43,8 @@ function UserList() {
 	
 	log.debug(util.inspect(this.users));
 }
+
+util.inherits(UserList, events.EventEmitter);
 
 // All available user roles
 UserList.prototype.roles = { superadmin: 0, admin: 1, user: 2, guest: 3 }
@@ -134,15 +139,28 @@ UserList.prototype.updateFromPlayerDat = function() {
 				fs.readFile(playerDir + file, function(error, data) {
 					// Parse NBT file
 					nbt.parse(data, function(error, result) {
-						// Update position
-						user.pos = result.Pos;
-						log.debug(user.name + " pos: " + user.pos);
+						this.updateUserDat(user, result);
 						this.save();
 					}.bind(this));
 				}.bind(this));
 			}.bind(this))();
 		}
 	}.bind(this));
+}
+
+UserList.prototype.updateUserDat = function(user, dat) {
+	for (var i = 0; i < dat.Inventory.length; i++) {
+		var id = dat.Inventory[i].id;
+		if (!user.achievedItems.has(id)) {
+			user.achievedItems.push(id);
+			log.info("you achieved item " + id);
+			this.emit('userAchievedItem', user, id);
+		}
+	}
+	// Update position
+	user.pos = dat.Pos;
+	log.debug(user.name + " pos: " + user.pos);
+//	log.debug(util.inspect(dat));
 }
 
 // Saves the user list
