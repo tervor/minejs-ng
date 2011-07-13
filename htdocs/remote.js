@@ -204,7 +204,7 @@ function getCookie(c_name) {
 function checkCookie() {
     var username=getCookie("username");
     if (username!=null && username!="") {
-        document.getElementById('STuser').value =  username;
+        //document.getElementById('STuser').value =  username;
         document.getElementById('STuserlist').value = username;
     } else {
         //username=prompt("Dein Minecraft Benutzername:","");
@@ -344,7 +344,7 @@ function checkVersion()
   function init() {
 checkVersion()
 
-    checkCookie();
+   // checkCookie();
 randomSpam()
 /*
 $("STatus").click(function () { $(this).effect("pulsate", { times:3 }, 2000); }); 
