@@ -2,6 +2,6 @@
 <?php
 
 echo "[mcserver] Initializing env for user minecraft\n";
-system("su minecraft -l -s /bin/bash -c ./startserver.php");
+system("su oxi -l -s /bin/bash -c " . realpath(dirname($_SERVER['SCRIPT_FILENAME'])) . "/startserver.php");
 
 ?>

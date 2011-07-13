@@ -2,7 +2,7 @@
 <?php
 
 echo "[minecraft] Initializing screen for server minecraft\n";
-chdir("../");
-system("./mine.js");
+chdir(realpath(dirname($_SERVER['SCRIPT_FILENAME'])) . "/../");
+system("screen -dmS minecraft ./mine.js");
 
 ?>
