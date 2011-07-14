@@ -1,12 +1,22 @@
 body {
     text-align: left;
-    margin: 20px;
-    margin-top: 8px;
+    margin-left: 10px;
+
+    margin-right: 10px;
+
+    margin-top: 0;
+
+    margin-bottom: 10px;
+
     color: #c7c7c7;
 	font: 11px Arial, Helvetica, sans-serif;
    /* background: #18130f url('icons/bgtop.png') repeat-x;*/
     	background: #18130f url(images/main-bg.png);
 }
+
+
+
+
 
 
 
@@ -199,23 +209,58 @@ a {
     text-decoration: none;
 }
 
-.McTopNavigation {
-    padding-top: 3px;
+
+.header {
     width: 100%;
-    height: 20px;
-    clear: both;
-    float: none;
+    height: 64px;
+    float: left;
+    background-color: #2f2f2f;
+    margin-bottom: 5px;
+    padding: 0;
+        -moz-border-radius: 4px 0px 0px 4px;
+    border-radius: 4px 0px 0px 4px;
+    background-color: #2f2f2f;
+        opacity: .6;
 }
 
-.navDivBtn {
-    color: lime;
-    font-size: 12px;
-    font-weight: bolder;
+.logo {
+    width: 200px;
+    height: 60px;
+    margin-right: 10px;
+    float: left;
+}
+
+.navigation {
+    width: 100%;
+    height: 20px;
     background-color: transparent;
+}
+
+#navigationEntry {
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding:  2px ;
+    margin-top: 3px;
+    margin-left: 5px;
     width: 10%;
     height: 16px;
     float: left;
+    cursor: pointer;
+    background-color: #2f2f2f;
+    border: 1px solid #151515;
+    opacity: .8;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    text-align: center;
 }
+
+#navigationEntry:hover {
+    background-color: #3c443a;
+    border: 1px solid green;
+    opacity: 1;
+}
+
 
 .maintcontentbox {
     width: 320px;
