@@ -478,21 +478,16 @@ a {
     background-color: gray;
 }
 
-.toggler {
-    width: 400px;
-    height: 100px;
-    position: relative;
-    top: 0px;
-    left: 30%;
-}
 
 #effect {
     width: 400px;
     height: 100px;
     padding: 2px;
-    position: relative;
+    position: absolute;
     z-index: 1000;
-
+    left: 30%;
+    top: 3px;
+    opacity: 0.8;
 }
 
 #effect h3 {
