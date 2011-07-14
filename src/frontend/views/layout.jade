@@ -1,0 +1,22 @@
+!!! 5
+html
+	head
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		script(src='scripts/socket.io.js');
+		script(src='scripts/jquery-1.5.1.min.js');
+		title minejs frontend
+	body
+		#main
+			#header
+			- if(session.user)
+				#user= 'logged in as ' + session.user.name
+				#logout
+					a(href='/sessions/destroy') logout
+			- if(flash.warn)
+				p#warn= flash.warn
+			#nav
+				ul
+					- each page in pages
+						li
+							a(href=page.link)= page.title
+			#content!= body
