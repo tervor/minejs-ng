@@ -19,14 +19,9 @@ $(document).ready(function() {
     MaxLimitItems = 2048;
     $("#effect").hide();
     function getItems() {
-        //read available items
         $.getJSON('items.json', function(data) {
             $('body').append('<div style="float:left;">total items: ' + data.length + '</div>');
-            //$('body').append('<div>total items: '+data.length+'</div>');
             $.each(data, function(i, item) {
-                // Process your data here
-                //alert(item.name)
-                //$('body').append('<div>'+item.name+'</div>');
                 drawItem(item.id, item.name, item.amount)
             });
             drawItem("9999", "paypal", "1")
