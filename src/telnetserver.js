@@ -3,7 +3,7 @@ var net = require('net');
 var events = require('events');
 var util = require('util');
 
-var config = require('../config.js').config;
+var config = require('config').config;
 
 
 function Session(server, socket) {
@@ -15,22 +15,22 @@ function Session(server, socket) {
 	this.socket.write("Please enter your username: ");
 	
 	this.socket.on('data', function(data) {
-		this.receive_line(data.toString('ascii').replace('\n', '').replace('\r', ''));
+		this.receiveLine(data.toString('ascii').replace('\n', '').replace('\r', ''));
 	}.bind(this));
 	this.socket.on('close', function() {
-		this.server.emit('user_disconnect', this);
+		this.server.emit('disconnect', this);
 	}.bind(this));
 	socket.on('end', function() {
 		this.server.emit('end', this);
 	}.bind(this));
 }
 
-Session.prototype.receive_line = function(line) {
+Session.prototype.receiveLine = function(line) {
 	if (this.user == null) {
 		this.user = line;
-		this.server.emit('user_connect', this);
+		this.server.emit('connect', this);
 	} else {
-		this.server.emit('user_data', this, line);
+		this.server.emit('data', this, line);
 	}
 }
 

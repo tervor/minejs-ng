@@ -1,7 +1,7 @@
 
 var fs = require('fs');
 
-var config = require('../config.js').config;
+var config = require('config').config;
 
 function ServerProperties() {
 	this.properties = {};
@@ -53,8 +53,6 @@ ServerProperties.prototype.save = function() {
 	fs.writeFileSync(this.filename, text, 'ascii');
 }
 
-function createServerProperties() {
-	return new ServerProperties();
-}
+var instance = new ServerProperties();
 
-module.exports.createServerProperties = createServerProperties;
+module.exports.instance = instance;

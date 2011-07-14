@@ -5,7 +5,7 @@ var events = require('events');
 
 var nbt = require('nbt');
 
-var config = require('../config.js').config;
+var config = require('config').config;
 
 function User(name) {
 	this.name = name;
@@ -171,8 +171,6 @@ UserList.prototype.save = function() {
 	fs.writeFileSync(this.filenameWhiteList, this.userNames().join('\n'), 'ascii');
 }
 
-function createUserList() {
-	return new UserList();
-}
+var instance = new UserList();
 
-module.exports.createUserList = createUserList;
+module.exports.instance = instance;

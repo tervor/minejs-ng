@@ -3,29 +3,21 @@ var events = require('events');
 var util = require('util');
 var fs = require('fs');
 
-var config = require('../config.js').config;
+var config = require('config').config;
 
 
 // The CommandHandler class implements all the advanced commands that can be
 // issued through the different interfaces (http, ingame, telnet) to the
 // minejs server.
-function CommandHandler(mcserver, userlist, serverProperties) {
+function CommandHandler(mcserver, userList, itemList, serverProperties) {
 	events.EventEmitter.call(this);
 	this.mcserver = mcserver;
-	this.userlist = userlist;
+	this.userList = userList;
+	this.itemList = itemList;
 	this.serverProperties = serverProperties;
-	
-	// TODO this should move somewhere else, or to the JSON file itself
-	for (var i = 0; i < this.items.length; i++) {
-		this.items[i].info = this.items[i].name;
-		this.items[i].name = this.items[i].name.replace(' ', '_').toLowerCase();
-	}
 }
 
 util.inherits(CommandHandler, events.EventEmitter);
-
-// Load item list
-CommandHandler.prototype.items = JSON.parse(fs.readFileSync('./src/items.json', 'ascii'));
 
 // List of handlers to be called when commands are executed.
 // Make sure that a handler function of type cmd_xxx(user, mode, args) with the same name actually
@@ -76,7 +68,7 @@ CommandHandler.prototype.parse_execute = function(username, mode, text) {
 
 CommandHandler.prototype.execute = function(username, mode, cmd, args) {
 	// Get user
-	user = this.userlist.userByName(username);
+	user = this.userList.userByName(username);
 			
 	for (var handler in this.cmd_handlers)
 		if (cmd == this.cmd_handlers[handler].name) {
@@ -91,20 +83,10 @@ CommandHandler.prototype.execute = function(username, mode, cmd, args) {
 	return "unknown command";
 }
 
-CommandHandler.prototype.cmd_handler_by_name = function(cmd) {
+CommandHandler.prototype.cmdHandlerByName = function(cmd) {
 	for (var handler in this.cmd_handlers)
 		if (cmd == this.cmd_handlers[handler].name)
 			return this.cmd_handlers[handler];
-	return null;
-}
-
-CommandHandler.prototype.item_by_name_or_id = function(name) {
-	for (var i = 0; i < this.items.length; i++) {
-		item = this.items[i];
-		if (item.name == name || item.id == name)
-			return item;
-	}
-	
 	return null;
 }
 
@@ -130,7 +112,7 @@ CommandHandler.prototype.cmd_help = function(user, mode, args) {
 		objs.push({ name: handler.name, args: handler.args, info: handler.info });
 	}
 	
-	return this.return_by_mode(mode, text, text, objs);
+	return this.returnByMode(mode, text, text, objs);
 }
 
 CommandHandler.prototype.cmd_say = function(user, mode, args) {
@@ -156,21 +138,21 @@ CommandHandler.prototype.cmd_tell = function(user, mode, args) {
 CommandHandler.prototype.cmd_users = function(user, mode, args) {
 	var text = this.mcserver.users.join(',');
 	var objs = this.mcserver.users;
-	return this.return_by_mode(mode, text, text, objs);
+	return this.returnByMode(mode, text, text, objs);
 }
 
 CommandHandler.prototype.cmd_items = function(user, mode, args) {
 	var text = "";
 	var objs = [];
-	for (var i = 0; i < this.items.length; i++) {
-		var item = this.items[i];
+	for (var i = 0; i < this.itemList.items.length; i++) {
+		var item = this.itemList.items[i];
 		if (args.length > 0)
 			if (item.name.substr(0, args[0].length) != args[0])
 				continue;
 		text += item.name + " (" + item.id + ")\n";
 		objs.push({ id: item.id, name: item.name, info: item.info, amount: item.amount });
 	}
-	return this.return_by_mode(mode, text, text, objs);
+	return this.returnByMode(mode, text, text, objs);
 }
 
 // User commands ------------------------------------------------------------
@@ -182,7 +164,7 @@ CommandHandler.prototype.cmd_give = function(user, mode, args) {
 		return "invalid params";
 	if (args[1] == "")
 		return "invalid params";
-	var item = this.item_by_name_or_id(args[0]);
+	var item = this.itemList.itemByNameOrId(args[0]);
 	if (item == null)
 		return "invalid item";
 	var left = args[1];
@@ -250,15 +232,15 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 			return "invalid params";
 		if (args[1] == "")
 			return "invalid name";
-		var newuser = this.userlist.add(args[1]);
+		var newuser = this.userList.add(args[1]);
 		if (newuser == null)
 			return "user already exists";
-		this.userlist.save();
+		this.userList.save();
 		return "added user '" + args[1] + "'";
 	case 'remove':
 		if (args.length != 2)
 			return "invalid params";
-		var removeuser = this.userlist.userByName(args[1]);
+		var removeuser = this.userList.userByName(args[1]);
 		if (removeuser == null)
 			return "user '" + args[1] + "' does not exist";
 		var permission = false;
@@ -269,17 +251,17 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 		}
 		if (!permission)
 			return "no permission to remove user with '" + removeuser.role + "' role"
-		this.userlist.remove(args[1]);
-		this.userlist.save();
+		this.userList.remove(args[1]);
+		this.userList.save();
 		return "removed user '" + args[1] + "'";
 	case 'role':
 		if (args.length != 3)
 			return "invalid params";
-		var changeuser = this.userlist.userByName(args[1]);
+		var changeuser = this.userList.userByName(args[1]);
 		if (changeuser == null)
 			return "user '" + args[1] + "' does not exist";
 		var role = args[2];
-		if (!(role in this.userlist.roles))
+		if (!(role in this.userList.roles))
 			return "'" + role + "' is not a valid role";
 		var permission = false;
 		switch (user.role) {
@@ -290,26 +272,26 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 		if (!permission)
 			return "no permission to set role '" + role + "'";
 		changeuser.role = role;
-		this.userlist.save();
+		this.userList.save();
 		return "changed role for user '" + changeuser.name + "' to '" + role + "'";
 	case 'password':
 		if (args.length != 3)
 			return "invalid params";
-		var user = this.userlist.userByName(args[1]);
+		var user = this.userList.userByName(args[1]);
 		if (user == null)
 			return "user '" + args[1] + "' does not exist";
 		if (args[2] == "")
 			return "invalid password";
 		user.password = args[2];
-		this.userlist.save();
+		this.userList.save();
 		return "changed password for user '" + args[1] + "'";
 	default:
 		var text = "";
-		for (key in this.userlist.users)
-			text += this.userlist.users[key].name + " (" + this.userlist.users[key].role + "), ";
+		for (key in this.userList.users)
+			text += this.userList.users[key].name + " (" + this.userList.users[key].role + "), ";
 		text = text.substr(0, text.length - 2);
-		var objs = this.userlist.users;
-		return this.return_by_mode(mode, text, text, objs);
+		var objs = this.userList.users;
+		return this.returnByMode(mode, text, text, objs);
 	}
 	return "success";
 }
@@ -355,13 +337,13 @@ CommandHandler.prototype.cmd_properties = function(user, mode, args) {
 		for (var property in this.serverProperties.properties)
 			text += property + "=" + this.serverProperties.properties[property] + "\n";
 		var objs = this.serverProperties.properties;
-		return this.return_by_mode(mode, text, text, objs);
+		return this.returnByMode(mode, text, text, objs);
 	}
 	return "success";
 }
 
 
-CommandHandler.prototype.return_by_mode = function(mode, console, telnet, web)
+CommandHandler.prototype.returnByMode = function(mode, console, telnet, web)
 {
 	switch (mode) {
 	case 'console':
@@ -376,8 +358,8 @@ CommandHandler.prototype.return_by_mode = function(mode, console, telnet, web)
 }
 
 // Creates a command handler
-function createCommandHandler(mcserver, userlist, serverProperties) {
-	return new CommandHandler(mcserver, userlist, serverProperties);
+function createCommandHandler(mcserver, userList, itemList, serverProperties) {
+	return new CommandHandler(mcserver, userList, itemList, serverProperties);
 }
 
 module.exports.createCommandHandler = createCommandHandler;
