@@ -1,44 +1,47 @@
-//program start aaaaaaaaaaaaaaaaaaaaaaaaa
+//program start 
 $(document).ready(function() {
-    getItems()
-    MaxLimitItems = 2048;
 
+    /* render dock
+    $('#dock').Fisheye(
+        {
+            maxWidth: 50,
+            items: 'a',
+            itemsText: 'span',
+            container: '.dock-container',
+            itemWidth: 40,
+            proximity: 90,
+            halign : 'center'
+        }
+    );
+    */
+
+    getItems();
+    MaxLimitItems = 2048;
+    $("#effect").hide();
     function getItems() {
-        //read available items
         $.getJSON('items.json', function(data) {
-            $('body').append('<div>total items: ' + data.length + '</div>');
-            //$('body').append('<div>total items: '+data.length+'</div>');
+            $('body').append('<div style="float:left;">total items: ' + data.length + '</div>');
             $.each(data, function(i, item) {
-                // Process your data here
-                //alert(item.name)
-                //$('body').append('<div>'+item.name+'</div>');
                 drawItem(item.id, item.name, item.amount)
             });
+            drawItem("9999", "paypal", "1")
         });
     }
 
     function drawItem(id, name, amount) {
-        //   onmouseover="boxHover(\''+id+'\');" onmouseout="$(this)(\''+id+'\')"
         $('#sortable').append(' \
             <div id="GridBox" class="GridBox ItemGridBox"> \
-            <div id="ctlMinus" class="ctlPlMi" onclick="IncDecMinus(\'IncDecInput-' + id + ')">-</div> \
-            <div id="IncDecInput-' + id + '" value="' + amount + '" class="incdecinputbox"  \
-            DISABLED  onclick="giveItemById(\'' + id + '\',\'' + amount + '\',\'IncDecInput-' + amount + '\')"></div> \
-            <div id="ctlPlus" class="ctlPlMi" onclick="IncDecPlus(\'' + id + '\')">+</div> \
-            <div name="IconLayer-' + id + '" onclick="giveItemById(\'' + id + '\',\'' + amount + '\',\'IncDecInput-' + id + '\')" > \
+            <div id="ctlMinus" class="ctlPlMi" onclick="calAmount(\'' + id + '\',\'-\')">-</div> \
+            <div id="varAmount-' + id + '" class="varAmountbox" DISABLED  onclick="actGiveItem(\'' + id + '\')">' + amount + '</div> \
+            <div id="ctlPlus" class="ctlPlMi" onclick="calAmount(\'' + id + '\',\'+\')">+</div> \
+            <div name="IconLayer-' + id + '" onclick="actGiveItem(\'' + id + '\')" > \
             <div style="padding: 25% 29% 4% 29%;"> \
             <img src="icons/' + id + '.pn" id=="ItemImg-' + id + '" class="STicon" border="0"></div> \
             <div name="Namelabel-' + id + '"  id="Namelabel-' + id + '" class="Namelabel">' + name + '</div></div> ');
 
 
         //register handlers
-        //$("div.GridBox").hover(function () { $(this).effect("pulsate", { times:3 }, 2000); });
-        //pulsate(this);
-
-       /* $("div.GridBox").hover(function () {
-            $(this).effect("pulsate", { times:3 }, 2000);
-        });*/
-        //pulsate(this);
+        //$("div.GridBox").hover(function () { $(this).effect("pulsate", { times:0 }, 2); });
 
 
         $(function() {
@@ -59,63 +62,86 @@ $(document).ready(function() {
     }
 });
 
-
-function boxHover(nakedID) {
-    document.getElementById("box-" + nakedID).setAttribute("class", "GridBox ItemGridBoxHover");
-    document.getElementById("IncDecMinusButton-" + nakedID).setAttribute("class", "incdecbuttonboxHOVER");
-    document.getElementById("IncDecPlusButton-" + nakedID).setAttribute("class", "incdecbuttonboxHOVER");
-
-
+function actGiveItem(id) {
+    var amount = parseInt(parseFloat($('#varAmount-' + id).text()));
+    console.log("DEBUG id is: " + id + " amount is: " + amount);
+    inform("fade", "DEBUG id is: " + id + " amount is: " + amount);
 }
 
-function boxNormal(nakedID) {
+function inform(effect, content) {
+    // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide
+    console.log("DEBUG: " + effect);
 
-    document.getElementById("box-" + nakedID).setAttribute("class", "GridBox ItemGridBox");
-    document.getElementById("IncDecMinusButton-" + nakedID).setAttribute("class", "incdecbuttonbox");
-    document.getElementById("IncDecPlusButton-" + nakedID).setAttribute("class", "incdecbuttonbox");
-
-
-}
-
-function IncDecPlus(nackedID) {
-    // var currentItemAmount = document.forms["FormName"].elements[inputBoxID].value;
-    currentItemAmount = $('IncDecInput-' + nackedID).attr("value");
-
-
-    var tmmmp = parseInt(parseFloat(currentItemAmount));
-
-    if (tmmmp == MaxLimitItems) {
-        tmmmp = MaxLimitItems;
-    } else if (tmmmp == 1) {
-        tmmmp = tmmmp * 2
-    } else if (tmmmp == MaxLimitItems || tmmmp > MaxLimitItems) {
-        tmmmp = MaxLimitItems;
-    } else if (tmmmp == 0) {
-        tmmmp = 1;
-    } else {
-        tmmmp = tmmmp * 2;
+    $('#inform').text(content);
+    // most effect types need no options passed by default
+    var options = {};
+    // some effects have required parameters
+    if (effect === "scale") {
+        options = { percent: 100 };
+    } else if (effect === "size") {
+        options = { to: { width: 280, height: 185 } };
     }
-    document.getElementById('IncDecInput-' + nackedID).setAttribute("value", Math.floor(tmmmp));
-}
+
+    // run the effect
+    $("#effect").show(effect, options, 500, callback);
+
+    return false;
 
 
-function IncDecMinus(nackedID) {
-
-    //    var currentItemAmount = document.forms["FormName"].elements[inputBoxID].value;
-    currentItemAmount = $('IncDecInput-' + nackedID).attr("value");
-
-
-    var tmmmp = parseInt(parseFloat(currentItemAmount));
-
-    if (tmmmp == MaxLimitItems || tmmmp < MaxLimitItems && tmmmp > 1) {
-        tmmmp = tmmmp / 2
-    } else if (tmmmp == 0) {
-        tmmmp = 1;
-    } else if (tmmmp > MaxLimitItems) {
-        tmmmp = MaxLimitItems;
-    } else {
-        tmmmp = tmmmp / 2;
+    //callback function to bring a hidden box back
+    function callback() {
+        setTimeout(function() {
+            $("#effect:visible").removeAttr("style").fadeOut();
+        }, 300);
     }
-    document.getElementById('IncDecInput-' + nackedID).setAttribute("value", Math.floor(tmmmp));
+
 }
 
+
+function calAmount(id, action) {
+    var calNum = parseInt(parseFloat($('#varAmount-' + id).text()));
+    switch (action) {
+        case '+':
+            if (calNum == MaxLimitItems) {
+                calNum = MaxLimitItems;
+            } else if (calNum == 1) {
+                calNum = calNum * 2
+            } else if (calNum == MaxLimitItems || calNum > MaxLimitItems) {
+                calNum = MaxLimitItems;
+            } else if (calNum == 0) {
+                calNum = 1;
+            } else {
+                calNum = calNum * 2;
+            }
+            break;
+        case '-':
+            if (calNum == MaxLimitItems || calNum < MaxLimitItems && calNum > 1) {
+                calNum = calNum / 2
+            } else if (calNum == 0) {
+                calNum = 1;
+            } else if (calNum > MaxLimitItems) {
+                calNum = MaxLimitItems;
+            } else {
+                calNum = calNum / 2;
+            }
+            break;
+        default:
+            alert("Something went wrong in calAmount")
+    }
+    console.log("DEBUG id: " + id + " action: " + action + " calNum: " + calNum);
+    $('#varAmount-' + id).text(Math.floor(calNum));
+}
+
+function showMap() {
+
+    if ($("#sortable")) {
+        $("map").remove();
+    } else {
+        $('body').append('<div id="map" class="map"><iframe src="http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal" class="framer"></iframe></div>');
+    }
+
+
+
+
+
+}
