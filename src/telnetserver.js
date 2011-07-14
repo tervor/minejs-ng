@@ -3,7 +3,7 @@ var net = require('net');
 var events = require('events');
 var util = require('util');
 
-var config = require('../config.js').config;
+var config = require('config').config;
 
 
 function Session(server, socket) {

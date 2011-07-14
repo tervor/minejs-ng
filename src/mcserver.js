@@ -3,7 +3,7 @@ var spawn = require('child_process').spawn;
 var events = require('events');
 var util = require('util');
 
-var config = require('../config.js').config;
+var config = require('config').config;
 
 
 // The MCServer class implements a wrapper around the minecraft server.

@@ -5,7 +5,7 @@ var events = require('events');
 
 var nbt = require('nbt');
 
-var config = require('../config.js').config;
+var config = require('config').config;
 
 function User(name) {
 	this.name = name;
