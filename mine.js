@@ -1,10 +1,17 @@
 #!/usr/bin/env node
 
+// Add module paths
+require.paths.unshift(__dirname);
+require.paths.unshift(__dirname + '/src');
+
 var sys = require('sys'),
     fs = require('fs'),
     http = require('http'),
 	url = require('url'),
     util = require('util');
+
+
+
 
 // TODO move to utils or something
 Array.prototype.has = function(v) {
@@ -17,28 +24,34 @@ Array.prototype.has = function(v) {
 var version = "0.0.1";
 
 // Load configuration
-var config = require('./config.js').config;
+var config = require('config').config;
 
 // Create global logger
-var Log = require('./src/log.js');
+var Log = require('log');
 log = new Log(config.log.level, fs.createWriteStream(config.log.file));
 log.on('log', function(level, str) {
 	console.log(str);
 });
 
+// Create singletons
+var itemList = require('itemlist').instance;
+var userList = require('userlist').instance;
+var serverProperties = require('serverproperties').instance;
+
+// Dump contents of itemList, userList and serverProperties
+log.debug('Items:');
+log.debug(util.inspect(itemList.items));
+log.debug('Users:');
+log.debug(util.inspect(userList.users));
+log.debug('Server Properties:');
+log.debug(util.inspect(serverProperties.properties));
 
 
 log.info("minejs " + version + " - Minecraft Server Wrapper")
 
 
-// Create user list
-var userlist = require('./src/userlist.js').createUserList();
-
-// Create server properties
-var serverProperties = require('./src/serverproperties.js').createServerProperties();
-
 // Create minecraft server wrapper
-var mcserver = require('./src/mcserver.js').createMCServer();
+var mcserver = require('mcserver').createMCServer();
 
 mcserver.on('data', function(data) {
 	log.info("minecraft: " + this.recv);
@@ -80,34 +93,34 @@ mcserver.on('user_cmd', function(user, text) {
 });
 
 mcserver.on('save_complete', function(user, text) {
-	userlist.updateFromPlayerDat();
+	userList.updateFromPlayerDat();
 });
 
-userlist.on('userAchievedItem', function(user, id) {
+userList.on('userAchievedItem', function(user, id) {
 	mcserver.tell(user.name, "You have achieved item " + id);
 });
 
 // Create telnet server
-var telnetserver = require('./src/telnetserver.js').createTelnetServer();
+var telnetserver = require('telnetserver.js').createTelnetServer();
 
 // List of telnet monitor sessions
 var monitorSessions = [];
 
-telnetserver.on('user_connect', function(session) {
+telnetserver.on('connect', function(session) {
 	log.info("User '" + session.user + "' has connected via telnet");
 	if (session.user == "monitor") {
 		session.socket.write("Monitoring minecraft server\n");
 		monitorSessions.push(session);
-	} else if (userlist.userByName(session.user) == null) {
+	} else if (userList.userByName(session.user) == null) {
 		session.socket.end("Unknown user!\n");
 	}
 });
 
-telnetserver.on('user_disconnect', function(session){
+telnetserver.on('disconnect', function(session){
 	log.info("User '" + session.user + "' has disconnected via telnet");
 });
 
-telnetserver.on('user_data', function(session, text) {
+telnetserver.on('data', function(session, text) {
 	if (text == "exit") {
 		session.socket.end("Terminating\n");
 		return;
@@ -135,7 +148,7 @@ http.createServer(function (req, res) {
 	var u = url.parse(req.url, true);
 	
 	var cmd = u.pathname.substr(1, u.pathname.length);
-	var cmd_handler = commandHandler.cmd_handler_by_name(cmd);
+	var cmd_handler = commandHandler.cmdHandlerByName(cmd);
 	if (cmd_handler == null) {
 		res.end(JSON.stringify("unknown command"));
 	} else {
@@ -157,8 +170,11 @@ http.createServer(function (req, res) {
 	}
 }).listen(config.web.port);
 
+// Create frontend
+var frontend = require('frontend/frontend').createFrontend();
+
 // Create command handler
-var commandHandler = require('./src/commandhandler.js').createCommandHandler(mcserver, userlist, serverProperties);
+var commandHandler = require('commandhandler').createCommandHandler(mcserver, userList, itemList, serverProperties);
 
 
 // Start
