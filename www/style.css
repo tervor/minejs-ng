@@ -1,11 +1,16 @@
 body {
     text-align: left;
-    margin: 20;
+    margin: 20px;
     margin-top: 8px;
     color: #c7c7c7;
-    font-family: verdana, arial;
-    /*background: #18130f url('../../icons/bgtop.png') repeat-x;*/
+	font: 11px Arial, Helvetica, sans-serif;
+   /* background: #18130f url('icons/bgtop.png') repeat-x;*/
+    	background: #18130f url(images/main-bg.png);
 }
+
+
+
+
 
 .STlabel {
     width: 100px;
@@ -18,8 +23,8 @@ body {
 }
 
 .spaceHR {
-    border: 0px;
-    height: 0px;
+    border: 0;
+    height: 0;
 }
 
 .IDlabel {
@@ -32,7 +37,6 @@ body {
     font-size: 10px;
     line-height: 10px;
     text-align: center;
-
 }
 
 .GridBox {
@@ -41,13 +45,11 @@ body {
     height: 85px;
     float: left;
     padding: 2px;
+    margin: 1px;
     border: 1px solid #151515;
     -moz-border-radius: 4px;
     border-radius: 4px;
 }
-
-
-
 
 .ItemGridBox {
     cursor: pointer;
@@ -56,7 +58,7 @@ body {
     opacity: .7;
 }
 
-#GridBox:hover  {
+#GridBox:hover {
     background-color: #3c443a;
     border: 1px solid green;
     opacity: 1;
@@ -89,7 +91,7 @@ body {
 
 .STicon {
     width: 32px;
-    height: 32pxs;
+    height: 32px;
 }
 
 .STiconHover {
@@ -116,6 +118,7 @@ body {
     opacity: .4;
 }
 
+/*
 #ctlMinus:hover {
     float: left;
     background-color: gray;
@@ -124,7 +127,6 @@ body {
     padding: 0;
     font-size: 11px;
     font-weight: bolder;
-    border: 1;
     vertical-align: middle;
     text-align: center;
     cursor: crosshair;
@@ -142,7 +144,6 @@ body {
     padding: 0;
     font-size: 11px;
     font-weight: bolder;
-    border: 1;
     vertical-align: middle;
     text-align: center;
     cursor: crosshair;
@@ -152,8 +153,9 @@ body {
     color: #fff;
             visibility: visible;
 }
+*/
 
-.incdecinputbox {
+.varAmountbox {
     color: white;
     float: left;
     font-size: 11px;
@@ -474,8 +476,84 @@ a {
 .leftface3 div:hover, .rightface3 div:hover, .topface3 div:hover {
     background-image: url(stone.png);
     background-color: gray;
-} 
+}
 
+.toggler {
+    width: 400px;
+    height: 100px;
+    position: relative;
+    top: 0px;
+    left: 30%;
+}
 
+#effect {
+    width: 400px;
+    height: 100px;
+    padding: 2px;
+    position: relative;
+    z-index: 1000;
+
+}
+
+#effect h3 {
+    margin: 0;
+    padding: 1px;
+    text-align: center;
+
+}
+
+/* Corner radius */
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+    -moz-border-radius-topleft: 4px /*{cornerRadius}*/;
+    -webkit-border-top-left-radius: 4px /*{cornerRadius}*/;
+    -khtml-border-top-left-radius: 4px /*{cornerRadius}*/;
+    border-top-left-radius: 4px /*{cornerRadius}*/;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+    -moz-border-radius-topright: 4px /*{cornerRadius}*/;
+    -webkit-border-top-right-radius: 4px /*{cornerRadius}*/;
+    -khtml-border-top-right-radius: 4px /*{cornerRadius}*/;
+    border-top-right-radius: 4px /*{cornerRadius}*/;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+    -moz-border-radius-bottomleft: 4px /*{cornerRadius}*/;
+    -webkit-border-bottom-left-radius: 4px /*{cornerRadius}*/;
+    -khtml-border-bottom-left-radius: 4px /*{cornerRadius}*/;
+    border-bottom-left-radius: 4px /*{cornerRadius}*/;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    -moz-border-radius-bottomright: 4px /*{cornerRadius}*/;
+    -webkit-border-bottom-right-radius: 4px /*{cornerRadius}*/;
+    -khtml-border-bottom-right-radius: 4px /*{cornerRadius}*/;
+    border-bottom-right-radius: 4px /*{cornerRadius}*/;
+}
+
+/* Component containers
+----------------------------------*/
+.ui-widget-content {
+    border: 1px solid #aaaaaa /*{borderColorContent}*/;
+    background: #747474;
+
+    color: #fff /*{fcContent}*/;
+}
+
+.ui-widget-content a {
+    color: #fff /*{fcContent}*/;
+}
+
+.ui-widget-header {
+    border: 1px solid #aaaaaa /*{borderColorHeader}*/;
+    background: #686868;
+
+    color: #fff /*{fcHeader}*/;
+    font-weight: bold;
+}
+
+.ui-widget-header a {
+    color: #fff /*{fcHeader}*/;
+}
 
 
