@@ -3,3 +3,4 @@ config.js
 minejs.log
 nbproject/*
 server
+*.DS_Store
