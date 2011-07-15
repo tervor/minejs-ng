@@ -30,8 +30,8 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "Say something" },
 	cmd_tell: 		{	name: "tell", args: ['user', 'text'], role: 'guest',
 						info: "Tells user something" },
-	cmd_users: 		{	name: "users", args: [], role: 'guest',
-						info: "Shows connected users" }, 
+	cmd_list: 		{	name: "list", args: [], role: 'guest',
+						info: "List connected users" }, 
 	cmd_items: 		{	name: 'items', args: ['prefix'], role: 'guest',
 						info: "List items with prefix" },
 	// User commands
@@ -135,7 +135,7 @@ CommandHandler.prototype.cmd_tell = function(user, mode, args) {
 	return "success";
 }
 
-CommandHandler.prototype.cmd_users = function(user, mode, args) {
+CommandHandler.prototype.cmd_list = function(user, mode, args) {
 	var text = this.mcserver.users.join(',');
 	var objs = this.mcserver.users;
 	return this.returnByMode(mode, text, text, objs);

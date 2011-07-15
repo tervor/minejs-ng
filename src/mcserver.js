@@ -215,7 +215,8 @@ MCServer.prototype.receiveLine = function(line) {
 	
 MCServer.prototype.logHandlerConnect = function(args) {
 	var username = args[0];
-	this.users.push(username);
+	if (!this.users.has(username))
+		this.users.push(username);
 	this.emit('connect', username);
 }
 

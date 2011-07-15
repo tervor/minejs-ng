@@ -163,13 +163,13 @@ function FrontendClient(socket, user) {
 	
 	this.socket.on('chat', function(data) {
 		console.log(data.text);
-		this.socket.broadcast.emit('chat', { text: data.text });
+		this.socket.broadcast.emit('chat', { user: this.user.name, text: data.text });
 		instance.emit('chat', this, data.text);
 	}.bind(this));
 }
 
-FrontendClient.prototype.chat = function(user, text) {
-	this.socket.emit('chat', { user: user, text: text });
+FrontendClient.prototype.chat = function(username, text) {
+	this.socket.emit('chat', { user: username, text: text });
 }
 
 io = require('socket.io').listen(config.socket.port, config.socket.host);
