@@ -31,7 +31,7 @@ CommandHandler.prototype.cmd_handlers = {
 	cmd_tell: 		{	name: "tell", args: ['user', 'text'], role: 'guest',
 						info: "Tells user something" },
 	cmd_users: 		{	name: "users", args: [], role: 'guest',
-						info: "Shows user list" }, 
+						info: "Shows connected users" }, 
 	cmd_items: 		{	name: 'items', args: ['prefix'], role: 'guest',
 						info: "List items with prefix" },
 	// User commands
