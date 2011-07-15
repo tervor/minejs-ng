@@ -2,7 +2,7 @@
 
 // Add module paths
 require.paths.unshift(__dirname);
-require.paths.unshift(__dirname + '/src');
+require.paths.unshift(__dirname + '/../');
 
 var sys = require('sys'),
     fs = require('fs'),
@@ -54,7 +54,7 @@ log.info("minejs " + version + " - Minecraft Server Wrapper")
 var mcserver = require('mcserver').createMCServer();
 
 mcserver.on('data', function(data) {
-	log.info("minecraft: " + this.recv);
+	log.info("minecraft: " + data);
 	for (var i = 0; i < monitorSessions.length; i++)
 		monitorSessions[i].socket.write(data + "\n");
 });
@@ -63,36 +63,36 @@ mcserver.on('exit', function() {
 	process.exit(0);
 });
 
-mcserver.on('user_connect', function(user) {
-	log.info("User '" + user + "' has connected to minecraft");
-	mcserver.tell(user, "This server runs minejs " + version);
-	mcserver.tell(user, "Enter '//help' for more information");
+mcserver.on('connect', function(username) {
+	log.info("User '" + username + "' has connected to minecraft");
+	mcserver.tell(username, "This server runs minejs " + version);
+	mcserver.tell(username, "Enter '//help' for more information");
 });
 
-mcserver.on('user_disconnect', function(user) {
-	log.info("User '" + user + "' has disconnected from minecraft");
+mcserver.on('disconnect', function(username) {
+	log.info("User '" + username + "' has disconnected from minecraft");
 });
 
-mcserver.on('user_chat', function(user, text) {
-	log.info("User '" + user + "' has said '" + text + "'");
+mcserver.on('chat', function(username, text) {
+	log.info("User '" + username + "' has said '" + text + "'");
 });
 
-mcserver.on('user_cmd', function(user, text) {
-	log.info("User '" + user + "' has issued command '" + text + "' via console");
+mcserver.on('cmd', function(username, text) {
+	log.info("User '" + username + "' has issued command '" + text + "' via console");
 
 	// Command starts with a / character, otherwise it's invalid
 	if (text.charAt(0) == '/') {
 		text = text.slice(1, text.length);
-		var ret = commandHandler.parse_execute(user, 'console', text);
+		var ret = commandHandler.parse_execute(username, 'console', text);
 		if (ret != null && ret != "success") {
 			var lines = ret.split('\n');
 			for (var i = 0; i < lines.length; i++)
-				mcserver.tell(user, lines[i]);
+				mcserver.tell(username, lines[i]);
 		}
 	}
 });
 
-mcserver.on('save_complete', function(user, text) {
+mcserver.on('saved', function() {
 	userList.updateFromPlayerDat();
 });
 
@@ -190,16 +190,16 @@ frontend.on('chat', function(client, text) {
 	mcserver.say('<' + client.user.name + '> ' + text);
 });
 
-mcserver.on('user_chat', function(user, text) {
-	frontend.chat(user, text);
+mcserver.on('chat', function(username, text) {
+	frontend.chat(username, text);
 });
 
-mcserver.on('user_connect', function(user) {
-	frontend.chat(user, 'has connected to minecraft');
+mcserver.on('connect', function(username) {
+	frontend.chat(username, 'has connected to minecraft');
 });
 
-mcserver.on('user_disconnect', function(user) {
-	frontend.chat(user, 'has disconnected from minecraft');
+mcserver.on('disconnect', function(username) {
+	frontend.chat(username, 'has disconnected from minecraft');
 });
 
 // Start
@@ -226,5 +226,5 @@ function on_signal() {
 }
 
 setInterval(function() {
-	mcserver.save_all();
+	mcserver.saveAll();
 }, config.settings.save_interval * 1000);

@@ -9,10 +9,11 @@ var config = require('config').config;
 // The MCServer class implements a wrapper around the minecraft server.
 // The following events are emitted by this class:
 // 'exit' - when the server was terminated by the user (using stop())
-// 'user_connect' (user) - when a user has connected to the minecraft server
-// 'user_disconnect' (user) - when a user has disconnected from the minecraft server
-// 'user_chat' (user, text) - when a user has typed a chat message
-// 'user_cmd' (user, text) - when a user has typed an unknown command
+// 'connect' (username) - when a user has connected to the minecraft server
+// 'disconnect' (username) - when a user has disconnected from the minecraft server
+// 'chat' (username, text) - when a user has typed a chat message
+// 'cmd' (username, text) - when a user has typed an unknown command
+// 'saved' - when the world has been saved
 function MCServer() {
 	// Call super constructor
 	events.EventEmitter.call(this);
@@ -24,24 +25,24 @@ util.inherits(MCServer, events.EventEmitter);
 
 
 // List of handlers to be called when a line in the server log matches the regular expression.
-// Make sure that a handler function of type log_handler_xxx(args) with the same name actually
+// Make sure that a handler function of type logHandlerXXX(args) with the same name actually
 // exists in this class for every registered log handler.
-MCServer.prototype.log_handlers = {
-	log_handler_connect: ".*\\[INFO\\] (.*) \\[.*\\] logged in with entity id \\d+ at .*",
-	log_handler_disconnect: ".*\\[INFO\\] (.*) lost connection:.*",
-	log_handler_user_chat: ".*\\[INFO\\] <(.*)> (.*)",
-	log_handler_user_cmd: ".*\\[INFO\\] (.*) (issued server command|tried command): (.*)",
-	log_handler_save_complete: ".*\\[INFO\\] CONSOLE: Save complete\.",
+MCServer.prototype.logHandlers = {
+	logHandlerConnect: 		".*\\[INFO\\] (.*) \\[.*\\] logged in with entity id \\d+ at .*",
+	logHandlerDisconnect: 	".*\\[INFO\\] (.*) lost connection:.*",
+	logHandlerChat: 		".*\\[INFO\\] <(.*)> (.*)",
+	logHandlerCmd: 			".*\\[INFO\\] (.*) (issued server command|tried command): (.*)",
+	logHandlerSaved: 		".*\\[INFO\\] CONSOLE: Save complete\.",
 }
 
 // Resets the internals (user list etc.)
 MCServer.prototype.reset = function() {
-	this.recv = "";
+	this.receiveBuf = "";
 	this.users = [];
 	this.running = false;
 	this.terminate = false;
-	this.stats_minejs = "";
-	this.stats_mcserver = "";
+	this.statsNode = "";
+	this.statsMCServer = "";
 }
 
 // Starts the minecraft server
@@ -82,7 +83,7 @@ MCServer.prototype.start = function() {
 
 	// Spawn monitor task
 	setInterval(function() {
-		this.update_monitoring();
+		this.updateMonitoring();
 	}.bind(this), 5000);
 }
 
@@ -112,73 +113,71 @@ MCServer.prototype.restart = function() {
 // Commands not yet implemented/obsolete:
 // help, stop, list, time
 
-MCServer.prototype.kick = function(user) {
-	this.send_cmd(['kick', user]);
+MCServer.prototype.kick = function(username) {
+	this.sendCmd(['kick', username]);
 }
 
-MCServer.prototype.ban = function(user) {
-	this.send_cmd(['ban', user]);
+MCServer.prototype.ban = function(username) {
+	this.sendCmd(['ban', username]);
 }
 
-MCServer.prototype.pardon = function(user) {
-	this.send_cmd(['pardon', user]);
+MCServer.prototype.pardon = function(username) {
+	this.sendCmd(['pardon', username]);
 }
 
-MCServer.prototype.ban_ip = function(user) {
-	this.send_cmd(['ban-ip', user]);
+MCServer.prototype.banIP = function(username) {
+	this.sendCmd(['ban-ip', username]);
 }
 
-MCServer.prototype.pardon_ip = function(user) {
-	this.send_cmd(['pardon-ip', user]);
+MCServer.prototype.pardonIP = function(username) {
+	this.sendCmd(['pardon-ip', username]);
 }
 
-MCServer.prototype.op = function(user) {
-	this.send_cmd(['op', user]);
+MCServer.prototype.op = function(username) {
+	this.sendCmd(['op', username]);
 }
 
-MCServer.prototype.deop = function(user) {
-	this.send_cmd(['deop', user]);
+MCServer.prototype.deop = function(username) {
+	this.sendCmd(['deop', username]);
 }
 
-MCServer.prototype.tp = function(user1, user2) {
-	this.send_cmd(['tp', user1, user2]);
+MCServer.prototype.tp = function(username1, username2) {
+	this.sendCmd(['tp', username1, username2]);
 }
 
-MCServer.prototype.give = function(user, id, num) {
-	this.send_cmd(['give', user, id, num]);
+MCServer.prototype.give = function(username, id, num) {
+	this.sendCmd(['give', username, id, num]);
 }
 
-MCServer.prototype.tell = function(user, text) {
-	this.send_cmd(['tell', user, text]);
+MCServer.prototype.tell = function(username, text) {
+	this.sendCmd(['tell', username, text]);
 }
 
 MCServer.prototype.say = function(text) {
-	this.send_cmd(['say', text]);
+	this.sendCmd(['say', text]);
 }
 
-MCServer.prototype.save_all = function() {
-	this.send_cmd(['save-all']);
+MCServer.prototype.saveAll = function() {
+	this.sendCmd(['save-all']);
 }
 
-MCServer.prototype.save_off = function() {
-	this.send_cmd(['save-off']);
+MCServer.prototype.saveOff = function() {
+	this.sendCmd(['save-off']);
 }
 
-MCServer.prototype.save_on = function() {
-	this.send_cmd(['save-on']);
+MCServer.prototype.saveOn = function() {
+	this.sendCmd(['save-on']);
 }
-
-
 
 // Implementation -----------------------------------------------------------
 
 // Called regularly to collect monitoring information
-MCServer.prototype.update_monitoring = function() {
-	this.stats_minejs = util.inspect(process.memoryUsage());
-	this.stats_mcserver = "";
+MCServer.prototype.updateMonitoring = function() {
+	this.statsNode = util.inspect(process.memoryUsage());
+	this.statsMCServer = "";
 	var jstat = spawn('/bin/sh', ['-c', 'jstat -gcutil ' + this.process.pid]); 
 	jstat.stdout.on('data', function(data) {
-		this.stats_mcserver += data.toString('ascii');
+		this.statsMCServer += data.toString('ascii');
 	}.bind(this));
 	jstat.on('exit', function(code) {
 		// nothing
@@ -190,20 +189,21 @@ MCServer.prototype.receive = function(data) {
 	for (var i = 0; i < data.length; i++) {
 		var c = data.toString('ascii', i, i + 1);
 		if (c == '\n') {
-			this.receive_line(this.recv);
-			this.recv = "";
-		} else
-			this.recv += c;
+			this.receiveLine(this.receiveBuf);
+			this.receiveBuf = '';
+		} else {
+			this.receiveBuf += c;
+		}
 	}
 }
 
 // Called for every new received line from the server's STDOUT and STDERR
-MCServer.prototype.receive_line = function(line) {
-	this.emit('data', this.recv);
+MCServer.prototype.receiveLine = function(line) {
+	this.emit('data', line);
 	
 	// Check log handlers for matches
-	for (handler in this.log_handlers) {
-		var m = this.recv.match(this.log_handlers[handler]);
+	for (handler in this.logHandlers) {
+		var m = line.match(this.logHandlers[handler]);
 		if (m) {
 			var args = m.splice(1, m.length - 1);
 			this[handler](args);
@@ -213,33 +213,33 @@ MCServer.prototype.receive_line = function(line) {
 	
 // Log output handlers ------------------------------------------------------
 	
-MCServer.prototype.log_handler_connect = function(args) {
-	var user = args[0];
-	this.users.push(user);
-	this.emit('user_connect', user);
+MCServer.prototype.logHandlerConnect = function(args) {
+	var username = args[0];
+	this.users.push(username);
+	this.emit('connect', username);
 }
 
-MCServer.prototype.log_handler_disconnect = function(args) {
-	var user = args[0];
+MCServer.prototype.logHandlerDisconnect = function(args) {
+	var username = args[0];
 	this.users.splice(this.users.indexOf(user), 1);
-	this.emit('user_disconnect', user);
+	this.emit('disconnect', username);
 }
 
-MCServer.prototype.log_handler_user_chat = function(args) {
-	this.emit('user_chat', args[0], args[1]);
+MCServer.prototype.logHandlerChat = function(args) {
+	this.emit('chat', args[0], args[1]);
 }
 
-MCServer.prototype.log_handler_user_cmd = function(args) {
-	this.emit('user_cmd', args[0], args[2]);
+MCServer.prototype.logHandlerCmd = function(args) {
+	this.emit('cmd', args[0], args[2]);
 }
 
-MCServer.prototype.log_handler_save_complete = function(args) {
-	this.emit('save_complete');
+MCServer.prototype.logHandlerSaved = function(args) {
+	this.emit('saved');
 }
 
 // Implementation -----------------------------------------------------------
 
-MCServer.prototype.send_cmd = function(args) {
+MCServer.prototype.sendCmd = function(args) {
 	if (!this.running)
 		return;
 	this.process.stdin.write(args.join(' ') + '\n');

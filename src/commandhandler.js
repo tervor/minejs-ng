@@ -303,12 +303,12 @@ CommandHandler.prototype.cmd_save = function(user, mode, args) {
 		return "invalid params";
 	switch (args[0]) {
 	case 'on':
-		this.mcserver.save_on();
-		this.mcserver.save_all();
+		this.mcserver.saveOn();
+		this.mcserver.saveAll();
 		break;
 	case 'off':
-		this.mcserver.save_off();
-		this.mcserver.save_all();
+		this.mcserver.saveOff();
+		this.mcserver.saveAll();
 		break;
 	default:
 		return "invalid action";
