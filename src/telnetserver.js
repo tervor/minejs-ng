@@ -5,7 +5,7 @@ var util = require('util');
 
 var config = require('config').config;
 
-
+// The TelnetClient class represents a single telnet client
 function TelnetClient(server, socket) {
 	this.server = server;
 	this.socket = socket;
@@ -34,7 +34,11 @@ TelnetClient.prototype.receiveLine = function(line) {
 	}
 }
 
-// Constructor
+// The TelnetServer class implements a simple telnet server.
+// The following events are emitted by this class:
+// 'connect' (client) - when a client has connected
+// 'disconnect' (client) - when a client has disconnected
+// 'data' (client, text) - when client has entered text
 function TelnetServer() {
 	events.EventEmitter.call(this);
 	this.reset();
