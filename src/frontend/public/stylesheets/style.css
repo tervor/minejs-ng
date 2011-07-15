@@ -45,6 +45,17 @@ body {
 	color: blue;
 }
 
+#chat_text {
+	width: 800px;
+	height: 200px;
+}
+
+#chat_output {
+	width: 800px;
+	height: 200px;
+	overflow: scroll;
+}
+
 #items .box {
     cursor: pointer;
     width:85px;

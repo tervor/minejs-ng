@@ -1,5 +1,6 @@
 
 var net = require('net');
+var url = require('url');
 var events = require('events');
 var util = require('util');
 var express = require('express');
@@ -9,7 +10,11 @@ require('express-resource');
 
 var config = require('config').config;
 
+var self = null;
+
 var app = express.createServer();
+
+var sessionStore = new MemStore({ reapInterval: 6000 * 10 });
 
 app.configure(function() {
 	app.use(express.logger());
@@ -18,7 +23,7 @@ app.configure(function() {
 	app.use(express.cookieParser());
 	app.use(express.session({
 		secret: 'minejsforpresident',
-		store: MemStore({reapInterval: 6000 * 10}),
+		store: sessionStore,
 	}));
 });
 
@@ -67,6 +72,21 @@ function requiresLogin(req, res, next) {
 		res.redirect('sessions/new?redir=' + req.url);
 	}
 };
+
+// Configuration
+
+// Dynamically create javascript file containing client-side configuration
+app.get('/scripts/config.js', function(req, res) {
+	// Variables exported to the client-side
+	var vars = {
+		sid: req.sessionID || '',
+		user: req.session.user.name,
+		host: [ 'http://', config.socket.host, ':', config.socket.port ].join(''),
+	};
+	
+	// Create javascript snippet containing the variables
+	res.end('{ config = ' + JSON.stringify(vars) + '; }');
+});
 
 // Session controller
 
@@ -130,31 +150,70 @@ app.get('/users', requiresLogin, function(req, res) {
 });
 */
 
-// Socket.IO server
-
-var io = require('socket.io').listen(9000);
-
-io.sockets.on('connection', function (socket) {
-	socket.emit('news', { hello: 'world' });
-	socket.on('my other event', function (data) {
-		console.log(data);
-	});
-});
 
 app.listen(8008);
 
+// Socket.IO server
 
+function FrontendClient(socket, user) {
+	this.socket = socket;
+	this.user = user;
+	
+	this.chat('console', 'Welcome to the minejs chat');
+	
+	this.socket.on('chat', function(data) {
+		console.log(data.text);
+		this.socket.broadcast.emit('chat', { text: data.text });
+		instance.emit('chat', this, data.text);
+	}.bind(this));
+}
+
+FrontendClient.prototype.chat = function(user, text) {
+	this.socket.emit('chat', { user: user, text: text });
+}
+
+io = require('socket.io').listen(config.socket.port, config.socket.host);
+
+io.configure(function() {
+	io.set('log level', 3);
+});
+
+io.sockets.on('connection', function (socket) {
+	socket.on('sid', function(data) {
+		sessionStore.get(data.sid, function(error, session) {
+			if (session && session.user) {
+				var client = new FrontendClient(socket, session.user);
+				instance.clients.push(client);
+				socket.emit('accept');
+				socket.client = client;
+				instance.emit('connect', client);
+			} else {
+				socket.emit('deny');
+			}
+	    }.bind(socket));
+	}.bind(socket));
+	socket.on('disconnect', function(data) {
+		if (socket.client) {
+			instance.clients.splice(instance.clients.indexOf(socket.client), 1);
+			instance.emit('disconnect', socket.client);
+		}
+	});
+});
 
 
 // Constructor
 function Frontend() {
 	events.EventEmitter.call(this);
+	this.clients = [];
 };
 
 util.inherits(Frontend, events.EventEmitter);
 
-function createFrontend() {
-	return new Frontend();
+Frontend.prototype.chat = function(user, text) {
+	for (var i = 0; i < this.clients.length; i++)
+		this.clients[i].chat(user, text);
 }
 
-module.exports.createFrontend = createFrontend;
+var instance = new Frontend();
+
+module.exports.instance = instance;

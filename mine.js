@@ -70,7 +70,7 @@ mcserver.on('user_connect', function(user) {
 });
 
 mcserver.on('user_disconnect', function(user) {
-	log.info("User '" + user + "' has disconnected to minecraft");
+	log.info("User '" + user + "' has disconnected from minecraft");
 });
 
 mcserver.on('user_chat', function(user, text) {
@@ -116,7 +116,7 @@ telnetserver.on('connect', function(session) {
 	}
 });
 
-telnetserver.on('disconnect', function(session){
+telnetserver.on('disconnect', function(session) {
 	log.info("User '" + session.user + "' has disconnected via telnet");
 });
 
@@ -170,12 +170,37 @@ http.createServer(function (req, res) {
 	}
 }).listen(config.web.port);
 
-// Create frontend
-var frontend = require('frontend/frontend').createFrontend();
-
 // Create command handler
 var commandHandler = require('commandhandler').createCommandHandler(mcserver, userList, itemList, serverProperties);
 
+// Create frontend
+var frontend = require('frontend/frontend').instance;
+
+frontend.on('connect', function(client) {
+	log.info("User '" + client.user.name + "' has connected via socket.io");
+	mcserver.say('<' + client.user.name + '> has connected to minejs');
+});
+
+frontend.on('disconnect', function(client) {
+	log.info("User '" + client.user.name + "' has disconnected via socket.io");
+	mcserver.say('<' + client.user.name + '> has disconnected from minejs');
+});
+
+frontend.on('chat', function(client, text) {
+	mcserver.say('<' + client.user.name + '> ' + text);
+});
+
+mcserver.on('user_chat', function(user, text) {
+	frontend.chat(user, text);
+});
+
+mcserver.on('user_connect', function(user) {
+	frontend.chat(user, 'has connected to minecraft');
+});
+
+mcserver.on('user_disconnect', function(user) {
+	frontend.chat(user, 'has disconnected from minecraft');
+});
 
 // Start
 mcserver.start();

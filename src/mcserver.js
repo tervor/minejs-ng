@@ -110,7 +110,7 @@ MCServer.prototype.restart = function() {
 // Minecraft server native commands -----------------------------------------
 
 // Commands not yet implemented/obsolete:
-// help, stop, save-all, save-off, save-on, list, time
+// help, stop, list, time
 
 MCServer.prototype.kick = function(user) {
 	this.send_cmd(['kick', user]);
