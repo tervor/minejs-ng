@@ -175,7 +175,7 @@ FrontendClient.prototype.chat = function(username, text) {
 io = require('socket.io').listen(config.socket.port, config.socket.host);
 
 io.configure(function() {
-	io.set('log level', 3);
+	io.set('log level', 0);
 });
 
 io.sockets.on('connection', function (socket) {

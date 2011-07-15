@@ -30,6 +30,8 @@ $(document).ready(function() {
 		if (e.which == 13) {
 			var input = $('#chat_input');
 			var text = input.val().toString();
+			if (text.length > 200)
+				text = text.substr(0, 200);
 			chatWrite(config.user, text);
 			socket.emit('chat', { text: text});
 			input.val('');
