@@ -55,8 +55,8 @@ var mcserver = require('mcserver').createMCServer();
 
 mcserver.on('data', function(data) {
 	log.info("minecraft: " + data);
-	for (var i = 0; i < monitorSessions.length; i++)
-		monitorSessions[i].socket.write(data + "\n");
+	for (var i = 0; i < monitorTelnetClients.length; i++)
+		monitorTelnetClients[i].socket.write(data + "\n");
 });
 
 mcserver.on('exit', function() {
@@ -103,42 +103,42 @@ userList.on('userAchievedItem', function(user, id) {
 // Create telnet server
 var telnetserver = require('telnetserver.js').createTelnetServer();
 
-// List of telnet monitor sessions
-var monitorSessions = [];
+// List of telnet monitor clients
+var monitorTelnetClients = [];
 
-telnetserver.on('connect', function(session) {
-	log.info("User '" + session.user + "' has connected via telnet");
-	if (session.user == "monitor") {
-		session.socket.write("Monitoring minecraft server\n");
-		monitorSessions.push(session);
-	} else if (userList.userByName(session.user) == null) {
-		session.socket.end("Unknown user!\n");
+telnetserver.on('connect', function(client) {
+	log.info("User '" + client.username + "' has connected via telnet");
+	if (client.username == "monitor") {
+		client.socket.write("Monitoring minecraft server\n");
+		monitorTelnetClients.push(client);
+	} else if (userList.userByName(client.username) == null) {
+		client.socket.end("Unknown user!\n");
 	}
 });
 
-telnetserver.on('disconnect', function(session) {
-	log.info("User '" + session.user + "' has disconnected via telnet");
+telnetserver.on('disconnect', function(client) {
+	log.info("User '" + client.username + "' has disconnected via telnet");
 });
 
-telnetserver.on('data', function(session, text) {
+telnetserver.on('data', function(client, text) {
 	if (text == "exit") {
-		session.socket.end("Terminating\n");
+		client.socket.end("Terminating\n");
 		return;
 	}
 
-	if (session.user == "monitor") {
+	if (client.username == "monitor") {
 		mcserver.process.stdin.write(text + "\n");
 		return;
 	}
 	
-	log.info("User '" + session.user + "' has issued command '" + text + "' via telnet");
-	var ret = commandHandler.parse_execute(session.user, 'telnet', text);
-	session.socket.write(ret + "\n");
+	log.info("User '" + client.username + "' has issued command '" + text + "' via telnet");
+	var ret = commandHandler.parse_execute(client.username, 'telnet', text);
+	client.socket.write(ret + "\n");
 });
 
-telnetserver.on('end', function(session) {
-	if (session.user == "monitor")
-		monitorSessions.splice(monitorSessions.indexOf(session), 1);
+telnetserver.on('end', function(client) {
+	if (client.username == "monitor")
+		monitorTelnetClients.splice(monitorTelnetClients.indexOf(client), 1);
 });
 
 

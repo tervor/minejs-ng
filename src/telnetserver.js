@@ -6,10 +6,10 @@ var util = require('util');
 var config = require('config').config;
 
 
-function Session(server, socket) {
+function TelnetClient(server, socket) {
 	this.server = server;
 	this.socket = socket;
-	this.user = null;
+	this.username = null;
 	
 	this.socket.write("Welcome to minejs, enter 'help' for more information\n");
 	this.socket.write("Please enter your username: ");
@@ -25,9 +25,9 @@ function Session(server, socket) {
 	}.bind(this));
 }
 
-Session.prototype.receiveLine = function(line) {
-	if (this.user == null) {
-		this.user = line;
+TelnetClient.prototype.receiveLine = function(line) {
+	if (this.username == null) {
+		this.username = line;
 		this.server.emit('connect', this);
 	} else {
 		this.server.emit('data', this, line);
@@ -60,7 +60,7 @@ TelnetServer.prototype.start = function() {
 	
 	// Start tcp server
 	this.server = net.createServer(function(socket) {
-		var session = new Session(this, socket);
+		var client = new TelnetClient(this, socket);
 	}.bind(this)).listen(config.telnet.port);
 },
 
