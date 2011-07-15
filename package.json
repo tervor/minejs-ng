@@ -1,0 +1,9 @@
+{
+	"name": "minejs",
+	"description": "minecraft server wrapper with web frontend",
+	"version": "0.0.1",
+	"author": "Simon Kallweit <simon@weirdsoft.ch>",
+	"repository": "git://github.com/escii/minejs",
+	"homepage": "https://github.com/escii/minejs",
+	"keywords": ["minecarft", "minejs"]
+}
