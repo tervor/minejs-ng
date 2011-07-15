@@ -11,7 +11,7 @@
 		"express": ">=2.4.2",
 		"express-resource": ">=0.2.1",
 		"jade": ">=0.12.4",
-		"socket.io": ">=0.7.6",
+		"socket.io": "=0.7.6",
 		"nbt-js": "https://github.com/sjmulder/nbt-js/tarball/master",
 		"compress": "https://github.com/egorich239/node-compress/tarball/master/v0.1.10"
 	}
