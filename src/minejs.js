@@ -70,7 +70,7 @@ mcserver.on('connect', function(username) {
 	var user = userList.userByName(username);
 	if (user) {
 		user.isPlaying = true;
-		frontend.notify('updateUserList');
+		userList.changed();
 	}
 });
 
@@ -79,7 +79,7 @@ mcserver.on('disconnect', function(username) {
 	var user = userList.userByName(username);
 	if (user) {
 		user.isPlaying = false;
-		frontend.notify('updateUserList');
+		userList.changed();
 	}
 });
 
@@ -192,7 +192,7 @@ frontend.on('connect', function(client) {
 	client.sendChatHistory();
 	frontend.chat(client.user.name, 'has connected');
 	client.user.isFrontend = true;
-	frontend.notify('updateUserList');
+	userList.changed();
 });
 
 frontend.on('disconnect', function(client) {
@@ -200,7 +200,7 @@ frontend.on('disconnect', function(client) {
 	mcserver.say('<' + client.user.name + '> has disconnected from minejs');
 	frontend.chat(client.user.name, 'has disconnected');
 	client.user.isFrontend = false;
-	frontend.notify('updateUserList');
+	userList.changed();
 });
 
 frontend.on('chat', function(client, text) {
@@ -218,6 +218,10 @@ mcserver.on('connect', function(username) {
 mcserver.on('disconnect', function(username) {
 	frontend.chat(username, 'has disconnected from minecraft');
 });
+
+userList.on('changed', function() {
+	frontend.notify('userListChanged');
+})
 
 // Start
 mcserver.start();

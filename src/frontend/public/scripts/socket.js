@@ -24,7 +24,7 @@ function initSocket() {
 		
 	});
 	socket.on('notify', function(data) {
-		if (data.action == 'updateUserList')
+		if (data.action == 'userListChanged')
 			updateUserList();
 	});
 }

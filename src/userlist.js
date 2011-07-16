@@ -114,8 +114,28 @@ UserList.prototype.load = function() {
 	// Set admin properties
 	admin.password = config.settings.admin_password;
 	admin.role = "superadmin";
+}
+
+// Saves the user list
+UserList.prototype.save = function() {
+	var users = {};
+	for (var k1 in this.users) {
+		var user = this.users[k1];
+		users[k1] = {};
+		for (var k2 in user) {
+			if (User.prototype.savedVars.has(k2))
+				users[k1][k2] = user[k2];
+		}
+	}
 	
-	return;
+	fs.writeFileSync(this.filenameUserList, JSON.stringify(users));
+	
+	// Create white list based on user list
+	fs.writeFileSync(this.filenameWhiteList, this.userNames().join('\n'), 'ascii');
+}
+
+UserList.prototype.changed = function() {
+	this.emit('changed');
 }
 
 // Load additional user properties from player dat files.
@@ -165,24 +185,6 @@ UserList.prototype.updateUserDat = function(user, dat) {
 	user.pos = dat.Pos;
 	log.debug(user.name + " pos: " + user.pos);
 //	log.debug(util.inspect(dat));
-}
-
-// Saves the user list
-UserList.prototype.save = function() {
-	var users = {};
-	for (var k1 in this.users) {
-		var user = this.users[k1];
-		users[k1] = {};
-		for (var k2 in user) {
-			if (User.prototype.savedVars.has(k2))
-				users[k1][k2] = user[k2];
-		}
-	}
-	
-	fs.writeFileSync(this.filenameUserList, JSON.stringify(users));
-	
-	// Create white list based on user list
-	fs.writeFileSync(this.filenameWhiteList, this.userNames().join('\n'), 'ascii');
 }
 
 var instance = new UserList();
