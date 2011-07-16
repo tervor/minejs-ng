@@ -7,6 +7,23 @@ function chatWrite(user, text) {
 	element.attr({ scrollTop: element.attr("scrollHeight") });
 }
 
+function updateUserList() {
+	$.getJSON('/users.json', function(data) {
+		console.log('JSON success');
+		console.log(data);
+		var html = [];
+		$.each(data, function(key, user) {
+			html += user.name;
+			if (user.isFrontend)
+				html += ' [frontend]';
+			if (user.isPlaying)
+				html += ' [playing]';
+			html += '<br/>'
+		});
+		$('#userlist').html(html);
+	});
+}
+
 $(document).ready(function() {
 	if (socket == null) {
 		socket = io.connect(config.host);
@@ -25,6 +42,13 @@ $(document).ready(function() {
 	socket.on('chat', function(data) {
 		chatWrite(data.user, data.text);
 	});
+	socket.on('users', function(data) {
+		
+	});
+	socket.on('notify', function(data) {
+		if (data.action == 'updateUserList')
+			updateUserList();
+	});
 	
 	$('#chat_input').keypress(function(e) {
 		if (e.which == 13) {
@@ -32,9 +56,15 @@ $(document).ready(function() {
 			var text = input.val().toString();
 			if (text.length > 200)
 				text = text.substr(0, 200);
-			chatWrite(config.user, text);
-			socket.emit('chat', { text: text});
-			input.val('');
+			if (text.length > 0) {
+				chatWrite(config.user, text);
+				socket.emit('chat', { text: text});
+				input.val('');
+			}
 		}
 	});
+	
+	updateUserList();
+	
+	
 });

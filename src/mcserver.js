@@ -222,7 +222,7 @@ MCServer.prototype.logHandlerConnect = function(args) {
 
 MCServer.prototype.logHandlerDisconnect = function(args) {
 	var username = args[0];
-	this.users.splice(this.users.indexOf(user), 1);
+	this.users.splice(this.users.indexOf(username), 1);
 	this.emit('disconnect', username);
 }
 

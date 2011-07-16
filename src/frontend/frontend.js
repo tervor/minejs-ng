@@ -119,45 +119,22 @@ app.post('/sessions', function(req, res) {
 // Home page controller
 
 app.get('/', requiresLogin, function(req, res) {
-	res.redirect('/chat');
+	res.render('index');
 });
 
-// Chat page controller
-
-app.get('/chat', requiresLogin, function(req, res) {
-	res.render('chat/index');
-});
-
-// Items page controller
-
-var itemList = require('itemlist').instance;
-
-app.get('/items', requiresLogin, function(req, res) {
-	res.render('items/index', { locals: {
-		items: itemList.items,
-	}});
-});
-
-// User page controller
+// Resources
 
 app.resource('users', require('./resources/users'), requiresLogin);
 
-/*
-app.get('/users', requiresLogin, function(req, res) {
-	res.render('users/index', { locals: {
-		users: userList.users,
-	}});
-});
-*/
-
+var itemList = require('itemlist').instance;
 
 app.listen(8008);
 
 // Socket.IO server
 
-function FrontendClient(socket, user) {
+function FrontendClient(socket, username) {
 	this.socket = socket;
-	this.user = user;
+	this.user = userList.userByName(username);
 	
 	this.chat('console', 'Welcome to the minejs chat');
 	
@@ -172,6 +149,10 @@ FrontendClient.prototype.chat = function(username, text) {
 	this.socket.emit('chat', { user: username, text: text });
 }
 
+FrontendClient.prototype.notify = function(action, args) {
+	this.socket.emit('notify', { action: action, args: args });
+}
+
 io = require('socket.io').listen(config.socket.port, config.socket.host);
 
 io.configure(function() {
@@ -182,7 +163,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('sid', function(data) {
 		sessionStore.get(data.sid, function(error, session) {
 			if (session && session.user) {
-				var client = new FrontendClient(socket, session.user);
+				var client = new FrontendClient(socket, session.user.name);
 				instance.clients.push(client);
 				socket.emit('accept');
 				socket.client = client;
@@ -212,6 +193,11 @@ util.inherits(Frontend, events.EventEmitter);
 Frontend.prototype.chat = function(user, text) {
 	for (var i = 0; i < this.clients.length; i++)
 		this.clients[i].chat(user, text);
+}
+
+Frontend.prototype.notify = function(action, args) {
+	for (var i = 0; i < this.clients.length; i++)
+		this.clients[i].notify(action, args);
 }
 
 var instance = new Frontend();

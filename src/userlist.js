@@ -14,7 +14,11 @@ function User(name) {
 	this.role = config.settings.default_user_role;
 	this.pos = [ 0.0, 0.0, 0.0 ];
 	this.achievedItems = [];
+	this.isPlaying = false;
+	this.isFrontend = false;
 }
+
+User.prototype.savedVars = ['name', 'password', 'role', 'pos', 'achievedItems'];
 
 User.prototype.init = function(settings) {
 	var properties = ['password', 'datfile', 'role', 'pos'];
@@ -165,7 +169,17 @@ UserList.prototype.updateUserDat = function(user, dat) {
 
 // Saves the user list
 UserList.prototype.save = function() {
-	fs.writeFileSync(this.filenameUserList, JSON.stringify(this.users));
+	var users = {};
+	for (var k1 in this.users) {
+		var user = this.users[k1];
+		users[k1] = {};
+		for (var k2 in user) {
+			if (User.prototype.savedVars.has(k2))
+				users[k1][k2] = user[k2];
+		}
+	}
+	
+	fs.writeFileSync(this.filenameUserList, JSON.stringify(users));
 	
 	// Create white list based on user list
 	fs.writeFileSync(this.filenameWhiteList, this.userNames().join('\n'), 'ascii');

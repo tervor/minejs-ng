@@ -67,10 +67,20 @@ mcserver.on('connect', function(username) {
 	log.info("User '" + username + "' has connected to minecraft");
 	mcserver.tell(username, "This server runs minejs " + version);
 	mcserver.tell(username, "Enter '//help' for more information");
+	var user = userList.userByName(username);
+	if (user) {
+		user.isPlaying = true;
+		frontend.notify('updateUserList');
+	}
 });
 
 mcserver.on('disconnect', function(username) {
 	log.info("User '" + username + "' has disconnected from minecraft");
+	var user = userList.userByName(username);
+	if (user) {
+		user.isPlaying = false;
+		frontend.notify('updateUserList');
+	}
 });
 
 mcserver.on('chat', function(username, text) {
@@ -179,11 +189,17 @@ var frontend = require('frontend/frontend').instance;
 frontend.on('connect', function(client) {
 	log.info("User '" + client.user.name + "' has connected via socket.io");
 	mcserver.say('<' + client.user.name + '> has connected to minejs');
+	frontend.chat(client.user.name, 'has connected');
+	client.user.isFrontend = true;
+	frontend.notify('updateUserList');
 });
 
 frontend.on('disconnect', function(client) {
 	log.info("User '" + client.user.name + "' has disconnected via socket.io");
 	mcserver.say('<' + client.user.name + '> has disconnected from minejs');
+	frontend.chat(client.user.name, 'has disconnected');
+	client.user.isFrontend = false;
+	frontend.notify('updateUserList');
 });
 
 frontend.on('chat', function(client, text) {

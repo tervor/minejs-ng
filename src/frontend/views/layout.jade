@@ -2,10 +2,8 @@
 html
 	head
 		link(rel='stylesheet', href='/stylesheets/style.css')
-		script(src='scripts/socket.io.js')
 		script(src='scripts/jquery-1.5.1.min.js')
 		script(src='scripts/jquery.cookie.js')
-		script(src='scripts/config.js')
 		title minejs frontend
 
 	body
@@ -17,9 +15,4 @@ html
 					a(href='/sessions/destroy') logout
 			- if(flash.warn)
 				p#warn= flash.warn
-			#nav
-				ul
-					- each page in pages
-						li
-							a(href=page.link)= page.title
 			#content!= body
