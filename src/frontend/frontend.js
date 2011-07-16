@@ -124,7 +124,9 @@ app.get('/', requiresLogin, function(req, res) {
 
 // Resources
 
-app.resource('users', require('./resources/users'), requiresLogin);
+// TODO these should need login
+app.resource('users', require('./resources/users'));
+app.resource('items', require('./resources/items'));
 
 var itemList = require('itemlist').instance;
 
