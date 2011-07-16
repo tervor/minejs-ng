@@ -11,7 +11,7 @@ var config = {
 		server_args: ['nogui'],
 	},
 	
-	// Web server configuration options
+	// Web server (commands) configuration options
 	web: {
 		port: 25564,
 	},
@@ -19,6 +19,11 @@ var config = {
 	// Telnet server configuration options
 	telnet: {
 		port: 25563,
+	},
+	
+	// Web server (frontend) configuration options
+	frontend: {
+		port: 8008,
 	},
 	
 	// Socket.IO configuration options

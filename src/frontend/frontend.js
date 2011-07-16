@@ -138,7 +138,7 @@ app.resource('items', require('./resources/items'));
 
 var itemList = require('itemlist').instance;
 
-app.listen(8008);
+app.listen(config.frontend.port);
 
 // Socket.IO server
 
