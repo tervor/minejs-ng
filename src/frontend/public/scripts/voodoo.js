@@ -19,7 +19,7 @@ $(document).ready(function() {
     MaxLimitItems = 2048;
     $("#effect").hide();
     function getItems() {
-        $.getJSON('items.json', function(data) {
+        $.getJSON('/items.json', function(data) {
             $('body').append('<div style="float:left;">total items: ' + data.length + '</div>');
             $.each(data, function(i, item) {
                 drawItem(item.id, item.name, item.amount)
