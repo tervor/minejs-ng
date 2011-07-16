@@ -56,7 +56,7 @@ $(document).ready(function() {
          </div> \
          <div class="minejs" style="float=left;"> \
          <ul id="sortable" style=""></ul> \
-         </div>');
+         </div>'); 
 
 
          }*/
