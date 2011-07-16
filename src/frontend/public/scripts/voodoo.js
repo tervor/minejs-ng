@@ -94,6 +94,11 @@ $(document).ready(function() {
 
 
     });
+    $('#chattrigger').hover(function() {
+
+        $("#chat").show();
+
+    });
 
 $('#chat_input').blur(function() {
   $('#chat').hide();
