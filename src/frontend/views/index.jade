@@ -6,45 +6,45 @@ script(src='/scripts/items.js')
 script(src='/scripts/socket.js')
 script(src='/scripts/main.js')
 script(src='/scripts/voodoo.js')
-h1 Frontend
-		#header
-			#logo
-			#navigation
-			- if(session.user)
-				a(href='/sessions/destroy')
-					#navTabUser
-						#user= session.user.name
-			- else
-				a(href='/login')
-					#navTabUser Login
-			- if(flash.warn)
-				p#warn= flash.warn
-			a(href='/voodoo', title='Dashboard') 
-				#navTab Dashboard
-			a(href='https://oom.ch/wiki/index.php/Minecraft', title='Local Community Minecraft Wiki') 
-				#navTab Wiki
-			a(href='http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal', title='Minecraft Map') 
-				#navTab Map
-			a(href='http://www.minecraft.net/game/', title='Minecraft Browser Client') 
-				#navTab Play
-			a(href='/help', title='View login page') 
-				#navTab Help
-		#effect
-		.ui-widget-content 
-		.ui-corner-all
-			#notify
-		#dashboard
-			#navigation
-				- each user in users
-					a(href='javascript:teleport();')
-						#navTabUser
-							#user= user.name
-			#sortable
-		#livemaps
-		#wikis
-		#chat
-			#userlist
-			#chat_output 
-			input(type='text', name='chat_input', id='chat_input')
-		#chatrigger
-		#footer
+#header
+	#logo
+	#navigation
+	- if(session.user)
+		a(href='/sessions/destroy')
+			#navTabUser
+				#user= session.user.name
+	- else
+		a(href='/login')
+			#navTabUser Login
+	- if(flash.warn)
+		p#warn= flash.warn
+	a(href='/voodoo', title='Dashboard') 
+		#navTab Dashboard
+	a(href='https://oom.ch/wiki/index.php/Minecraft', title='Local Community Minecraft Wiki') 
+		#navTab Wiki
+	a(href='http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal', title='Minecraft Map') 
+		#navTab Map
+	a(href='http://www.minecraft.net/game/', title='Minecraft Browser Client') 
+		#navTab Play
+	a(href='/help', title='View login page') 
+		#navTab Help
+#effect
+.ui-widget-content 
+.ui-corner-all
+	#notify
+#dashboard
+	#navigation
+		- each user in users
+			a(href='javascript:teleport();')
+				#navTabUser
+					#user= user.name
+	#sortable
+#livemaps
+#wikis
+#chat
+	#chat_title minimize
+	#userlist
+	#chat_output 
+	input(type='text', name='chat_input', id='chat_input')
+#chattrigger
+#footer

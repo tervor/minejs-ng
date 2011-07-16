@@ -11,6 +11,7 @@ function initChat() {
 				chatWrite(config.user, text);
 				socket.emit('chat', { text: text});
 				input.val('');
+				
 			}
 		}
 	});
