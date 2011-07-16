@@ -25,37 +25,41 @@ $(document).ready(function() {
     $("#effect").hide();
 
     function renderMain() {
-        console.log("renderbody");
-        $('#body').append('<!--- dirty hack ---> \
-<div class="minejs"><ul id="sortable" style="display: none;"></ul></div> \
-    <div class="header"> \
-            <div class="logo"> \
-                <img src="https://oom.ch/img/oom60.png"> \
-            </div> \
-            <div class="navigation"> \
-                <a href="http://mc.oom.ch/" target="_blank"> \
-                <div id="navigationEntry">Home</div> \
-                </a> \
-                <div id="navigationEntry" onclick="showConsole();">Console</div> \
-                <div id="navigationEntry" onclick="panelMap();">Map</div> \
-                <div id="navigationEntry">Wiki</div> \
-                <div id="navigationEntry"> \
-                <a href="http://www.minecraft.net/game/" target="_blank"> \
-                Minecraft \
-                </a></div> \
-            <div id="navigationEntry">Game</div> \
-            <div id="effect" class="ui-widget-content ui-corner-all"> \
-                <h3 class="ui-widget-header ui-corner-all">Show</h3> \
-            <div id="inform"> \
-                empty \
-            </div> \
+
+        $('body').append('<!--- dirty hack ---> \
+<div id="topnavi"> \
+    <div class="logo"> \
+        <img src="https://oom.ch/img/oom60.png"> \
     </div> \
+    <div class="navigation"> \
+        <a href="http://mc.oom.ch/" target="_blank"> \
+            <div id="navigationEntry">Home</div> \
+        </a> \
+        <div id="navigationEntry" onclick="showConsole();">Console</div> \
+        <div id="navigationEntry" onclick="panelMap();">Map</div> \
+        <div id="navigationEntry">Wiki</div> \
+        <a href="http://www.minecraft.net/game/" target="_blank"> \
+        <div id="navigationEntry"> \
+            Minecraft \
+        </div></a> \
+        <div id="navigationEntry">Game</div> \
+    </div>\
+</div>\
+<div id="effect" class="ui-widget-content ui-corner-all"> \
+    <h3 class="ui-widget-header ui-corner-all">Show</h3> \
+    <div id="inform"> \
+            empty \
+    </div> \
+</div> \
+<div class="minejs" style="float=left;"> \
+        <ul id="sortable" style=""></ul> \
 </div>');
 
-        console.log("renderbody done")
+
     }
 
     function getItems() {
+
         $.getJSON('/items.json', function(data) {
             $('body').append('<div style="float:left;">total items: ' + data.length + '</div>');
             $.each(data, function(i, item) {
@@ -63,22 +67,20 @@ $(document).ready(function() {
             });
             drawItem("9999", "paypal", "1")
         });
+
     }
 
     function drawItem(id, name, amount) {
+
         $('#sortable').append('<!--add item---> \
             <div id="GridBox" class="GridBox ItemGridBox"> \
-            <div id="ctlMinus" class="ctlPlMi" onclick="calAmount(' + id + ' ,\'-'\)">-</div> \
-            <div id="varAmount-\' + id +'" class="varAmountbox" DISABLED  onclick="actGiveItem(\' id + \')">' + amount + ' < /div> \
-            <div id="ctlPlus" class="ctlPlMi" onclick="calAmount(\' \ id + '\',\'+\')">+</div> \
-            <div name="IconLayer- \ id + '" onclick="actGiveItem(\' \ id + '\')" > \
-                <div style="padding: 25% 29% 4% 29%;"> \
-                    <img src="/icons/ \ id + '.png" id=="ItemImg- \ id + '" class="STicon" border="0"></div>
-                \
-                    <div name="Namelabel- \ id + '"  id="Namelabel- \ id + '" class="Namelabel">'+ name + '</div>
-                </div>
-            ');
-
+            <div id="ctlMinus" class="ctlPlMi" onclick="calAmount('+id+',\'-\')">-</div> \
+            <div id="varAmount-' + id +'" class="varAmountbox"  onclick="actGiveItem('+id+')">'+amount+'</div> \
+            <div id="ctlPlus" class="ctlPlMi" onclick="calAmount('+id + ',\'+\')">+</div> \
+            <div name="IconLayer-'+id+'" onclick="actGiveItem('+id +')" > \
+            <div style="padding: 25% 29% 4% 29%;"> \
+            <img src="/icons/'+id+'.png" id=="ItemImg-'+id+'" class="STicon" border="0"></div> \
+            <div name="Namelabel-'+id+'"  id="Namelabel-'+id+'" class="Namelabel">'+name+'</div></div>');
 
             //register handlers
             //$("div.GridBox").hover(function () { $(this).effect("pulsate", { times:0 }, 2); });
@@ -103,7 +105,7 @@ $(document).ready(function() {
             });
 
             function actGiveItem(id) {
-                var amount = parseInt(parseFloat($('#varAmount- \ id).text()));
+                var amount = parseInt(parseFloat($('#varAmount-'+id).text()));
                 console.log("DEBUG id is: " + id + " amount is: " + amount);
                 inform("fade", "DEBUG id is: " + id + " amount is: " + amount);
                 }
@@ -139,7 +141,7 @@ $(document).ready(function() {
 
 
             function calAmount(id, action) {
-                var calNum = parseInt(parseFloat($('#varAmount- \ id).text()));
+                var calNum = parseInt(parseFloat($('#varAmount-'+id).text()));
                 switch (action) {
                 case '+':
                 if (calNum == MaxLimitItems) {
@@ -170,7 +172,7 @@ $(document).ready(function() {
                 alert("Something went wrong in calAmount")
                 }
                 console.log("DEBUG id: " + id + " action: " + action + " calNum: " + calNum);
-                $('#varAmount- \ id).text(Math.floor(calNum));
+                $('#varAmount-'+id).text(Math.floor(calNum));
                 }
 
                 function panelMap() {
@@ -191,7 +193,7 @@ $(document).ready(function() {
                      $("map").remove();
                      } else {* /
                     //       $('body').append('<div id="map" class="map"><iframe src="http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal" class="framer"></iframe></div>');
-                    //}};
+                    //}};*/
 
                 }
 
