@@ -23,6 +23,9 @@ $(document).ready(function() {
         $("#effect").hide();
 
         $('#chat_input').focus();
+        $('#chat')
+            .draggable()
+            .resizable({ grid: [50, 50] });
 
         /*  function renderMain() {
 
