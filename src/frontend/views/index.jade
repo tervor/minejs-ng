@@ -28,10 +28,8 @@ script(src='/scripts/voodoo.js')
 		#navTab Play
 	a(href='/help', title='View login page') 
 		#navTab Help
-#effect
-.ui-widget-content 
-.ui-corner-all
-	#notify
+
+
 #dashboard
 	#navigation
 		- each user in users
@@ -48,3 +46,7 @@ script(src='/scripts/voodoo.js')
 	input(type='text', name='chat_input', id='chat_input')
 #chattrigger
 #footer
+#effect
+.ui-widget-content
+.ui-corner-all
+	#notify
