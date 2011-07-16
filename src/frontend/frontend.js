@@ -144,6 +144,7 @@ function FrontendClient(socket, username) {
 		console.log(data.text);
 		this.socket.broadcast.emit('chat', { user: this.user.name, text: data.text });
 		instance.emit('chat', this, data.text);
+		instance.addChatHistory(this.user.name, data.text);
 	}.bind(this));
 }
 
@@ -153,6 +154,13 @@ FrontendClient.prototype.chat = function(username, text) {
 
 FrontendClient.prototype.notify = function(action, args) {
 	this.socket.emit('notify', { action: action, args: args });
+}
+
+FrontendClient.prototype.sendChatHistory = function() {
+	for (var i = 0; i < instance.chatHistory.length; i++) {
+		var item = instance.chatHistory[i];
+		this.chat(item.username, item.text);
+	}
 }
 
 io = require('socket.io').listen(config.socket.port, config.socket.host);
@@ -188,18 +196,29 @@ io.sockets.on('connection', function (socket) {
 function Frontend() {
 	events.EventEmitter.call(this);
 	this.clients = [];
+	this.chatHistory = [];
 };
 
 util.inherits(Frontend, events.EventEmitter);
 
-Frontend.prototype.chat = function(user, text) {
+Frontend.prototype.chatHistoryLength = 10;
+
+Frontend.prototype.chat = function(username, text) {
+	this.addChatHistory(username, text);
 	for (var i = 0; i < this.clients.length; i++)
-		this.clients[i].chat(user, text);
+		this.clients[i].chat(username, text);
 }
 
 Frontend.prototype.notify = function(action, args) {
 	for (var i = 0; i < this.clients.length; i++)
 		this.clients[i].notify(action, args);
+}
+
+Frontend.prototype.addChatHistory = function(username, text) {
+	// Keep messages in history
+	this.chatHistory.push({ username: username, text: text });
+	if (this.chatHistory.length > this.chatHistoryLength)
+		this.chatHistory.splice(0, this.chatHistory.length - this.chatHistoryLength);
 }
 
 var instance = new Frontend();
