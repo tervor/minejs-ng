@@ -5,4 +5,5 @@ $(document).ready(function() {
 	initChat();
 	
 	updateUserList();
+	updateItemList();
 });
