@@ -117,18 +117,9 @@ app.post('/sessions', function(req, res) {
 });
 
 // Home page controller
-
 app.get('/', requiresLogin, function(req, res) {
 	res.render('index');
 });
-
-
-// Home page controller
-
-app.get('/voodoo', requiresLogin, function(req, res) {
-	res.render('voodoo');
-});
-
 
 // Resources
 

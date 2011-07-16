@@ -16,15 +16,13 @@ $(document).ready(function() {
      */
 
 
-    renderMain();
-
     getItems();
 
     MaxLimitItems = 2048;
 
     $("#effect").hide();
 
-    function renderMain() {
+/*  function renderMain() {
 
         $('body').append('<!--- dirty hack ---> \
 <div id="topnavi"> \
@@ -33,21 +31,21 @@ $(document).ready(function() {
     </div> \
     <div class="navigation"> \
         <a href="http://mc.oom.ch/" target="_blank"> \
-            <div id="navigationEntry">Home</div> \
+            <div id="navTab">Home</div> \
         </a> \
-        <div id="navigationEntry" onclick="showConsole();">Console</div> \
-        <div id="navigationEntry" onclick="panelMap();">Map</div> \
-        <div id="navigationEntry">Wiki</div> \
+        <div id="navTab" onclick="showConsole();">Console</div> \
+        <div id="navTab" onclick="panelMap();">Map</div> \
+        <div id="navTab">Wiki</div> \
         <a href="http://www.minecraft.net/game/" target="_blank"> \
-        <div id="navigationEntry"> \
+        <div id="navTab"> \
             Minecraft \
         </div></a> \
-        <div id="navigationEntry">Game</div> \
+        <div id="navTab">Game</div> \
     </div>\
 </div>\
 <div id="effect" class="ui-widget-content ui-corner-all"> \
     <h3 class="ui-widget-header ui-corner-all">Show</h3> \
-    <div id="inform"> \
+    <div id="notify"> \
             empty \
     </div> \
 </div> \
@@ -56,7 +54,39 @@ $(document).ready(function() {
 </div>');
 
 
-    }
+    }*/
+
+/*
+$("#chat").hover(
+  function () {
+   $(this)..slideUp("slow");
+  }, 
+  function () {
+	$(this)..slideUp("slow");
+  }
+);
+*/
+$('#chatrigger').slideDown("slow")
+
+$('#chatrigger').click(function() {
+  $('#chat').animate({
+    width: ['toggle', 'swing'],
+    height: ['toggle', 'swing'],
+    opacity: 'toggle'
+  }, 1200, 'linear', function() {
+      $(this).after($('#chat_title').slideDown("slow"));
+  });
+});
+
+$('#chat').click(function() {
+  $('#chat').animate({
+    width: ['toggle', 'swing'],
+    height: ['toggle', 'swing'],
+    opacity: 'toggle'
+  }, 400, 'linear', function() {
+      $(this).after($('#chatrigger').slideDown("slow"));
+  });
+});
 
     function getItems() {
 
@@ -107,14 +137,23 @@ $(document).ready(function() {
             function actGiveItem(id) {
                 var amount = parseInt(parseFloat($('#varAmount-'+id).text()));
                 console.log("DEBUG id is: " + id + " amount is: " + amount);
-                inform("fade", "DEBUG id is: " + id + " amount is: " + amount);
-                }
+                notify("fade", "DEBUG id is: " + id + " amount is: " + amount);
+                //call give?origin=player&name=cobblestone&count=100
+                $.ajax({
+                    url: "http://localhost:8008/give?origin=player&name=cobblestone&count=100",
+                    context: document.body,
+                    success: function(){
+                    //$(this).addClass("done");
+                    console.log("actGiveItem ajax request called back")
+                    }
+                });
+             }
 
-            function inform(effect, content) {
+            function notify(effect, content) {
                 // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide
                 console.log("DEBUG: " + effect);
 
-                $('#inform').text(content);
+                $('#notify').text(content);
                 // most effect types need no options passed by default
                 var options = {};
             // some effects have required parameters
