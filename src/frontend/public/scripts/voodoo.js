@@ -88,14 +88,16 @@ $(document).ready(function() {
     });
 
 
-    $('#chat_tiitle').click(function () {
+    $('#chat_title').click(function () {
 
         $("#chat").hide();
 
 
     });
 
-
+$('#chat_input').blur(function() {
+  $('#chat').hide();
+});
     function getItems() {
 
         $.getJSON('/items.json', function(data) {
@@ -235,7 +237,7 @@ function panelMap() {
 
 function panelConsole() {
 
-    alert("console")
+    alert("console");
     /* if ($("#sortable")) {
      $("map").remove();
      } else {* /
