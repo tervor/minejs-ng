@@ -143,5 +143,13 @@ function showMap() {
 
 
 
+function showMap() {
 
+   /* if ($("#sortable")) {
+        $("map").remove();
+    } else {*/
+        $('body').append('<div id="map" class="map"><iframe src="http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal" class="framer"></iframe></div>');
+    //}};
+
+}
 }

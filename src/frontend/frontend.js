@@ -122,6 +122,14 @@ app.get('/', requiresLogin, function(req, res) {
 	res.render('index');
 });
 
+
+// Home page controller
+
+app.get('/voodoo', requiresLogin, function(req, res) {
+	res.render('voodoo');
+});
+
+
 // Resources
 
 // TODO these should need login
