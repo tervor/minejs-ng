@@ -93,7 +93,7 @@ mcserver.on('cmd', function(username, text) {
 	// Command starts with a / character, otherwise it's invalid
 	if (text.charAt(0) == '/') {
 		text = text.slice(1, text.length);
-		var ret = commandHandler.parse_execute(username, 'console', text);
+		var ret = commandHandler.parseExecute(username, 'console', text);
 		if (ret != null && ret != "success") {
 			var lines = ret.split('\n');
 			for (var i = 0; i < lines.length; i++)
@@ -161,7 +161,7 @@ telnetserver.on('data', function(client, text) {
 	}
 	
 	log.info("User '" + client.username + "' has issued command '" + text + "' via telnet");
-	var ret = commandHandler.parse_execute(client.username, 'telnet', text);
+	var ret = commandHandler.parseExecute(client.username, 'telnet', text);
 	client.socket.write(ret + "\n");
 });
 
@@ -177,26 +177,13 @@ http.createServer(function (req, res) {
 	var u = url.parse(req.url, true);
 	
 	var cmd = u.pathname.substr(1, u.pathname.length);
-	var cmd_handler = commandHandler.cmdHandlerByName(cmd);
-	if (cmd_handler == null) {
-		res.end(JSON.stringify("unknown command"));
-	} else {
-		var user = "none";
-		if (u.query.hasOwnProperty("origin"))
-			user = u.query.origin;
-		var args = [];
-		for (var i = 0; i < cmd_handler.args.length; i++) {
-			var arg = cmd_handler.args[i];
-			if (u.query.hasOwnProperty(arg)) {
-				args.push(u.query[arg]);
-			} else {
-				args.push("");
-			}
-		}
+	
+	var username = 'none';
+	if (u.query.hasOwnProperty('origin'))
+		username = u.query.origin;
 		
-		var ret = commandHandler.execute(user, 'web', cmd, args);
-		res.end(JSON.stringify(ret));
-	}
+	ret = commandHandler.mapExecute(username, 'web', cmd, u.query);
+	res.end(JSON.stringify(ret));
 }).listen(config.web.port);
 
 // Create command handler
@@ -226,6 +213,10 @@ frontend.on('chat', function(client, text) {
 	mcserver.say('<' + client.user.name + '> ' + text);
 });
 
+frontend.on('command', function(client, cmd, args) {
+	commandHandler.mapExecute(client.user.name, 'web', cmd, args);
+});
+
 mcserver.on('chat', function(username, text) {
 	frontend.chat(username, text);
 });
@@ -240,7 +231,7 @@ mcserver.on('disconnect', function(username) {
 
 userList.on('changed', function() {
 	frontend.notify('userListChanged');
-})
+});
 
 // Start
 mcserver.start();

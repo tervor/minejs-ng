@@ -57,9 +57,10 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "Edit server properties" },
 }
 
-// Parses and executes a command
-// Returns null if unknown command, returns string otherwise
-CommandHandler.prototype.parse_execute = function(username, mode, text) {
+// Parses and executes a command.
+// This is normally the entry point for text based interfaces (ingame, telnet).
+// Returns null if unknown command, returns string otherwise.
+CommandHandler.prototype.parseExecute = function(username, mode, text) {
 	// Split values into arguments
 	var args = text.split(' ');
 	var cmd = args[0];
@@ -68,21 +69,47 @@ CommandHandler.prototype.parse_execute = function(username, mode, text) {
 	return this.execute(username, mode, cmd, args);
 }
 
+CommandHandler.prototype.mapExecute = function(username, mode, cmd, args) {
+	var handler = this.cmdHandlerByName(cmd);
+	if (!handler)
+		return 'unknown command';
+		
+	var sortedArgs = [];
+	for (var i = 0; i < handler.args.length; i++) {
+		var arg = handler.args[i];
+		if (args.hasOwnProperty(arg)) {
+			sortedArgs.push(args[arg]);
+		} else {
+			sortedArgs.push('');
+		}
+	}
+
+	return this.execute(username, mode, cmd, sortedArgs);
+}
+
 CommandHandler.prototype.execute = function(username, mode, cmd, args) {
 	// Get user
-	user = this.userList.userByName(username);
-			
-	for (var handler in this.cmd_handlers)
-		if (cmd == this.cmd_handlers[handler].name) {
-			if (this.cmd_handlers[handler].role != "guest") {
-				if (user == null)
-					return "unknown user";
-				if (!user.hasRole(this.cmd_handlers[handler].role))
-					return "permission denied"
-			}
+	var user = this.userList.userByName(username);
+	// Get comand handler
+	var handler = this.cmdHandlerByName(cmd);
+	if (!handler)
+		return 'unknown command';
+	
+	// Check user permission
+	// Allow guest commands even if user is not available
+	if (user) {
+		if (!user.hasRole(handler.role))
+			return 'permission denied';
+	} else {
+		if (handler.role != 'guest')
+			return 'unknown user';
+	}
+	
+	for (handler in this.cmd_handlers)
+		if (cmd == this.cmd_handlers[handler].name)
 			return this[handler](user, mode, args);
-		}
-	return "unknown command";
+			
+	return 'unexpected error';
 }
 
 CommandHandler.prototype.cmdHandlerByName = function(cmd) {

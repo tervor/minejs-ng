@@ -136,6 +136,9 @@ app.resource('items', require('./resources/items'));
 
 var itemList = require('itemlist').instance;
 
+// Instance command handler
+var commandHandler = require('commandhandler').createCommandHandler();
+
 app.listen(config.frontend.port);
 
 // Socket.IO server
@@ -147,13 +150,13 @@ function FrontendClient(socket, username) {
 	this.chat('console', 'Welcome to the minejs chat');
 	
 	this.socket.on('chat', function(data) {
-		console.log(data.text);
 		this.socket.broadcast.emit('chat', { user: this.user.name, text: data.text });
 		instance.emit('chat', this, data.text);
 		instance.addChatHistory(this.user.name, data.text);
 	}.bind(this));
 	this.socket.on('command', function(data) {
 		console.log('client issued command ' + data.cmd);
+		instance.emit('command', this, data.cmd, data);
 	}.bind(this));
 }
 
