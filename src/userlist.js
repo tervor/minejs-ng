@@ -2,6 +2,7 @@
 var fs = require('fs');
 var util = require('util');
 var events = require('events');
+var crypto = require('crypto');
 
 var nbt = require('nbt');
 
@@ -9,9 +10,9 @@ var config = require('config').config;
 
 function User(name) {
 	this.name = name;
-	this.password = config.settings.default_user_password;
+	this.password = this.hashPassword(config.settings.defaultUserPassword);
 	this.datfile = "";
-	this.role = config.settings.default_user_role;
+	this.role = config.settings.defaultUserRole;
 	this.pos = [ 0.0, 0.0, 0.0 ];
 	this.achievedItems = [];
 	this.isPlaying = false;
@@ -34,6 +35,20 @@ User.prototype.hasRole = function(role) {
 	if (!(role in UserList.prototype.roles))
 		return false;
 	return (UserList.prototype.roles[role] >= UserList.prototype.roles[this.role]);
+}
+
+User.prototype.setPassword = function(password) {
+	this.password = this.hashPassword(password);
+}
+
+User.prototype.checkPassword = function(password) {
+	return this.hashPassword(password) == this.password;
+}
+
+User.prototype.hashPassword = function(password) {
+	sha = crypto.createHash('sha1');
+	sha.update(password);
+	return sha.digest('hex');
 }
 
 function UserList() {
@@ -112,7 +127,7 @@ UserList.prototype.load = function() {
 	}
 
 	// Set admin properties
-	admin.password = config.settings.admin_password;
+	admin.setPassword(config.settings.adminPassword);
 	admin.role = "superadmin";
 }
 

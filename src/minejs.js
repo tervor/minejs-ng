@@ -248,4 +248,4 @@ function on_signal() {
 
 setInterval(function() {
 	mcserver.saveAll();
-}, config.settings.save_interval * 1000);
+}, config.settings.saveInterval * 1000);

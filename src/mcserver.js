@@ -53,7 +53,7 @@ MCServer.prototype.start = function() {
 	this.reset();
 	this.running = true;
 
-	var args = config.server.java_args.concat(['-jar', config.server.jar]).concat(config.server.server_args);
+	var args = config.server.javaArgs.concat(['-jar', config.server.jar]).concat(config.server.serverArgs);
 	log.info('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
 
 	// Spawn the child process

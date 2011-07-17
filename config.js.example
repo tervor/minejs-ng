@@ -5,10 +5,10 @@ var config = {
 	// Minecraft server configuration options
 	server: {
 		java: '/usr/bin/java',
-		java_args: ['-Xmx1024M', '-Xms1024M'],
+		javaArgs: ['-Xmx1024M', '-Xms1024M'],
 		dir: '/opt/mcserver/',
 		jar: 'minecraft_server.jar',
-		server_args: ['nogui'],
+		serverArgs: ['nogui'],
 	},
 	
 	// Web server (commands) configuration options
@@ -34,11 +34,11 @@ var config = {
 	
 	// Game related settings
 	settings: {
-		admin_password: 'minejs',
-		default_user_password: 'changeme',
-		default_user_role: 'guest',
-		max_stacks: 16,
-		save_interval: 60,
+		adminPassword: 'minejs',
+		defaultUserPassword: 'changeme',
+		defaultUserRole: 'guest',
+		maxStacks: 16,
+		saveInterval: 60,
 	},
 	
 	// Logging related settings

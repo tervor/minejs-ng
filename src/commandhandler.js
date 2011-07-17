@@ -34,6 +34,8 @@ CommandHandler.prototype.cmd_handlers = {
 						info: "List connected users" }, 
 	cmd_items: 		{	name: 'items', args: ['prefix'], role: 'guest',
 						info: "List items with prefix" },
+	cmd_passwd: 	{	name: 'passwd', args: ['password'], role: 'guest',
+						info: "Change your password" },
 	// User commands
 	cmd_give: 		{	name: 'give', args: ['name', 'count'], role: 'user',
 						info: "Gives items" },
@@ -155,6 +157,15 @@ CommandHandler.prototype.cmd_items = function(user, mode, args) {
 	return this.returnByMode(mode, text, text, objs);
 }
 
+CommandHandler.prototype.cmd_passwd = function(user, mode, args) {
+	if (args.length != 1)
+		return "invalid params";
+	if (args[0] == "")
+		return "invalid params";
+	user.setPassword(args[0]);
+	return "success";
+}
+
 // User commands ------------------------------------------------------------
 
 CommandHandler.prototype.cmd_give = function(user, mode, args) {
@@ -174,7 +185,7 @@ CommandHandler.prototype.cmd_give = function(user, mode, args) {
 		this.mcserver.give(user.name, item.id, num);
 		left -= num;
 		stacks++;
-		if (stacks >= config.settings.max_stacks)
+		if (stacks >= config.settings.maxStacks)
 			break;
 	}
 	return "success";
@@ -191,8 +202,8 @@ CommandHandler.prototype.cmd_stack = function(user, mode, args) {
 	if (item == null)
 		return "invalid item";
 	var stacks = args[1];
-	if (stacks > config.settings.max_stacks)
-		stacks = config.settings.max_stacks;
+	if (stacks > config.settings.maxStacks)
+		stacks = config.settings.maxStacks;
 	for (var i = 0; i < stacks; i++)
 		this.mcserver.give(user.name, item.id, item.amount);
 	return "success";

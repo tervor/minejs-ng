@@ -106,7 +106,7 @@ app.get('/sessions/destroy', function(req, res) {
 
 app.post('/sessions', function(req, res) {
 	var user = userList.userByName(req.body.username);
-	if (user) {
+	if (user && user.checkPassword(req.body.password)) {
 		req.session.user = user;
 		res.redirect(req.body.redir || '/')
 	} else {
