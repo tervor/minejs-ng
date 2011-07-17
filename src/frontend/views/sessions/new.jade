@@ -1,11 +1,12 @@
 h1 Login
 form(action='/sessions', method='POST')
 	input(type='hidden', name='redir', value=redir)
-	p
+	#row1
 		label(for='username') User:
-		input(type='text', name='username', id='username')
-	p
+	#row2
+			input(type='text', name='username', id='username')
+	#row1
 		label(for='password') Password:
 		input(type='password', name='password', id='password')
-	p
+	#row2
 		input(type='submit')

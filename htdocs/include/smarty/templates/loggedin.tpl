@@ -59,11 +59,11 @@
     <div id="box-{$script}" class="GridBox ScriptGridBox" onclick="scriptByName('{$script}');"
          onmousemove="EXboxHover('box-{$script}','script','1','ScriptImg-{$script}')"
          onmouseout="boxHover('box-{$script}','script','0','ScriptImg-{$script}')">
-        <center>
+        <div style="text-align: center;">
             <div name="IDlabel-{$script}" class="IDlabel">&nbsp;</div>
             <img src="icons/pack.png" id=="ScriptImg-{$script}" width="32" height="32" border="0">
             <div name="Namelabel-{$script}" class="Namelabel">{$script}</div>
-        </center>
+        </div>
     </div>
     {/foreach}
 </div>

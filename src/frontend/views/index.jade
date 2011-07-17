@@ -2,10 +2,11 @@ script(src='/scripts/lib/socket.io.js')
 script(src='/scripts/config.js')
 script(src='/scripts/chat.js')
 script(src='/scripts/users.js')
-script(src='/scripts/items.js')
+script(src='/scripts/dashboard.js')
 script(src='/scripts/socket.js')
 script(src='/scripts/main.js')
-script(src='/scripts/voodoo.js')
+script(src='/scripts/home.js')
+
 #header
 	#logo
 	#navigation
@@ -28,8 +29,6 @@ script(src='/scripts/voodoo.js')
 		#navTab Play
 	a(href='/help', title='View login page') 
 		#navTab Help
-
-
 #dashboard
 	#navigation
 		- each user in users
@@ -40,11 +39,11 @@ script(src='/scripts/voodoo.js')
 #livemaps
 #wikis
 #chat
-	#chat_title minimize
+	#chattitle minimize
 	#userlist
-	#chat_output
-	#chat_feedback
-	input(type='text', name='chat_input', id='chat_input')
+	#chatoutput
+	#chatfeedback
+	input(type='text', name='chatinput', id='chatinput')
 #chattrigger
 #footer
 #effect

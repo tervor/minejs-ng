@@ -1,0 +1,49 @@
+.GridBox {
+    cursor: pointer;
+    width: 85px;
+    height: 85px;
+    float: left;
+    padding: 2px;
+    margin: 1px;
+    border: 1px solid #151515;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.ItemGridBox {
+    cursor: pointer;
+    background-color: #2f2f2f;
+    border: 1px solid #151515;
+    opacity: 1;
+}
+
+#GridBox:hover {
+    background-color: #3c443a;
+    border: 1px solid green;
+    opacity: 1;
+}
+
+.ScriptGridBox {
+    background-color: #252525;
+    border: 1px solid #151515;
+    opacity: .7;
+}
+
+.ScriptGridBoxHover {
+    background-color: #443a3a;
+    border: 1px solid red;
+    opacity: 1;
+}
+
+.TeleportGridBox {
+    cursor: pointer;
+    background-color: #202020;
+    border: 1px solid #151515;
+    opacity: .7;
+}
+
+.TeleportGridBoxHover {
+    background-color: #3a3b44;
+    border: 1px solid blue;
+    opacity: 1;
+}
