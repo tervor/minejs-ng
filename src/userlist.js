@@ -4,8 +4,6 @@ var util = require('util');
 var events = require('events');
 var crypto = require('crypto');
 
-var nbt = require('nbt');
-
 var config = require('config').config;
 
 function User(name) {
@@ -58,9 +56,6 @@ function UserList() {
 	this.filenameWhiteList = config.server.dir + '/white-list.txt';
 	this.load();
 	this.save();
-	this.updateFromPlayerDat();
-	
-	log.debug(util.inspect(this.users));
 }
 
 util.inherits(UserList, events.EventEmitter);
@@ -153,54 +148,6 @@ UserList.prototype.changed = function() {
 	this.emit('changed');
 }
 
-// Load additional user properties from player dat files.
-// This currently reads the players position.
-UserList.prototype.updateFromPlayerDat = function() {
-	// Read additional user properties from player dat files
-	// TODO get from server properties
-	var world = 'world';
-	var playerDir = config.server.dir + '/' + world + '/players/';
-
-	// Go through all files in the player directory
-	fs.readdir(playerDir, function(error, files) {
-		for (var i = 0; i < files.length; i++) {
-			var file = files[i];
-			// Skip _tmp_.dat file
-			if (file == '_tmp_.dat')
-			 	continue;
-			(function() {
-				// Check if user exists
-				var name = files[i].substr(0, files[i].length - 4);
-				var user = this.userByName(name);
-				if (user == null)
-					return;
-				// Read NBT file
-				fs.readFile(playerDir + file, function(error, data) {
-					// Parse NBT file
-					nbt.parse(data, function(error, result) {
-						this.updateUserDat(user, result);
-						this.save();
-					}.bind(this));
-				}.bind(this));
-			}.bind(this))();
-		}
-	}.bind(this));
-}
-
-UserList.prototype.updateUserDat = function(user, dat) {
-	for (var i = 0; i < dat.Inventory.length; i++) {
-		var id = dat.Inventory[i].id;
-		if (!user.achievedItems.has(id)) {
-			user.achievedItems.push(id);
-			log.info("you achieved item " + id);
-			this.emit('userAchievedItem', user, id);
-		}
-	}
-	// Update position
-	user.pos = dat.Pos;
-	log.debug(user.name + " pos: " + user.pos);
-//	log.debug(util.inspect(dat));
-}
 
 var instance = new UserList();
 

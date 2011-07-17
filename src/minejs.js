@@ -106,9 +106,28 @@ mcserver.on('saved', function() {
 	userList.updateFromPlayerDat();
 });
 
-userList.on('userAchievedItem', function(user, id) {
-	mcserver.tell(user.name, "You have achieved item " + id);
-});
+mcserver.on('playerInfo', function(username, info) {
+	// Check if user exists
+	var user = userList.userByName(username);
+	if (!user) {
+		// Create guest user
+		console.log('Adding guest user \'' + username + '\' (found user properties file)');
+		user = userList.add(username);
+	}
+	
+	for (var i = 0; i < info.Inventory.length; i++) {
+		var id = info.Inventory[i].id;
+		if (!user.achievedItems.has(id)) {
+			user.achievedItems.push(id);
+			mcserver.say('<' + user.name + '> has achieved item ' + id);
+		}
+	}
+	
+	// Update position
+	user.pos = info.Pos;
+	log.debug(user.name + " pos: " + user.pos);
+	userList.save();
+})
 
 // Create telnet server
 var telnetserver = require('telnetserver.js').createTelnetServer();

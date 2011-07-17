@@ -2,6 +2,9 @@
 var spawn = require('child_process').spawn;
 var events = require('events');
 var util = require('util');
+var fs = require('fs');
+
+var nbt = require('nbt');
 
 var config = require('config').config;
 
@@ -58,6 +61,9 @@ MCServer.prototype.start = function() {
 
 	// Spawn the child process
 	this.process = spawn(config.server.java, args, { cwd: config.server.dir });
+	
+	// Read player infos
+	this.readPlayerInfos();
 
 	// Read from STDIN and STDERR
 	this.process.stdout.on('data', function(data) {
@@ -236,6 +242,7 @@ MCServer.prototype.logHandlerCmd = function(args) {
 
 MCServer.prototype.logHandlerSaved = function(args) {
 	this.emit('saved');
+	readPlayerInfos();
 }
 
 // Implementation -----------------------------------------------------------
@@ -246,6 +253,38 @@ MCServer.prototype.sendCmd = function(args) {
 	this.process.stdin.write(args.join(' ') + '\n');
 }
 
+// Reads all player.dat files
+MCServer.prototype.readPlayerInfos = function() {
+	// Read additional user properties from player dat files
+	// TODO get from server properties
+	var world = 'world';
+	var playerDir = config.server.dir + '/' + world + '/players/';
+
+	// Go through all files in the player directory
+	fs.readdir(playerDir, function(error, files) {
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			// Skip _tmp_.dat file
+			if (file == '_tmp_.dat')
+			 	continue;
+			(function() {
+				// Check if user exists
+				var username = files[i].substr(0, files[i].length - 4);
+				// Read NBT file
+				fs.readFile(playerDir + file, function(error, data) {
+					// Parse NBT file
+					nbt.parse(data, function(error, result) {
+						this.updatePlayerInfo(username, result);
+					}.bind(this));
+				}.bind(this));
+			}.bind(this))();
+		}
+	}.bind(this));
+}
+
+MCServer.prototype.updatePlayerInfo = function(username, data) {
+	this.emit('playerInfo', username, data);
+}
 
 
 // Creates a minecraft server
