@@ -45,8 +45,7 @@ MCServer.prototype.reset = function() {
 	this.users = [];
 	this.running = false;
 	this.terminate = false;
-	this.statsNode = "";
-	this.statsMCServer = "";
+	this.serverStatus = {};
 }
 
 // Starts the minecraft server
@@ -198,17 +197,19 @@ MCServer.prototype.saveOn = function() {
 
 // Called regularly to collect monitoring information
 MCServer.prototype.updateMonitoring = function() {
-	this.statsNode = util.inspect(process.memoryUsage());
-	this.statsMCServer = "";
+	var usage = process.memoryUsage();
+	this.serverStatus.minejsHeapTotal = usage.heapTotal;
+	this.serverStatus.minejsHeapUsed = usage.heapUsed;
 	var jstat = spawn('/bin/sh', ['-c', 'jstat -gcutil ' + this.process.pid]); 
 	jstat.stdout.on('data', function(data) {
-		this.statsMCServer += data.toString('ascii');
+		// TODO parse and add to this.serverStatus
+		// this.statsMCServer += data.toString('ascii');
 	}.bind(this));
 	jstat.on('exit', function(code) {
 		// nothing
 	}.bind(this));
 }
-	
+
 // Called for every chunk of data received from the server's STDOUT and STDERR
 MCServer.prototype.receive = function(data) {
 	for (var i = 0; i < data.length; i++) {

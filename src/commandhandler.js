@@ -223,7 +223,9 @@ CommandHandler.prototype.cmd_tp = function(user, mode, args) {
 CommandHandler.prototype.cmd_status = function(user, mode, args) {
 	if (args.length != 0)
 		return "invalid params";
-	return this.mcserver.stats_minejs + this.mcserver.stats_mcserver;
+	var obj = this.mcserver.serverStatus;
+	var text = util.inspect(obj);
+	return this.returnByMode(mode, text, text, obj);
 }
 
 CommandHandler.prototype.cmd_restart = function(user, mode, args) {
