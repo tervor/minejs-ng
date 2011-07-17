@@ -1,5 +1,6 @@
 function initChat() {
-    $('#chatinput').keypress(function(e) {
+
+    $(document.body).keypress(function(e) {
         if (e.which == 13) {
             var input = $('#chatinput');
             var text = input.val().toString();
@@ -9,13 +10,14 @@ function initChat() {
                 chatWrite(config.user, text);
                 socket.emit('chat', { text: text});
                 input.val('');
-
-            }
-            if ($("#chat").is(":hidden")) {
-                $("#chat").show();
-                $('#chatinput').focus();
             }
         }
+		console.log("key hit detected")
+		if ($("#chat").is(":hidden")) {
+			$("#chat").show();
+			$('#chatinput').focus();
+		}
+
     });
 
     $('#chattitle').click(function () {
@@ -23,6 +25,7 @@ function initChat() {
     });
 
     $('#chattrigger').hover(function() {
+		console.log("chattrigger hover");
         $("#chat").show();
     });
 
@@ -32,8 +35,16 @@ function initChat() {
 
     $('#chainput').focus();
     $('#chat')
-        .draggable()
-        .resizable({ grid: [50, 50] });
+        .draggable({ handle: "div.chattitle" })
+        .resizable({ grid: [50, 50] })
+		.hover(
+			function () {
+				$(this).show();
+			},
+  			function () {
+				$(this).hide();
+			}
+		);
 }
 
 function chatWrite(user, text) {
