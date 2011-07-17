@@ -66,6 +66,12 @@ app.dynamicHelpers({
 });
 
 function requiresLogin(req, res, next) {
+	if (config.frontend.hasOwnProperty('fakeLogin')) {
+		user = userList.userByName(config.frontend.fakeLogin);
+		if (user)
+			req.session.user = user;
+	}
+	
 	if (req.session.user) {
 		next();
 	} else {
