@@ -30,3 +30,16 @@ function initSocket() {
 	});
 }
 
+function clientGive(name, count) {
+	clientCommand('give', { name: name, count: count });
+}
+
+function clientStacks(name, count) {
+	clientCommand('stacks', { name: name, count: count });
+}
+
+function clientCommand(cmd, args)
+{
+	args.cmd = cmd;
+	socket.emit('command', args);
+}

@@ -40,16 +40,7 @@ function actGiveItem(id) {
 	var amount = parseInt(parseFloat($('#varAmount-' + id).text()));
 	console.log("DEBUG id is: " + id + " amount is: " + amount);
 	notify("fade", "DEBUG id is: " + id + " amount is: " + amount);
-	//call give?origin=player&name=cobblestone&count=100
-	$.ajax({
-		url: config.cmdhost + '/give?origin=player&name=cobblestone&count=100',
-		context: document.body,
-		success: function() {
-			//$(this).addClass("done");
-			console.log("actGiveItem ajax request called back")
-		}
-	});
-	console.log(" call done ?");
+	clientGive(id, amount);
 }
 
 function calAmount(id, action) {

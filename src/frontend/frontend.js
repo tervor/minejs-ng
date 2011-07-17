@@ -152,6 +152,9 @@ function FrontendClient(socket, username) {
 		instance.emit('chat', this, data.text);
 		instance.addChatHistory(this.user.name, data.text);
 	}.bind(this));
+	this.socket.on('command', function(data) {
+		console.log('client issued command ' + data.cmd);
+	}.bind(this));
 }
 
 FrontendClient.prototype.chat = function(username, text) {
