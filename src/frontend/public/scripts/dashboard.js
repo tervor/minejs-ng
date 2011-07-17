@@ -1,7 +1,6 @@
-
 function initDashboard() {
-	//Configure Items Grid
-	$("#sortable").sortable({
+	// Configure Items Grid
+	$('#sortable').sortable({
 		revert: true,
 		snap: true,
 		grid: [ 100, 100 ],
@@ -18,9 +17,8 @@ function getItems() {
 	$.getJSON('/items.json', function(data) {
 		$('body').append('<div style="float:left;">total items: ' + data.length + '</div>');
 		$.each(data, function(i, item) {
-			drawItem(item.id, item.name, item.amount)
+			drawItem(item.id, item.info, item.amount)
 		});
-		drawItem("1", "paypal", "1")
 	});
 }
 
@@ -57,33 +55,16 @@ function actGiveItem(id) {
 function calAmount(id, action) {
 	var calNum = parseInt(parseFloat($('#varAmount-' + id).text()));
 	switch (action) {
-		case '+':
-			if (calNum == MaxLimitItems) {
-				calNum = MaxLimitItems;
-			} else if (calNum == 1) {
-				calNum = calNum * 2
-			} else if (calNum == MaxLimitItems || calNum > MaxLimitItems) {
-				calNum = MaxLimitItems;
-			} else if (calNum == 0) {
-				calNum = 1;
-			} else {
-				calNum = calNum * 2;
-			}
-			break;
-		case '-':
-			if (calNum == MaxLimitItems || calNum
-					< MaxLimitItems && calNum > 1) {
-				calNum = calNum / 2
-			} else if (calNum == 0) {
-				calNum = 1;
-			} else if (calNum > MaxLimitItems) {
-				calNum = MaxLimitItems;
-			} else {
-				calNum = calNum / 2;
-			}
-			break;
-		default:
-			alert("Something went wrong in calAmount")
+	case '+':
+		if (calNum < MaxLimitItems)
+			calNum *= 2;
+		break;
+	case '-':
+		if (calNum > 1)
+			calNum /= 2;
+		break;
+	default:
+		break;
 	}
 	console.log("DEBUG id: " + id + " action: " + action + " calNum: " + calNum);
 	$('#varAmount-' + id).text(Math.floor(calNum));

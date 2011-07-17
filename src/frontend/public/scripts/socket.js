@@ -2,6 +2,7 @@
 // Global socket
 socket = null;
 
+
 function initSocket() {
 	if (socket == null) {
 		socket = io.connect(config.host);
@@ -28,3 +29,4 @@ function initSocket() {
 			updateUserList();
 	});
 }
+
