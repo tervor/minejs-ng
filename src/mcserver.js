@@ -1,5 +1,6 @@
 
 var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 var events = require('events');
 var util = require('util');
 var fs = require('fs');
@@ -57,34 +58,52 @@ MCServer.prototype.start = function() {
 	this.running = true;
 
 	var args = config.server.javaArgs.concat(['-jar', config.server.jar]).concat(config.server.serverArgs);
-	log.info('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
-
-	// Spawn the child process
-	this.process = spawn(config.server.java, args, { cwd: config.server.dir });
+	var cmdline = config.server.java + ' ' + args.join(' ');
+	log.info('Starting minecraft server with: ' + cmdline);
 	
-	// Read player infos
-	this.readPlayerInfos();
-
-	// Read from STDIN and STDERR
-	this.process.stdout.on('data', function(data) {
-		this.receive(data);
-	}.bind(this));
-	this.process.stderr.on('data', function(data) {
-		this.receive(data);
-	}.bind(this));
-
-	// Check for exit
-	this.process.on('exit', function(code) {
-		this.running = false;
-	    log.info("Minecraft server terminated (code=" + code + ")");
-		if (this.terminate) {
-			// Server terminated on user request
-			this.emit('exit');
+	// Stop any minecraft server running with same command line
+	exec('ps', function(error, stdout, stderr) {
+		if (error) {
+			log.warn('failed to check for running minecraft server (error code:' + error.code + ')');
 		} else {
-			// Server terminated unexpectedly -> restart
-			log.info("Minecraft server terminated unexpectedly -> restarting server");
-			this.start();
+			var lines = stdout.split('\n');
+			for (var i = 0; i < lines.length; i++) {
+				var line = lines[i];
+				var m = line.match('([0-9]*) .* ' + cmdline.replace('.', '\.') + '.*');
+				if (m) {
+					log.info('Killing zombie minecraft server with pid ' + m[1]);
+					process.kill(m[1], 'SIGTERM');
+				}
+			}
 		}
+		
+		// Spawn the child process
+		this.process = spawn(config.server.java, args, { cwd: config.server.dir });
+
+		// Read player infos
+		this.readPlayerInfos();
+
+		// Read from STDIN and STDERR
+		this.process.stdout.on('data', function(data) {
+			this.receive(data);
+		}.bind(this));
+		this.process.stderr.on('data', function(data) {
+			this.receive(data);
+		}.bind(this));
+
+		// Check for exit
+		this.process.on('exit', function(code) {
+			this.running = false;
+		    log.info("Minecraft server terminated (code=" + code + ")");
+			if (this.terminate) {
+				// Server terminated on user request
+				this.emit('exit');
+			} else {
+				// Server terminated unexpectedly -> restart
+				log.info("Minecraft server terminated unexpectedly -> restarting server");
+				this.start();
+			}
+		}.bind(this));
 	}.bind(this));
 
 	// Spawn monitor task
@@ -242,7 +261,7 @@ MCServer.prototype.logHandlerCmd = function(args) {
 
 MCServer.prototype.logHandlerSaved = function(args) {
 	this.emit('saved');
-	readPlayerInfos();
+	this.readPlayerInfos();
 }
 
 // Implementation -----------------------------------------------------------
