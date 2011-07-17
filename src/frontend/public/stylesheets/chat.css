@@ -33,16 +33,30 @@
 	resize: none;
 }
 
+#chathead {
+	width: 100%;
+	height: 10%;
+	background-color: #fbd850;
+}
+
 #chattitle {
 	width: 100%;
 	height: 10%;
 	padding: 0;
-	background-color: purple;
-	left: 20%;
-	bottom: 3px;
-	border: 1px solid gray;
+	color: black;
+	font-weight: bold;
+
 }
 
+#chatminimize {
+	width:12px;
+	height: 12px;
+	background: #adff2f;
+	color: black;
+	font-weight: bold;
+	text-align: center;
+	float: right;
+}
 
 #chattabs div {
 	float:left;

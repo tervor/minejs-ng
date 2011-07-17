@@ -16,16 +16,15 @@ function initChat() {
 				input.val('');
 			}
 		}
-
+		console.log("keystrock");
 		//show chatbox if hidden on chat events
 		if ($("#chat").is(":hidden")) {
 			$("#chat").show();
 			$('#chatinput').focus();
 		}
-
 	});
 
-	$('#chattitle').click(function () {
+	$('#chatminimize').click(function () {
 		$("#chat").hide();
 	});
 
@@ -40,8 +39,6 @@ function initChat() {
 
 	$('#chainput').focus();
 	$('#chat')
-			.draggable({ handle: "div.chattitle" })
-			.resizable({ grid: [50, 50] })
 			.hover(
 			function () {
 				$(this).show();
@@ -49,6 +46,8 @@ function initChat() {
 			function () {
 				$(this).hide();
 			}
+			//.draggable({ handle: "div.chathead" })
+			//.resizable({ grid: [50, 50] }
 	);
 }
 
