@@ -6,5 +6,9 @@
     <script type="text/javascript" src="include/js/jquery-ui-1.8.13.custom.min.js"></script>	
     <script type="text/javascript" src="include/js/prototype.js"></script>
     <script type='text/javascript' src="remote.js"></script>
+    
+    <link type="text/css" href="/IMBAdmin/ImbaLoader.php?load=css" rel="Stylesheet" />
+    <script type="text/javascript" src="/IMBAdmin/ImbaLoader.php?load=js"></script>
+
     <!--- <meta http-equiv="refresh" content="1024">--->
 </head>
