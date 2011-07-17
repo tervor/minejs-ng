@@ -103,7 +103,7 @@ mcserver.on('cmd', function(username, text) {
 });
 
 mcserver.on('saved', function() {
-	userList.updateFromPlayerDat();
+	// TODO necessary?
 });
 
 mcserver.on('playerInfo', function(username, info) {
