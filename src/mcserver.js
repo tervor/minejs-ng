@@ -1,7 +1,11 @@
 
 var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 var events = require('events');
 var util = require('util');
+var fs = require('fs');
+
+var nbt = require('nbt');
 
 var config = require('config').config;
 
@@ -41,8 +45,7 @@ MCServer.prototype.reset = function() {
 	this.users = [];
 	this.running = false;
 	this.terminate = false;
-	this.statsNode = "";
-	this.statsMCServer = "";
+	this.serverStatus = {};
 }
 
 // Starts the minecraft server
@@ -53,32 +56,53 @@ MCServer.prototype.start = function() {
 	this.reset();
 	this.running = true;
 
-	var args = config.server.java_args.concat(['-jar', config.server.jar]).concat(config.server.server_args);
-	log.info('Starting minecraft server with: ' + config.server.java + ' ' + args.join(' '));
-
-	// Spawn the child process
-	this.process = spawn(config.server.java, args, { cwd: config.server.dir });
-
-	// Read from STDIN and STDERR
-	this.process.stdout.on('data', function(data) {
-		this.receive(data);
-	}.bind(this));
-	this.process.stderr.on('data', function(data) {
-		this.receive(data);
-	}.bind(this));
-
-	// Check for exit
-	this.process.on('exit', function(code) {
-		this.running = false;
-	    log.info("Minecraft server terminated (code=" + code + ")");
-		if (this.terminate) {
-			// Server terminated on user request
-			this.emit('exit');
+	var args = config.server.javaArgs.concat(['-jar', config.server.jar]).concat(config.server.serverArgs);
+	var cmdline = config.server.java + ' ' + args.join(' ');
+	log.info('Starting minecraft server with: ' + cmdline);
+	
+	// Stop any minecraft server running with same command line
+	exec('ps', function(error, stdout, stderr) {
+		if (error) {
+			log.warn('failed to check for running minecraft server (error code:' + error.code + ')');
 		} else {
-			// Server terminated unexpectedly -> restart
-			log.info("Minecraft server terminated unexpectedly -> restarting server");
-			this.start();
+			var lines = stdout.split('\n');
+			for (var i = 0; i < lines.length; i++) {
+				var line = lines[i];
+				var m = line.match('([0-9]*) .* ' + cmdline.replace('.', '\.') + '.*');
+				if (m) {
+					log.info('Killing zombie minecraft server with pid ' + m[1]);
+					process.kill(m[1], 'SIGTERM');
+				}
+			}
 		}
+		
+		// Spawn the child process
+		this.process = spawn(config.server.java, args, { cwd: config.server.dir });
+
+		// Read player infos
+		this.readPlayerInfos();
+
+		// Read from STDIN and STDERR
+		this.process.stdout.on('data', function(data) {
+			this.receive(data);
+		}.bind(this));
+		this.process.stderr.on('data', function(data) {
+			this.receive(data);
+		}.bind(this));
+
+		// Check for exit
+		this.process.on('exit', function(code) {
+			this.running = false;
+		    log.info("Minecraft server terminated (code=" + code + ")");
+			if (this.terminate) {
+				// Server terminated on user request
+				this.emit('exit');
+			} else {
+				// Server terminated unexpectedly -> restart
+				log.info("Minecraft server terminated unexpectedly -> restarting server");
+				this.start();
+			}
+		}.bind(this));
 	}.bind(this));
 
 	// Spawn monitor task
@@ -173,17 +197,19 @@ MCServer.prototype.saveOn = function() {
 
 // Called regularly to collect monitoring information
 MCServer.prototype.updateMonitoring = function() {
-	this.statsNode = util.inspect(process.memoryUsage());
-	this.statsMCServer = "";
+	var usage = process.memoryUsage();
+	this.serverStatus.minejsHeapTotal = usage.heapTotal;
+	this.serverStatus.minejsHeapUsed = usage.heapUsed;
 	var jstat = spawn('/bin/sh', ['-c', 'jstat -gcutil ' + this.process.pid]); 
 	jstat.stdout.on('data', function(data) {
-		this.statsMCServer += data.toString('ascii');
+		// TODO parse and add to this.serverStatus
+		// this.statsMCServer += data.toString('ascii');
 	}.bind(this));
 	jstat.on('exit', function(code) {
 		// nothing
 	}.bind(this));
 }
-	
+
 // Called for every chunk of data received from the server's STDOUT and STDERR
 MCServer.prototype.receive = function(data) {
 	for (var i = 0; i < data.length; i++) {
@@ -236,6 +262,7 @@ MCServer.prototype.logHandlerCmd = function(args) {
 
 MCServer.prototype.logHandlerSaved = function(args) {
 	this.emit('saved');
+	this.readPlayerInfos();
 }
 
 // Implementation -----------------------------------------------------------
@@ -246,6 +273,38 @@ MCServer.prototype.sendCmd = function(args) {
 	this.process.stdin.write(args.join(' ') + '\n');
 }
 
+// Reads all player.dat files
+MCServer.prototype.readPlayerInfos = function() {
+	// Read additional user properties from player dat files
+	// TODO get from server properties
+	var world = 'world';
+	var playerDir = config.server.dir + '/' + world + '/players/';
+
+	// Go through all files in the player directory
+	fs.readdir(playerDir, function(error, files) {
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			// Skip _tmp_.dat file
+			if (file == '_tmp_.dat')
+			 	continue;
+			(function() {
+				// Check if user exists
+				var username = files[i].substr(0, files[i].length - 4);
+				// Read NBT file
+				fs.readFile(playerDir + file, function(error, data) {
+					// Parse NBT file
+					nbt.parse(data, function(error, result) {
+						this.updatePlayerInfo(username, result);
+					}.bind(this));
+				}.bind(this));
+			}.bind(this))();
+		}
+	}.bind(this));
+}
+
+MCServer.prototype.updatePlayerInfo = function(username, data) {
+	this.emit('playerInfo', username, data);
+}
 
 
 // Creates a minecraft server
