@@ -1,3 +1,8 @@
+
+var items = null;
+var tags = null;
+var currentTag = 'tools';
+
 function initDashboard() {
 	// Configure Items Grid
 	$('#sortable').sortable({
@@ -10,15 +15,27 @@ function initDashboard() {
 			console.log('dropped');
 		}
 	});
+	
+	getItems();
 }
 
 //TODO sortable data need to be computed... i/o is in jason
 function getItems() {
 	$.getJSON('/items.json', function(data) {
-		$('body').append('<div style="float:left;">total items: ' + data.length + '</div>');
-		$.each(data, function(i, item) {
+		items = data.items;
+		tags = data.tags;
+		updateItems();
+	});
+}
+
+function updateItems() {
+	if (!items || !tags)
+		return;
+	$('body').append('<div style="float:left;">total items: ' + items.length + '</div>');
+	$('#sortable').html('');
+	$.each(items, function(i, item) {
+		if (item.tags.indexOf(currentTag) >= 0)
 			drawItem(item.id, item.info, item.amount)
-		});
 	});
 }
 

@@ -7,8 +7,6 @@ $(document).ready(function() {
     updateUserList();
     updateItemList();
 
-    getItems();
-
     //TODO backend should send this at index.jason query
     MaxLimitItems = 2048;
 
