@@ -1,5 +1,6 @@
 [
 {"name":"all","info":"All"},
 {"name":"ore","info":"Ores"},
-{"name":"tools","info":"Tools"}
+{"name":"tools","info":"Tools"},
+{"name":"rail","info":"Rail"}
 ]
