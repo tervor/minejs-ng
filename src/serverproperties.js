@@ -1,5 +1,5 @@
-
 var fs = require('fs');
+var path = require('path');
 
 var config = require('config').config;
 
@@ -17,7 +17,7 @@ ServerProperties.prototype.set = function(name, value) {
 		return true;
 	}
 	return false;
-}
+};
 
 // Removes a user from the white list
 ServerProperties.prototype.get = function(name) {
@@ -25,25 +25,31 @@ ServerProperties.prototype.get = function(name) {
 		return this.properties[name];
 	}
 	return null;
-}
+};
 
 // Loads the server properties
 ServerProperties.prototype.load = function() {
-	this.properties = {};
-	var data = fs.readFileSync(this.filename, 'ascii').replace('\r', '');
-	var lines = data.split('\n');
-	for (var i = 0; i < lines.length; i++) {
-		var line = lines[i];
-		if (line.length < 3)
-			continue;
-		if (line.charAt(0) == '#')
-			continue;
-		var tokens = line.split('=');
-		if (tokens.length != 2)
-			continue;
-		this.properties[tokens[0]] = tokens[1];
-	}
-}
+	path.existsSync(this.filename, function(exists) {
+		if (!exists) {
+			console.log("server.properties not found")
+		}else{
+			this.properties = {};
+			var data = fs.readFileSync(this.filename, 'ascii').replace('\r', '');
+			var lines = data.split('\n');
+			for (var i = 0; i < lines.length; i++) {
+				var line = lines[i];
+				if (line.length < 3)
+					continue;
+				if (line.charAt(0) == '#')
+					continue;
+				var tokens = line.split('=');
+				if (tokens.length != 2)
+					continue;
+				this.properties[tokens[0]] = tokens[1];
+			}
+		}
+	});
+};
 
 // Saves the server properties
 ServerProperties.prototype.save = function() {
@@ -51,7 +57,7 @@ ServerProperties.prototype.save = function() {
 	for (var name in this.properties)
 		text += name + "=" + this.properties[name] + "\n";
 	fs.writeFileSync(this.filename, text, 'ascii');
-}
+};
 
 var instance = new ServerProperties();
 

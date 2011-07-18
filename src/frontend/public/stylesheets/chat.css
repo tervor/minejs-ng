@@ -58,6 +58,9 @@
 	float: right;
 }
 
+#chattabs {
+	clear:both;
+}
 #chattabs div {
 	float:left;
 	margin: 3px 1px 1px 0px;

@@ -4,6 +4,7 @@ var exec = require('child_process').exec;
 var events = require('events');
 var util = require('util');
 var fs = require('fs');
+var path = require('path');
 
 var nbt = require('nbt');
 
@@ -59,7 +60,6 @@ MCServer.prototype.start = function() {
 	var args = config.server.javaArgs.concat(['-jar', config.server.jar]).concat(config.server.serverArgs);
 	var cmdline = config.server.java + ' ' + args.join(' ');
 	log.info('Starting minecraft server with: ' + cmdline);
-	
 	// Stop any minecraft server running with same command line
 	exec('ps', function(error, stdout, stderr) {
 		if (error) {
@@ -279,27 +279,34 @@ MCServer.prototype.readPlayerInfos = function() {
 	// TODO get from server properties
 	var world = 'world';
 	var playerDir = config.server.dir + '/' + world + '/players/';
+	path.existsSync(playerDir, function(exists) {
+		if (!exists) {
+			log.info('minecraft: [WARNING] Failed to load world/players (No such directory)')
+		}else{
+			// Go through all files in the player directory
+			fs.readdir(playerDir, function(error, files) {
+				for (var i = 0; i < files.length; i++) {
+					var file = files[i];
+					// Skip _tmp_.dat file
+					if (file == '_tmp_.dat')
+						continue;
+					(function() {
+						// Check if user exists
+						var username = files[i].substr(0, files[i].length - 4);
+						// Read NBT file
+						fs.readFile(playerDir + file, function(error, data) {
+							// Parse NBT file
+							nbt.parse(data, function(error, result) {
+								this.updatePlayerInfo(username, result);
+							}.bind(this));
+						}.bind(this));
+					}.bind(this))();
+				}
+			}.bind(this));
 
-	// Go through all files in the player directory
-	fs.readdir(playerDir, function(error, files) {
-		for (var i = 0; i < files.length; i++) {
-			var file = files[i];
-			// Skip _tmp_.dat file
-			if (file == '_tmp_.dat')
-			 	continue;
-			(function() {
-				// Check if user exists
-				var username = files[i].substr(0, files[i].length - 4);
-				// Read NBT file
-				fs.readFile(playerDir + file, function(error, data) {
-					// Parse NBT file
-					nbt.parse(data, function(error, result) {
-						this.updatePlayerInfo(username, result);
-					}.bind(this));
-				}.bind(this));
-			}.bind(this))();
 		}
-	}.bind(this));
+	});
+
 }
 
 MCServer.prototype.updatePlayerInfo = function(username, data) {

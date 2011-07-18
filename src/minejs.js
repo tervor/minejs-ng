@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 // Add module paths
 require.paths.unshift(__dirname);
 require.paths.unshift(__dirname + '/../');
