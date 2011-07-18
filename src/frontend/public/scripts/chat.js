@@ -28,8 +28,8 @@ function initChat() {
 		$("#chat").hide();
 	});
 
-	$('#chattrigger').hover(function() {
-		console.log("chattrigger hover");
+	$('#chatinput').hover(function() {
+		console.log("chatinput hover");
 		$("#chat").show();
 	});
 

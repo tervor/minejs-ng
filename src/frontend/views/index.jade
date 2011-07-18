@@ -38,21 +38,17 @@ script(src='/scripts/home.js')
 	#itemTags
 	#items
 #livemaps
-
 #wikis
-
-
 #chat
 	#chathead
 		#chattitle Title
 		#chatminimize _
-	#chattabs Tabs:
-		#chanConsole Console
-		#chanGlobal Global
-		#chanUsers Users
-		#chanAdmin Admins
-		#wispers Wispers
-
+	#chattabs
+		#chanConsole(onClick='alert("Console")') Console
+		#chanGlobal(onClick='alert("Global")') Global
+		#chanUsers(onClick='alert("Users")') Users
+		#chanAdmin(onClick='alert("Admins")') Admins
+		#wispers(onClick='alert("wisper")') wisper
 	#chatbody
 		#chatoutput
 		#userlist
@@ -62,8 +58,7 @@ script(src='/scripts/home.js')
 			#user4 user4
 			#user5 user5
 	#chatfeedback
-	input(type='text', name='chatinput', id='chatinput')
-#chattrigger
+input(type='text', name='chatinput', id='chatinput')
 #footer
 #effect
 .ui-widget-content
