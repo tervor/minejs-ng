@@ -4,7 +4,8 @@ var itemTags = null;
 var achievedItems = null;
 var currentTag = 'all';
 
-function initDashboard() {
+function initItems() {
+	/*
 	// Configure Items Grid
 	$('#sortable').sortable({
 		revert: true,
@@ -16,7 +17,7 @@ function initDashboard() {
 			console.log('dropped');
 		}
 	});
-	
+	*/
 	getItems();
 }
 
@@ -40,7 +41,7 @@ function updateItems() {
 	});
 	$.each(items, function(i, item) {
 		if (item.tags.indexOf(currentTag) >= 0)
-			if (achievedItems.indexOf(item.id) >= 0)
+//			if (achievedItems.indexOf(item.id) >= 0)
 				drawItem(item);
 	});
 }

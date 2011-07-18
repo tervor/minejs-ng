@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	initSocket();
 	initChat();
-	initDashboard();
+	initItems();
 
 	updateUserList();
 	updateItemList();
