@@ -5,12 +5,12 @@ var achievedItems = null;
 var currentTag = 'all';
 
 function initItems() {
+	initItemTemplates();
+
 	getItems();
-	
-	initTemplates();
 }
 
-function initTemplates() {
+function initItemTemplates() {
 	$.template('itemTemplate', "\
 	<div id='GridBox' class='GridBox ItemGridBox'>\
 	<div id='ctlMinus' class='ctlPlMi' onclick='decreaseAmount(${id})'>-</div>\

@@ -178,13 +178,13 @@
 	border: 1px solid black;
 	padding: 5px;
 }
-
+/*
 #chatbody div:hover {
 	float: left;
 	border: 1px solid #ffeeaa;
 
 }
-
+*/
 #chatoutput {
 	border: 0;
 	width: 80%;
@@ -240,7 +240,7 @@
 	background-color: #18130f;
 	color: #fff;
 	border: 1px solid #ffeeaa;
-	position: fixed;
+	position: absolute;
 	z-index: 1000;
 	left: 0;
 	bottom: 0;
@@ -253,6 +253,35 @@
 	-webkit-box-shadow: 1px 1px 1px 1px #333300;
 	box-shadow: 1px 1px 1px 1px #333300;
 
+}
+
+/* Chat text line */
+.chat-line {
+	border: none;
+	position: relative;
+	width: 100%;
+}
+
+.chat-line div {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+}
+
+.chat-line-time {
+	float: left;
+	width: 100px;
+	font-color: #aaa;
+}
+
+.chat-line-name {
+	float: left;
+	width: 150px;
+	font-color: #fff;
+}
+
+.chat-line-text {
+	float: none;
+	font-color: #ccc;
 }
 
 @-webkit-keyframes pulse {

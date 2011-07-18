@@ -1,6 +1,6 @@
 function initChat() {
 
-
+	initChatTemplates();
 
 	$(document.body).keypress(function(e) {
 		//force focus on chatinput for any key values
@@ -54,8 +54,21 @@ function initChat() {
 	);
 }
 
+function initChatTemplates() {
+	console.log('init chat template');
+	$.template('chatLineTemplate', "\
+	<div class='chat-line'>\
+		<div class='chat-line-time'>${time}</div>\
+		<div class='chat-line-name'>${name}</div>\
+		<div class='chat-line-text'>${text}</div>\
+	</div>\
+	");
+}
+
 function chatWrite(user, text) {
 	var element = $('#chatoutput');
-	element.html(element.html() + '<b>' + user + '</b> ' + text + "<br/>");
+	var now = new Date;
+	var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+	$.tmpl('chatLineTemplate', { time: time, name: user, text: text }).appendTo(element);
 	element.attr({ scrollTop: element.attr("scrollHeight") });
 }
