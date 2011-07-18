@@ -18,7 +18,7 @@ function initChat() {
 				input.val('');
 			}
 		}
-		console.log("keystrock");
+
 		//show chatbox if hidden on chat events
 		if ($("#chat").is(":hidden")) {
 			$("#chat").show();
