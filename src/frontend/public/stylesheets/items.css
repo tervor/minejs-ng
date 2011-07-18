@@ -21,6 +21,10 @@
     background-color: #3c443a;
     border: 1px solid green;
     opacity: 1;
+  -webkit-animation-name: pulse; 
+  -webkit-animation-duration: 0.5s; 
+  -webkit-animation-iteration-count: 10; 
+    
 }
 
 .ScriptGridBox {
@@ -46,4 +50,19 @@
     background-color: #3a3b44;
     border: 1px solid blue;
     opacity: 1;
+}
+
+@-webkit-keyframes pulse {
+  from {
+    -webkit-transform: scale(1.0);
+    opacity: 0.75;
+  }
+  50% {
+    -webkit-transform: scale(1.2);
+    opacity: 1.0;
+  }
+  to { 
+    -webkit-transform: scale(1.0);
+    opacity: 0.75;
+  }
 }
