@@ -24,9 +24,9 @@
 
 #chathead {
 	width: 100%;
-	height: 24px;
+	height: 26px;
 	background-color: #fbd850;
-
+	padding: 2px;
 }
 
 #chattitle {
@@ -51,6 +51,14 @@
 	float: right;
 	padding: 3px;
 	margin: 2px;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	-khtml-border-radius:4px;
+	border--radius:4px;
+	-khtml-box-shadow: 1px 1px 1px 1px #333300;
+	-moz-box-shadow: 1px 1px 1px 1px #333300;
+	-webkit-box-shadow: 1px 1px 1px 1px #333300;
+	box-shadow: 1px 1px 1px 1px #333300;
 }
 #chatminimize:hover {
 	background: red;
@@ -58,12 +66,73 @@
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
 }
+#chatsticky {
+	width:12px;
+	height: 12px;
+	background: #adff2f;
+	color: black;
+	font-weight: bolder;
+	border: 1px solid black;
+	font-size: 16px;
+	line-height: 10px;
+	text-align: center;
+	float: right;
+	padding: 3px;
+	margin: 2px;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	-khtml-border-radius:4px;
+	border--radius:4px;
+	-khtml-box-shadow: 1px 1px 1px 1px #333300;
+	-moz-box-shadow: 1px 1px 1px 1px #333300;
+	-webkit-box-shadow: 1px 1px 1px 1px #333300;
+	box-shadow: 1px 1px 1px 1px #333300;
+}
+#chatsticky:hover {
+	background: red;
+	-webkit-animation-name: pulse;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count: 10;
+}
+
+
+#chatmaximize {
+	width:12px;
+	height: 12px;
+	background: #adff2f;
+	color: black;
+	font-weight: bolder;
+	border: 1px solid black;
+	font-size: 10px;
+	line-height: 10px;
+	text-align: center;
+	float: right;
+	padding: 3px;
+	margin: 2px;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	-khtml-border-radius:4px;
+	border--radius:4px;
+	-khtml-box-shadow: 1px 1px 1px 1px #333300;
+	-moz-box-shadow: 1px 1px 1px 1px #333300;
+	-webkit-box-shadow: 1px 1px 1px 1px #333300;
+	box-shadow: 1px 1px 1px 1px #333300;
+
+
+}
+#chatmaximize:hover {
+	background: red;
+	-webkit-animation-name: pulse;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count: 10;
+}
+
 
 #chattabs {
 	clear:both;
 	widht: 100%;
 	height: 16px;
-	border: 1px solid #ffff00;
+	background-color: #18130f;
 	padding: 3px;
 }
 #chattabs div {

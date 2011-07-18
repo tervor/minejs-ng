@@ -42,7 +42,9 @@ script(src='/scripts/home.js')
 #chat
 	#chathead
 		#chattitle Title
-		#chatminimize _
+		#chatminimize(title='Minimize') _
+		#chatsticky(title='Sticky', onClick='alert("make me sticky function")') o
+		#chatmaximize(title='Maximize') XL
 	#chattabs
 		#chanConsole(onClick='alert("Console")') Console
 		#chanGlobal(onClick='alert("Global")') Global

@@ -1,5 +1,7 @@
 function initChat() {
 
+
+
 	$(document.body).keypress(function(e) {
 		//force focus on chatinput for any key values
 		$('chatinput').focus();
@@ -45,6 +47,7 @@ function initChat() {
 			},
 			function () {
 				$(this).hide();
+				('chatinput').focus();
 			}
 			//.draggable({ handle: "div.chathead" })
 			//.resizable({ grid: [50, 50] }
