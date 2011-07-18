@@ -3,6 +3,10 @@ var itemList = require('itemlist').instance;
 
 exports.index = {
 	json: function(req, res) {
-		res.send({ items: itemList.items, tags: itemList.tags } );
+		res.send({
+			items: itemList.items,
+			itemTags: itemList.tags,
+			achievedItems: req.session.user.achievedItems,
+		});
 	},
 }

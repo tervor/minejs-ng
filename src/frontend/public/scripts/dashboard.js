@@ -1,6 +1,7 @@
 
 var items = null;
-var itemtags = null;
+var itemTags = null;
+var achievedItems = null;
 var currentTag = 'all';
 
 function initDashboard() {
@@ -23,27 +24,29 @@ function initDashboard() {
 function getItems() {
 	$.getJSON('/items.json', function(data) {
 		items = data.items;
-		itemtags = data.tags;
+		itemTags = data.itemTags;
+		achievedItems = data.achievedItems;
 		updateItems();
 	});
 }
 
 function updateItems() {
-	if (!items || !itemtags)
+	if (!items || !itemTags)
 		return;
-	$('#itemtags').html('');
+	$('#itemTags').html('ölkjsdfg');
 	$('#items').html('');
-	$.each(itemtags, function(i, tag) {
+	$.each(itemTags, function(i, tag) {
 		drawItemTag(tag);
 	});
 	$.each(items, function(i, item) {
 		if (item.tags.indexOf(currentTag) >= 0)
-			drawItem(item);
+			if (achievedItems.indexOf(item.id) >= 0)
+				drawItem(item);
 	});
 }
 
 function drawItemTag(tag) {
-	$('#itemtags').append('\
+	$('#itemTags').append('\
 		<div id="ItemTag" onclick="selectItemTag(\'' + tag.name + '\')">' + tag.info + '</div>\
 	');
 }
