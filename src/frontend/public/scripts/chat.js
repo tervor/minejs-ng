@@ -58,6 +58,12 @@ function Chat() {
 			element.val('');
 			$('#chat').hide();
 			break;
+		case 37: // Left -> go to left tab
+			chat.prevChannel();
+			break;
+		case 39: // Right -> go to right tab
+			chat.nextChannel();
+			break;
 		default: // Other keys -> show panel
 			if ($(document.activeElement)[0] != element[0]) {
 				element.focus();
@@ -101,6 +107,8 @@ Chat.prototype.channels = {
 	monitor: { element: '#chat-output-monitor', template: 'monitorLineTemplate' },
 };
 
+Chat.prototype.channelOrder = ['chat', 'console', 'monitor'];
+
 
 Chat.prototype.initTemplates = function() {
 	$.template('chatLineTemplate', "\
@@ -125,6 +133,18 @@ Chat.prototype.initTemplates = function() {
 	{{if isPlaying}}[playing]{{/if}}\
 	<br/>\
 	");
+}
+
+Chat.prototype.nextChannel = function() {
+	var index = this.channelOrder.indexOf(this.activeChannel);
+	if (index < this.channelOrder.length - 1)
+		this.selectChannel(this.channelOrder[index + 1]);
+}
+
+Chat.prototype.prevChannel = function() {
+	var index = this.channelOrder.indexOf(this.activeChannel);
+	if (index > 0)
+		this.selectChannel(this.channelOrder[index - 1]);
 }
 
 Chat.prototype.selectChannel = function(channel) {
