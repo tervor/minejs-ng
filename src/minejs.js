@@ -236,6 +236,14 @@ mcserver.on('disconnect', function(username) {
 	frontend.chat(username, 'has disconnected from minecraft');
 });
 
+mcserver.on('data', function(data) {
+	for (var i = 0; i < frontend.clients.length; i++) {
+		var client = frontend.clients[i];
+		if (client.user.hasRole('superadmin'))
+			client.monitor(data);
+	}
+});
+
 userList.on('changed', function() {
 	frontend.notify('userListChanged');
 });

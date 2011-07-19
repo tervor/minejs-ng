@@ -84,7 +84,12 @@ function Chat() {
 	
 }
 
+// Max characters allowed on chat/console/monitor input
 Chat.prototype.MaxInputLength = 200;
+
+// Max number of lines of chat/console/monitor history
+Chat.prototype.MaxHistory = 500;
+
 
 Chat.prototype.channels = {
 	chat: { element: '#chat-output-chat', template: 'chatLineTemplate' },
@@ -121,11 +126,12 @@ Chat.prototype.selectChannel = function(channel) {
 		var element = $(this.channels[key].element)
 		if (key == channel) {
 			element.show();
-			$('#chat-output').attr({ scrollTop: element.attr("scrollHeight") });
 		} else {
 			element.hide();
 		}
 	}
+
+	$('#chat-output').attr({ scrollTop: $('#chat-output').attr("scrollHeight") });
 }
 
 Chat.prototype.input = function(text) {
@@ -147,7 +153,11 @@ Chat.prototype.output = function(channel, user, text) {
 	for (var i = 0; i < lines.length; i++) {
 		if (lines[i] == '')
 			continue;
-		$.tmpl(template, { time: now.toString('hh:MM:ss'), name: user, text: lines[i] }).appendTo(element);
-		$('#chat-output').attr({ scrollTop: element.attr("scrollHeight") });
+		$.tmpl(template, { time: now.toString('HH:MM:ss'), name: user, text: lines[i] }).appendTo(element);
 	}
+	
+	while (element.children().length > this.MaxHistory)
+		element.children(':first').remove();
+		
+	$('#chat-output').attr({ scrollTop: $('#chat-output').attr("scrollHeight") });
 }
