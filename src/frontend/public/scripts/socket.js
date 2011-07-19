@@ -5,7 +5,8 @@ socket = null;
 
 function initSocket() {
 	if (socket == null) {
-		socket = io.connect(config.host);
+		console.log('initializing socket.io');
+		socket = io.connect();
 	}
 	socket.on('connect', function(data) {
 		console.log('connected to ' + config.host + ' via socket.io');

@@ -175,10 +175,11 @@ FrontendClient.prototype.sendChatHistory = function() {
 	}
 }
 
-io = require('socket.io').listen(config.socket.port, config.socket.host);
+//io = require('socket.io').listen(config.socket.port, config.socket.host);
+io = require('socket.io').listen(app);
 
 io.configure(function() {
-	io.set('log level', 0);
+	io.set('log level', 1);
 });
 
 io.sockets.on('connection', function (socket) {

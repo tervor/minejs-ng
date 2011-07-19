@@ -1,10 +1,12 @@
+
 $(document).ready(function() {
 	initSocket();
+	
+	initItemList();
+	
 	initChat();
-	initItems();
 
 	updateUserList();
-	updateItemList();
 
 	//TODO backend should send this at index.jason query
 	MaxLimitItems = 2048;

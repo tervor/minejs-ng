@@ -81,8 +81,7 @@ function initChatTemplates() {
 function chatWrite(user, text) {
 	var element = $('#chatoutput');
 	var now = new Date;
-	var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-	$.tmpl('chatLineTemplate', { time: time, name: user, text: text }).appendTo(element);
+	$.tmpl('chatLineTemplate', { time: now.toString('hh:MM:ss'), name: user, text: text }).appendTo(element);
 	element.attr({ scrollTop: element.attr("scrollHeight") });
 }
 
