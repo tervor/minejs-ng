@@ -8,6 +8,8 @@ function initClient() {
 
 // Class to wrap the socket.io client
 function Client() {
+	this.notifyHandlers = {};
+	
 	console.log('initializing socket.io');
 	this.socket = io.connect();
 	
@@ -22,10 +24,13 @@ function Client() {
 		console.log('connection denied');
 	});
 	
-	// TODO this needs to be generic
 	this.socket.on('notify', function(data) {
-		if (data.action == 'userListChanged')
-			chat.updateUserList();
+		var action = data.action;
+		if (client.notifyHandlers.hasOwnProperty(action)) {
+			var handlers = client.notifyHandlers[action];
+			for (i = 0; i < handlers.length; i++)
+				handlers[i]();
+		}
 	});
 }
 
@@ -35,6 +40,12 @@ Client.prototype.on = function(event, callback) {
 
 Client.prototype.emit = function(event, data) {
 	this.socket.emit(event, data);
+}
+
+Client.prototype.onNotify = function(action, callback) {
+	if (!this.notifyHandlers.hasOwnProperty(action))
+		this.notifyHandlers[action] = [];
+	this.notifyHandlers[action].push(callback);
 }
 
 Client.prototype.give = function(name, count) {

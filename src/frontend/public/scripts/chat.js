@@ -34,6 +34,9 @@ function Chat() {
 	client.on('monitor', function(data) {
 		chat.output('monitor', null, data.text);
 	});
+	client.onNotify('userListChanged', function() {
+		chat.updateUserList();
+	});
 	
 
 	$(document.body).keypress(function(e) {
