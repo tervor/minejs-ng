@@ -39,25 +39,32 @@ function Chat() {
 	});
 	
 
-	$(document.body).keypress(function(e) {
+	// Register global keypress handlers
+	$(document).keypress(function(e) {
 		//force focus on chatinput for any key values
-		$('chat-input').focus();
-
-		//detect ENTER
-		if (e.which == 13) {
-			var element = $('#chat-input');
+		$('#chat').show();
+		
+		// TODO this seems like a waste of time, caching element reference could help
+		var element = $('#chat-input');
+		
+		switch (e.keyCode) {
+		case 13: // Enter -> send message
 			var text = element.val().toString();
 			element.val('');
 			chat.input(text);
-		}
-
-		//show chatbox if hidden on chat events
-		if ($("#chat").is(":hidden")) {
-			$("#chat").show();
-			$('#chat-input').focus();
+			break;
+		case 27: // Escape -> hide panel
+			element.val('');
+			$('#chat').hide();
+			break;
+		default: // Other keys -> show panel
+			if ($(document.activeElement)[0] != element[0]) {
+				element.focus();
+				element.val(element.val() + String.fromCharCode(e.which));
+			}
 		}
 	});
-
+	
 	$('#chat-minimize').click(function () {
 		$("#chat").hide();
 	});
@@ -65,24 +72,6 @@ function Chat() {
 	$('#chat-input').hover(function() {
 		$("#chat").show();
 	});
-
-	$('#chat-input').blur(function() {
-		$('#chat').hide();
-	});
-
-	$('#chat-input').focus();
-	$('#chat')
-			.hover(
-			function () {
-				$(this).show();
-			},
-			function () {
-				$(this).hide();
-				('chat-input').focus();
-			}
-			//.draggable({ handle: "div.chathead" })
-			//.resizable({ grid: [50, 50] }
-	);
 
 	$("#chat-dock").click(function () {
 		$("#chat").css({'position' : '', 'z-index' : ''});
@@ -94,7 +83,6 @@ function Chat() {
 		};
 		$("#chat").css(cssObj);
 	});
-	
 	
 	this.updateUserList();
 }
