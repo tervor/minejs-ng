@@ -12,6 +12,6 @@ function updateUserList() {
 				html += ' [playing]';
 			html += '<br/>'
 		});
-		$('#userlist').html(html);
+		$('#chat-users').html(html);
 	});
 }
