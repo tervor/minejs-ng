@@ -52,7 +52,6 @@ ItemList.prototype.render = function() {
 	$.each(this.itemTags, function(i, tag) {
 		$.tmpl('itemTagTemplate', tag).appendTo('#itemTags');
 	});
-	console.log(itemList.achievedItems);
 	$.each(this.items, function(i, item) {
 		if (item.tags.indexOf(itemList.currentTag) >= 0) {
 			//if (itemList.achievedItems.indexOf(item.id) >= 0)

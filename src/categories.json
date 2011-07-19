@@ -1,6 +1,14 @@
 [
 {"name":"all","info":"All"},
+{"name":"build","info":"Building"},
+{"name":"fluid","info":"Fluids"},
+{"name":"grow","info":"Growing"},
 {"name":"ore","info":"Ores"},
-{"name":"tools","info":"Tools"},
-{"name":"rail","info":"Rail"}
+{"name":"tool","info":"Tools"},
+{"name":"rail","info":"Rail"},
+{"name":"active","info":"Active"},
+{"name":"misc","info":"Misc"},
+{"name":"weapon","info":"Weapons"},
+{"name":"food","info":"Food"},
+{"name":"todo","info":"TODO"}
 ]
