@@ -23,6 +23,18 @@ function Chat() {
 	});
 	
 	this.selectChannel('chat');
+	
+	// Bind client events
+	client.on('chat', function(data) {
+		chat.output('chat', data.user, data.text);
+	});
+	client.on('console', function(data) {
+		chat.output('console', null, data.text);
+	});
+	client.on('monitor', function(data) {
+		chat.output('monitor', null, data.text);
+	});
+	
 
 	$(document.body).keypress(function(e) {
 		//force focus on chatinput for any key values
@@ -142,7 +154,7 @@ Chat.prototype.input = function(text) {
 		text = text.substr(0, this.MaxInputLength);
 		
 	this.output(this.activeChannel, config.user, text);
-	socket.emit(this.activeChannel, { text: text });
+	client.emit(this.activeChannel, { text: text });
 }
 
 Chat.prototype.output = function(channel, user, text) {

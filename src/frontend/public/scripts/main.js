@@ -1,7 +1,6 @@
 
 $(document).ready(function() {
-	initSocket();
-	
+	initClient();
 	initDashboard();
 	initChat();
 	

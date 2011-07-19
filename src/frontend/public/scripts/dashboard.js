@@ -85,5 +85,5 @@ Dashboard.prototype.decreaseAmount = function(id) {
 // Called to give item
 Dashboard.prototype.give = function(id) {
 	var amount = parseInt($('#varAmount-' + id).text());
-	clientGive(id, amount);
+	client.give(id, amount);
 }
