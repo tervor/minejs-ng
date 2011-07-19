@@ -84,5 +84,3 @@ function chatWrite(user, text) {
 	$.tmpl('chatLineTemplate', { time: now.toString('hh:MM:ss'), name: user, text: text }).appendTo(element);
 	element.attr({ scrollTop: element.attr("scrollHeight") });
 }
-
-

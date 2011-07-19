@@ -138,43 +138,53 @@ MCServer.prototype.restart = function() {
 // help, stop, list, time
 
 MCServer.prototype.kick = function(username) {
-	this.sendCmd(['kick', username]);
+	if (this.users.has(username))
+		this.sendCmd(['kick', username]);
 }
 
 MCServer.prototype.ban = function(username) {
-	this.sendCmd(['ban', username]);
+	if (this.users.has(username))
+		this.sendCmd(['ban', username]);
 }
 
 MCServer.prototype.pardon = function(username) {
-	this.sendCmd(['pardon', username]);
+	if (this.users.has(username))
+		this.sendCmd(['pardon', username]);
 }
 
 MCServer.prototype.banIP = function(username) {
-	this.sendCmd(['ban-ip', username]);
+	if (this.users.has(username))
+		this.sendCmd(['ban-ip', username]);
 }
 
 MCServer.prototype.pardonIP = function(username) {
-	this.sendCmd(['pardon-ip', username]);
+	if (this.users.has(username))
+		this.sendCmd(['pardon-ip', username]);
 }
 
 MCServer.prototype.op = function(username) {
-	this.sendCmd(['op', username]);
+	if (this.users.has(username))
+		this.sendCmd(['op', username]);
 }
 
 MCServer.prototype.deop = function(username) {
-	this.sendCmd(['deop', username]);
+	if (this.users.has(username))
+		this.sendCmd(['deop', username]);
 }
 
 MCServer.prototype.tp = function(username1, username2) {
-	this.sendCmd(['tp', username1, username2]);
+	if (this.users.has(username1) && this.users.has(username2))
+		this.sendCmd(['tp', username1, username2]);
 }
 
 MCServer.prototype.give = function(username, id, num) {
-	this.sendCmd(['give', username, id, num]);
+	if (this.users.has(username))
+		this.sendCmd(['give', username, id, num]);
 }
 
 MCServer.prototype.tell = function(username, text) {
-	this.sendCmd(['tell', username, text]);
+	if (this.users.has(username))
+		this.sendCmd(['tell', username, text]);
 }
 
 MCServer.prototype.say = function(text) {
