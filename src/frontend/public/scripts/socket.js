@@ -33,7 +33,7 @@ function initSocket() {
 	});
 	socket.on('notify', function(data) {
 		if (data.action == 'userListChanged')
-			updateUserList();
+			chat.updateUserList();
 	});
 }
 

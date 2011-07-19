@@ -1,0 +1,24 @@
+#dashboard-tags-container {
+	width: 100%;
+	height: 20px;
+	padding: 2px;
+}
+
+#dashboard-items-container {
+	width: 100%;
+	padding: 2px 0px 0px 16px;
+}
+
+#dashboard {
+
+    float:none;
+    clear: both;
+
+}
+
+#sortable {
+
+    float:none;
+    clear: both;
+
+}

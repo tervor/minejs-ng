@@ -48,7 +48,6 @@ function Chat() {
 	});
 
 	$('#chat-input').hover(function() {
-		console.log("chatinput hover");
 		$("#chat").show();
 	});
 
@@ -79,9 +78,10 @@ function Chat() {
 			'position' : 'fixed'
 		};
 		$("#chat").css(cssObj);
-
 	});
 	
+	
+	this.updateUserList();
 }
 
 // Max characters allowed on chat/console/monitor input
@@ -160,4 +160,20 @@ Chat.prototype.output = function(channel, user, text) {
 		element.children(':first').remove();
 		
 	$('#chat-output').attr({ scrollTop: $('#chat-output').attr("scrollHeight") });
+}
+
+
+Chat.prototype.updateUserList = function() {
+	$.getJSON('/users.json', function(data) {
+		var html = [];
+		$.each(data, function(key, user) {
+			html += user.name;
+			if (user.isFrontend)
+				html += ' [frontend]';
+			if (user.isPlaying)
+				html += ' [playing]';
+			html += '<br/>'
+		});
+		$('#chat-users').html(html);
+	});
 }

@@ -2,26 +2,14 @@
 $(document).ready(function() {
 	initSocket();
 	
+	initDashboard();
 	initChat();
-	initItemList();
 	
-	updateUserList();
-
 	//TODO backend should send this at index.jason query
 	MaxLimitItems = 2048;
 
 	//hide yellow news feed phrase
 	$("#effect").hide();
-
-	/* $(document.body).keypress(function(e) {
-	 if (e.which == 13) {
-	 console.log("11111")
-	 if (text.length > 200)
-	 console.log("2222")
-	 if (text.length > 0) {
-	 console.log("333333")}}
-	 }); */
-
 
 	function switchPanel(p) {
 		switch (p) {

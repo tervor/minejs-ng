@@ -73,7 +73,7 @@ body {
 	border: 1px white solid; /* TODO */
 }
 
-#nav-tab {
+#nav div {
     color: #fff;
     font-size: 12px;
     font-weight: bold;
@@ -92,7 +92,7 @@ body {
     text-align: center;
 }
 
-#nav-tab:hover {
+#nav div:hover {
     background-color: #3c443a;
     border: 1px solid green;
     opacity: 1;
@@ -240,16 +240,3 @@ body {
     border: 0;
 }
 
-#dashboard {
-
-    float:none;
-    clear: both;
-
-}
-
-#sortable {
-
-    float:none;
-    clear: both;
-
-}
