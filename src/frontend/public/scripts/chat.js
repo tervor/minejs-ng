@@ -5,7 +5,10 @@ function initChat() {
 	chat = new Chat();
 }
 
+
 function Chat() {
+	this.activeChannel = 'chat';
+	
 	this.initTemplates();
 	
 	// Bind click events for channel tabs
@@ -18,6 +21,8 @@ function Chat() {
 	$('#chat-tab-monitor').click(function() {
 		chat.selectChannel('monitor');
 	});
+	
+	this.selectChannel('chat');
 
 	$(document.body).keypress(function(e) {
 		//force focus on chatinput for any key values
@@ -25,15 +30,10 @@ function Chat() {
 
 		//detect ENTER
 		if (e.which == 13) {
-			var input = $('#chat-input');
-			var text = input.val().toString();
-			if (text.length > 200)
-				text = text.substr(0, 200);
-			if (text.length > 0) {
-				chat.outputChat(config.user, text);
-				socket.emit('chat', { text: text});
-				input.val('');
-			}
+			var element = $('#chat-input');
+			var text = element.val().toString();
+			element.val('');
+			chat.input(text);
 		}
 
 		//show chatbox if hidden on chat events
@@ -84,6 +84,15 @@ function Chat() {
 	
 }
 
+Chat.prototype.MaxInputLength = 200;
+
+Chat.prototype.channels = {
+	chat: { element: '#chat-output-chat', template: 'chatLineTemplate' },
+	console: { element: '#chat-output-console', template: 'consoleLineTemplate' },
+	monitor: { element: '#chat-output-monitor', template: 'monitorLineTemplate' },
+};
+
+
 Chat.prototype.initTemplates = function() {
 	$.template('chatLineTemplate', "\
 	<div class='chat-line'>\
@@ -103,24 +112,42 @@ Chat.prototype.initTemplates = function() {
 }
 
 Chat.prototype.selectChannel = function(channel) {
-	console.log('selecting channel ' + channel);
+	if (!this.channels.hasOwnProperty(channel))
+		return;
+	this.activeChannel = channel;
+	
+	// Hide all channels but the selected one
+	for (var key in this.channels) {
+		var element = $(this.channels[key].element)
+		if (key == channel) {
+			element.show();
+			$('#chat-output').attr({ scrollTop: element.attr("scrollHeight") });
+		} else {
+			element.hide();
+		}
+	}
 }
 
-Chat.prototype.outputChat = function(user, text) {
-	var element = $('#chat-output');
+Chat.prototype.input = function(text) {
+	if (text.length < 1)
+		return;
+	// Limit input string in length
+	if (text.length > this.MaxInputLength)
+		text = text.substr(0, this.MaxInputLength);
+		
+	this.output(this.activeChannel, config.user, text);
+	socket.emit(this.activeChannel, { text: text });
+}
+
+Chat.prototype.output = function(channel, user, text) {
+	var element = $(this.channels[channel].element);
+	var template = this.channels[channel].template;
 	var now = new Date;
-	$.tmpl('chatLineTemplate', { time: now.toString('hh:MM:ss'), name: user, text: text }).appendTo(element);
-	element.attr({ scrollTop: element.attr("scrollHeight") });
-}
-
-Chat.prototype.outputConsole = function(text) {
-	var element = $('#consoleoutput');
-	$.tmpl('consoleLineTemplate', { text: text }).appendTo(element);
-	element.attr({ scrollTop: element.attr("scrollHeight") });
-}
-
-Chat.prototype.outputMonitor = function(text) {
-	var element = $('#monitoroutput');
-	$.tmpl('monitorLineTemplate', { text: text }).appendTo(element);
-	element.attr({ scrollTop: element.attr("scrollHeight") });
+	var lines = text.split('\n');
+	for (var i = 0; i < lines.length; i++) {
+		if (lines[i] == '')
+			continue;
+		$.tmpl(template, { time: now.toString('hh:MM:ss'), name: user, text: lines[i] }).appendTo(element);
+		$('#chat-output').attr({ scrollTop: element.attr("scrollHeight") });
+	}
 }

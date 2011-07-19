@@ -154,6 +154,12 @@ function FrontendClient(socket, username) {
 		instance.emit('chat', this, data.text);
 		instance.addChatHistory(this.user.name, data.text);
 	}.bind(this));
+	this.socket.on('console', function(data) {
+		instance.emit('console', this, data.text);
+	}.bind(this));
+	this.socket.on('monitor', function(data) {
+		instance.emit('monitor', this, data.text);
+	}.bind(this));
 	this.socket.on('command', function(data) {
 		console.log('client issued command ' + data.cmd);
 		instance.emit('command', this, data.cmd, data);
@@ -162,6 +168,14 @@ function FrontendClient(socket, username) {
 
 FrontendClient.prototype.chat = function(username, text) {
 	this.socket.emit('chat', { user: username, text: text });
+}
+
+FrontendClient.prototype.console = function(text) {
+	this.socket.emit('console', { text: text });
+}
+
+FrontendClient.prototype.monitor = function(text) {
+	this.socket.emit('monitor', { text: text });
 }
 
 FrontendClient.prototype.notify = function(action, args) {

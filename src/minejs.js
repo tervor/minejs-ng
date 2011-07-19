@@ -211,6 +211,15 @@ frontend.on('chat', function(client, text) {
 	mcserver.say('<' + client.user.name + '> ' + text);
 });
 
+frontend.on('console', function(client, text) {
+	var ret = commandHandler.parseExecute(client.user.name, 'telnet', text);
+	client.console(ret);
+});
+
+frontend.on('monitor', function(client, text) {
+	mcserver.process.stdin.write(text + "\n");
+});
+
 frontend.on('command', function(client, cmd, args) {
 	commandHandler.mapExecute(client.user.name, 'web', cmd, args);
 });

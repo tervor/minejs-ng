@@ -347,6 +347,7 @@
 }
 
 /* Chat text line */
+
 .chat-line {
 	border: 0px;
 	position: relative;
@@ -374,8 +375,38 @@
 .chat-line-text {
 	float: none;
 	font-color: #ccc;
-
 }
+
+/* Console text line */
+
+.console-line {
+	border: 0px;
+	position: relative;
+	width: 100%;
+}
+
+.console-line div {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	border: 0px;
+}
+
+/* Monitor text line */
+
+.monitor-line {
+	border: 0px;
+	position: relative;
+	width: 100%;
+}
+
+.monitor-line div {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	border: 0px;
+}
+
+
+
 
 @-webkit-keyframes pulse {
   from {
