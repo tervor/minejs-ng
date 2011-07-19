@@ -7,6 +7,7 @@ function initChat() {
 
 
 function Chat() {
+	this.users = [];
 	this.activeChannel = 'chat';
 	
 	this.initTemplates();
@@ -117,6 +118,13 @@ Chat.prototype.initTemplates = function() {
 	$.template('monitorLineTemplate', "\
 	<div class='monitor-line'>${text}</div>\
 	");
+
+	$.template('userTemplate', "\
+	${name}\
+	{{if isFrontend}}[frontend]{{/if}}\
+	{{if isPlaying}}[playing]{{/if}}\
+	<br/>\
+	");
 }
 
 Chat.prototype.selectChannel = function(channel) {
@@ -168,15 +176,15 @@ Chat.prototype.output = function(channel, user, text) {
 
 Chat.prototype.updateUserList = function() {
 	$.getJSON('/users.json', function(data) {
-		var html = [];
-		$.each(data, function(key, user) {
-			html += user.name;
-			if (user.isFrontend)
-				html += ' [frontend]';
-			if (user.isPlaying)
-				html += ' [playing]';
-			html += '<br/>'
-		});
-		$('#chat-users').html(html);
+		chat.users = data;
+		chat.renderUserList();
+	});
+}
+
+Chat.prototype.renderUserList = function() {
+	var element = $('#chat-users');
+	element.html('');
+	$.each(this.users, function(key, user) {
+		$.tmpl('userTemplate', user).appendTo(element);
 	});
 }
