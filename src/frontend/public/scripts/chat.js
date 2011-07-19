@@ -52,6 +52,19 @@ function initChat() {
 			//.draggable({ handle: "div.chathead" })
 			//.resizable({ grid: [50, 50] }
 	);
+
+	$("#chatdock").click(function () {
+		console.log("dockcllick")
+		$("#chat").css({'position' : '', 'z-index' : ''});
+	}, function () {
+		var cssObj = {
+			'background-color' : '#ddd',
+			'z-index' : '1200',
+			'position' : 'fixed'
+		};
+		$("#chat").css(cssObj);
+
+	});
 }
 
 function initChatTemplates() {
@@ -72,3 +85,5 @@ function chatWrite(user, text) {
 	$.tmpl('chatLineTemplate', { time: time, name: user, text: text }).appendTo(element);
 	element.attr({ scrollTop: element.attr("scrollHeight") });
 }
+
+

@@ -4,7 +4,6 @@ script(src='/scripts/chat.js')
 script(src='/scripts/users.js')
 script(src='/scripts/items.js')
 script(src='/scripts/socket.js')
-script(src='/scripts/home.js')
 script(src='/scripts/main.js')
 
 #header
@@ -20,45 +19,44 @@ script(src='/scripts/main.js')
 				| .
 			a(href='/sessions/destroy')
 				#session-logout Logout
-#nav
-	a(href='/voodoo', title='Dashboard') 
-		#nav-tab Dashboard
-	a(href='https://oom.ch/wiki/index.php/Minecraft', title='Local Community Minecraft Wiki') 
-		#nav-tab Wiki
-	a(href='http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal', title='Minecraft Map') 
-		#nav-tab Map
-	a(href='http://www.minecraft.net/game/', title='Minecraft Browser Client') 
-		#nav-tab Play
-	a(href='/help', title='View login page') 
-		#nav-tab Help
+	#nav
+		a(href='/voodoo', title='Dashboard')
+			#nav-tab Dashboard
+		a(href='https://oom.ch/wiki/index.php/Minecraft', title='Local Community Minecraft Wiki')
+			#nav-tab Wiki
+		a(href='http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal', title='Minecraft Map')
+			#nav-tab Map
+		a(href='http://www.minecraft.net/game/', title='Minecraft Browser Client')
+			#nav-tab Play
+		a(href='/help', title='View login page')
+			#nav-tab Help
 #upper-pane
 	#dashboard
-		#itemTags
-		#items
+		#itemtagcontainer
+			#itemTags
+		#itemcontainer
+			#items 
 	#livemaps
 	#wikis
 #lower-pane
 	#chat
 		#chathead
-			#chattitle Title
+			//#chattitle Title
+			#chattabs
+				#chanConsole(onClick='alert("Console")') Console
+				#chanGlobal(onClick='alert("Global")') Global
+				#chanUsers(onClick='alert("Users")') Users
+				#chanAdmin(onClick='alert("Admins")') Admins
+				#wispers(onClick='alert("wisper")') wisper
 			#chatminimize(title='Minimize') _
-			#chatsticky(title='Sticky', onClick='alert("make me sticky function")') o
-			#chatmaximize(title='Maximize') XL
-		#chattabs
-			#chanConsole(onClick='alert("Console")') Console
-			#chanGlobal(onClick='alert("Global")') Global
-			#chanUsers(onClick='alert("Users")') Users
-			#chanAdmin(onClick='alert("Admins")') Admins
-			#wispers(onClick='alert("wisper")') wisper
+			#chatdock(title='Docking') []
+			#chatsticky(title='Sticky', onClick='chatSticky') o
+			#chatmax(title='Maximize') XL
+
 		#chatbody
 			#chatoutput
 			#userlist
-				#user1 user1
-				#user2 user2
-				#user3 user3
-				#user4 user4
-				#user5 user5
-		#chatfeedback
+
 	input(type='text', name='chatinput', id='chatinput')
 
 //#effect
