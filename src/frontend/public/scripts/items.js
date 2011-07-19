@@ -47,10 +47,10 @@ ItemList.prototype.update = function() {
 ItemList.prototype.render = function() {
 	if (!this.items || !this.itemTags)
 		return;
-	$('#itemTags').html('');
+	$('#item-tags').html('');
 	$('#items').html('');
 	$.each(this.itemTags, function(i, tag) {
-		$.tmpl('itemTagTemplate', tag).appendTo('#itemTags');
+		$.tmpl('itemTagTemplate', tag).appendTo('#item-tags');
 	});
 	$.each(this.items, function(i, item) {
 		if (item.tags.indexOf(itemList.currentTag) >= 0) {

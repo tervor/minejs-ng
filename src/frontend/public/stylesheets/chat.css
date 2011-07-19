@@ -23,16 +23,17 @@
 }
 
 
-
-#chattext {
+/*
+#chat-text {
 	border: 0;
 	width: 100%;
 	height: 10%;
 	font-size: 10px;
 	resize: none;
 }
+*/
 
-#chathead {
+#chat-head {
 	width: 100%;
 	height: 26px;
 	background-color: #fbd850;
@@ -48,6 +49,7 @@
 	box-shadow: 1px 1px 1px 1px #333300;
 }
 
+/*
 #chattitle {
 	width: 300px;
 	height: inherit;
@@ -56,8 +58,9 @@
 	font-weight: bold;
 	float: left;
 }
+*/
 
-#chatminimize {
+#chat-minimize {
 	width:12px;
 	height: 12px;
 	background: #adff2f;
@@ -80,13 +83,13 @@
 	-webkit-box-shadow: 1px 1px 1px 1px #333300;
 	box-shadow: 1px 1px 1px 1px #333300;
 }
-#chatminimize:hover {
+#chat-minimize:hover {
 	background: red;
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
 }
-#chatsticky {
+#chat-sticky {
 	width:12px;
 	height: 12px;
 	background: #adff2f;
@@ -108,7 +111,7 @@
 	-webkit-box-shadow: 1px 1px 1px 1px #333300;
 	box-shadow: 1px 1px 1px 1px #333300;
 }
-#chatsticky:hover {
+#chat-sticky:hover {
 	background: red;
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
@@ -116,7 +119,7 @@
 }
 
 
-#chatmaximize {
+#chat-maximize {
 	width:12px;
 	height: 12px;
 	background: #adff2f;
@@ -143,7 +146,7 @@
 
 
 
-#chatdock:hover {
+#chat-dock:hover {
 	background: red;
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
@@ -151,7 +154,7 @@
 }
 
 
-#chatdock {
+#chat-dock {
 	width:12px;
 	height: 12px;
 	background: #adff2f;
@@ -175,7 +178,7 @@
 
 
 }
-#chatdock:hover {
+#chat-dock:hover {
 	background: red;
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
@@ -183,7 +186,7 @@
 }
 
 
-#chatmax:hover {
+#chat-max:hover {
 	background: red;
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
@@ -191,7 +194,7 @@
 }
 
 
-#chatmax {
+#chat-max {
 	width:12px;
 	height: 12px;
 	background: #adff2f;
@@ -215,7 +218,7 @@
 
 
 }
-#chatmax:hover {
+#chat-max:hover {
 	background: red;
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
@@ -223,11 +226,11 @@
 }
 
 
-#chattabs {
+#chat-tabs {
 	widht: 40%;
 	float: left;
 }
-#chattabs div {
+#chat-tabs div {
 	background: #adff2f;
 	color: black;
 	font-weight: bolder;
@@ -250,17 +253,17 @@
 	height: 12px;
 }
 
-#chattabs div:hover {
+#chat-tabs div:hover {
 	background-color: #EFD279;
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
 }
 
-#chatbody {
+#chat-body {
 }
 
-#chatbody div {
+#chat-body div {
 	float: left;
 
 }
@@ -271,7 +274,7 @@
 
 }
 */
-#chatoutput {
+#chat-output {
 	border: 0;
 	width: 80%;
 	height:194px;
@@ -288,24 +291,25 @@
 	padding-bottom: 5px;
 }
 
-#userlist {
+#chat-users {
 	width: 17%;
 }
 
-#userlist div {
+#chat-users div {
 	color: #fff;
 	with: 100%;
 	float: left;
 
 }
-#userlist div:hover {
+
+#chat-users div:hover {
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
 }
 
 
-#chatfeedback {
+#chat-feedback {
 	border: 0;
 	width: 100%;
 	height: 16px;
@@ -318,7 +322,7 @@
 	clear:both;
 }
 
-#chatinput {
+#chat-input {
 	width: 95.4%;
 	height: 24px;
 	resize: none;

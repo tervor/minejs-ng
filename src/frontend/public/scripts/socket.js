@@ -20,7 +20,7 @@ function initSocket() {
 		console.log('connection denied');
 	});
 	socket.on('chat', function(data) {
-		chatWrite(data.user, data.text);
+		chat.outputChat(data.user, data.text);
 	});
 	socket.on('users', function(data) {
 		

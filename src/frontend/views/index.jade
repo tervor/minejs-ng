@@ -32,32 +32,29 @@ script(src='/scripts/main.js')
 			#nav-tab Help
 #upper-pane
 	#dashboard
-		#itemtagcontainer
-			#itemTags
-		#itemcontainer
-			#items 
+		#item-tags-container
+			#item-tags
+		#items-container
+			#items
 	#livemaps
 	#wikis
 #lower-pane
 	#chat
-		#chathead
-			//#chattitle Title
-			#chattabs
-				#chanConsole(onClick='alert("Console")') Console
-				#chanGlobal(onClick='alert("Global")') Global
-				#chanUsers(onClick='alert("Users")') Users
-				#chanAdmin(onClick='alert("Admins")') Admins
-				#wispers(onClick='alert("wisper")') wisper
-			#chatminimize(title='Minimize') _
-			#chatdock(title='Docking') []
-			#chatsticky(title='Sticky', onClick='chatSticky') o
-			#chatmax(title='Maximize') XL
+		#chat-head
+			#chat-tabs
+				#chat-tab-chat Chat
+				#chat-tab-console Console
+				#chat-tab-monitor Monitor
+			#chat-minimize(title='Minimize') _
+			#chat-dock(title='Docking') []
+			#chat-sticky(title='Sticky') o
+			#chat-max(title='Maximize') XL
 
-		#chatbody
-			#chatoutput
-			#userlist
+		#chat-body
+			#chat-output
+			#chat-users
 
-	input(type='text', name='chatinput', id='chatinput')
+	input(type='text', name='chat-input', id='chat-input')
 
 //#effect
 //.ui-widget-content

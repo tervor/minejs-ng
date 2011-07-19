@@ -2,10 +2,9 @@
 $(document).ready(function() {
 	initSocket();
 	
+	initChat();
 	initItemList();
 	
-	initChat();
-
 	updateUserList();
 
 	//TODO backend should send this at index.jason query

@@ -52,6 +52,7 @@
 	opacity: 1;
 }
 
+/*
 #items .box {
 	cursor: pointer;
 	width: 85px;
@@ -62,6 +63,7 @@
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
+*/
 
 .STlabel {
 	width: 100px;
@@ -224,13 +226,13 @@
 	-webkit-animation-iteration-count: 10;
 }
 
-#itemtagcontainer {
+#item-tags-container {
 	width: 100%;
 	height: 20px;
 	padding: 2px;
 }
 
-#itemcontainer {
+#items-container {
 	width: 100%;
 	padding: 2px 0px 0px 16px;
 }

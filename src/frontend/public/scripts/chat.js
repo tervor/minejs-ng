@@ -1,19 +1,36 @@
-function initChat() {
 
-	initChatTemplates();
+chat = null;
+
+function initChat() {
+	chat = new Chat();
+}
+
+function Chat() {
+	this.initTemplates();
+	
+	// Bind click events for channel tabs
+	$('#chat-tab-chat').click(function() {
+		chat.selectChannel('chat');
+	});
+	$('#chat-tab-console').click(function() {
+		chat.selectChannel('console');
+	});
+	$('#chat-tab-monitor').click(function() {
+		chat.selectChannel('monitor');
+	});
 
 	$(document.body).keypress(function(e) {
 		//force focus on chatinput for any key values
-		$('chatinput').focus();
+		$('chat-input').focus();
 
 		//detect ENTER
 		if (e.which == 13) {
-			var input = $('#chatinput');
+			var input = $('#chat-input');
 			var text = input.val().toString();
 			if (text.length > 200)
 				text = text.substr(0, 200);
 			if (text.length > 0) {
-				chatWrite(config.user, text);
+				chat.outputChat(config.user, text);
 				socket.emit('chat', { text: text});
 				input.val('');
 			}
@@ -22,24 +39,24 @@ function initChat() {
 		//show chatbox if hidden on chat events
 		if ($("#chat").is(":hidden")) {
 			$("#chat").show();
-			$('#chatinput').focus();
+			$('#chat-input').focus();
 		}
 	});
 
-	$('#chatminimize').click(function () {
+	$('#chat-minimize').click(function () {
 		$("#chat").hide();
 	});
 
-	$('#chatinput').hover(function() {
+	$('#chat-input').hover(function() {
 		console.log("chatinput hover");
 		$("#chat").show();
 	});
 
-	$('#chatinput').blur(function() {
+	$('#chat-input').blur(function() {
 		$('#chat').hide();
 	});
 
-	$('#chainput').focus();
+	$('#chat-input').focus();
 	$('#chat')
 			.hover(
 			function () {
@@ -47,14 +64,13 @@ function initChat() {
 			},
 			function () {
 				$(this).hide();
-				('chatinput').focus();
+				('chat-input').focus();
 			}
 			//.draggable({ handle: "div.chathead" })
 			//.resizable({ grid: [50, 50] }
 	);
 
-	$("#chatdock").click(function () {
-		console.log("dockcllick")
+	$("#chat-dock").click(function () {
 		$("#chat").css({'position' : '', 'z-index' : ''});
 	}, function () {
 		var cssObj = {
@@ -65,10 +81,10 @@ function initChat() {
 		$("#chat").css(cssObj);
 
 	});
+	
 }
 
-function initChatTemplates() {
-	console.log('init chat template');
+Chat.prototype.initTemplates = function() {
 	$.template('chatLineTemplate', "\
 	<div class='chat-line'>\
 		<div class='chat-line-time'>${time}</div>\
@@ -76,11 +92,35 @@ function initChatTemplates() {
 		<div class='chat-line-text'>${text}</div>\
 	</div>\
 	");
+	
+	$.template('consoleLineTemplate', "\
+	<div class='console-line'>${text}</div>\
+	");
+	
+	$.template('monitorLineTemplate', "\
+	<div class='monitor-line'>${text}</div>\
+	");
 }
 
-function chatWrite(user, text) {
-	var element = $('#chatoutput');
+Chat.prototype.selectChannel = function(channel) {
+	console.log('selecting channel ' + channel);
+}
+
+Chat.prototype.outputChat = function(user, text) {
+	var element = $('#chat-output');
 	var now = new Date;
 	$.tmpl('chatLineTemplate', { time: now.toString('hh:MM:ss'), name: user, text: text }).appendTo(element);
+	element.attr({ scrollTop: element.attr("scrollHeight") });
+}
+
+Chat.prototype.outputConsole = function(text) {
+	var element = $('#consoleoutput');
+	$.tmpl('consoleLineTemplate', { text: text }).appendTo(element);
+	element.attr({ scrollTop: element.attr("scrollHeight") });
+}
+
+Chat.prototype.outputMonitor = function(text) {
+	var element = $('#monitoroutput');
+	$.tmpl('monitorLineTemplate', { text: text }).appendTo(element);
 	element.attr({ scrollTop: element.attr("scrollHeight") });
 }
