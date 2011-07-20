@@ -10,6 +10,9 @@ function Chat() {
 	this.users = [];
 	this.activeChannel = 'chat';
 	
+	this.elementUsers = $('#chat-users');
+	this.elementOutput = $('#chat-output');
+	
 	this.initTemplates();
 	
 	// Bind click events for channel tabs
@@ -102,9 +105,9 @@ Chat.prototype.MaxHistory = 500;
 
 
 Chat.prototype.channels = {
-	chat: { element: '#chat-output-chat', template: 'chatLineTemplate' },
-	console: { element: '#chat-output-console', template: 'consoleLineTemplate' },
-	monitor: { element: '#chat-output-monitor', template: 'monitorLineTemplate' },
+	chat: { name: 'chat', element: '#chat-output-chat', template: 'chatLineTemplate' },
+	console: { name: 'console', element: '#chat-output-console', template: 'consoleLineTemplate' },
+	monitor: { name: 'monitor', element: '#chat-output-monitor', template: 'monitorLineTemplate' },
 };
 
 Chat.prototype.channelOrder = ['chat', 'console', 'monitor'];
@@ -162,7 +165,7 @@ Chat.prototype.selectChannel = function(channel) {
 		}
 	}
 
-	$('#chat-output').attr({ scrollTop: $('#chat-output').attr("scrollHeight") });
+	this.scrollBottom();
 }
 
 Chat.prototype.input = function(text) {
@@ -189,8 +192,8 @@ Chat.prototype.output = function(channel, user, text) {
 	
 	while (element.children().length > this.MaxHistory)
 		element.children(':first').remove();
-		
-	$('#chat-output').attr({ scrollTop: $('#chat-output').attr("scrollHeight") });
+	
+	this.scrollBottom();	
 }
 
 
@@ -202,9 +205,12 @@ Chat.prototype.updateUserList = function() {
 }
 
 Chat.prototype.renderUserList = function() {
-	var element = $('#chat-users');
-	element.html('');
+	this.elementUsers.html('');
 	$.each(this.users, function(key, user) {
-		$.tmpl('userTemplate', user).appendTo(element);
+		$.tmpl('userTemplate', user).appendTo(chat.elementUsers);
 	});
+}
+
+Chat.prototype.scrollBottom = function() {
+	this.elementOutput.attr({ scrollTop: this.elementOutput.attr("scrollHeight") });
 }

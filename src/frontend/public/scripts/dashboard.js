@@ -11,6 +11,9 @@ function Dashboard() {
 	this.achievedItems = null;
 	this.currentTag = 'all';
 	
+	this.elementTags = $('#dashboard-tags');
+	this.elementItems = $('#dashboard-items');
+	
 	this.initTemplates();
 	this.update();
 }
@@ -47,15 +50,15 @@ Dashboard.prototype.update = function() {
 Dashboard.prototype.render = function() {
 	if (!this.items || !this.itemTags)
 		return;
-	$('#dashboard-tags').html('');
-	$('#dashboard-items').html('');
+	this.elementTags.html('');
+	this.elementItems.html('');
 	$.each(this.itemTags, function(i, tag) {
-		$.tmpl('itemTagTemplate', tag).appendTo('#dashboard-tags');
+		$.tmpl('itemTagTemplate', tag).appendTo(dashboard.elementTags);
 	});
 	$.each(this.items, function(i, item) {
 		if (item.tags.indexOf(dashboard.currentTag) >= 0) {
 			//if (dashboard.achievedItems.indexOf(item.id) >= 0)
-				$.tmpl('itemTemplate', item).appendTo('#dashboard-items');
+				$.tmpl('itemTemplate', item).appendTo(dashboard.elementItems);
 		}
 	});
 }
