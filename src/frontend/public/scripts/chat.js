@@ -1,4 +1,3 @@
-
 chat = null;
 
 function initChat() {
@@ -83,7 +82,7 @@ function Chat() {
 		};
 		$("#chat").css(css);
 	});
-	
+
 	$('#chat-min').click(function() {
 		var css = {
 			'height' : '230px'
@@ -91,12 +90,23 @@ function Chat() {
 		$("#chat").css(css);
 	});
 	
+
 	$('#chat-hide').click(function () {
 		$("#chat").hide();
+		browserheight=$(document).height();
+		newheight=browserheight-130
+		console.log("new height is: "+newheight);
+		$("#upper-pane").css({'height' : newheight });
+		$("#lower-pane").css({'height' : '32' });
 	});
 
 	$('#chat-input').hover(function() {
 		$("#chat").show();
+		browserheight=$(document).height();
+		newheight=browserheight-380
+		console.log("new height is: "+newheight);
+		$("#upper-pane").css({'height' : newheight });
+		$("#lower-pane").css({'height' : '300' });
 	});
 
 	$("#chat-dock").click(function () {
