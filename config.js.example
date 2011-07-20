@@ -27,12 +27,6 @@ var config = {
 		// fakeLogin: 'admin',
 	},
 	
-	// Socket.IO configuration options
-	socket: {
-		host: 'localhost',
-		port: 25562,
-	},
-	
 	// Game related settings
 	settings: {
 		adminPassword: 'minejs',
