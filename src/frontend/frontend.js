@@ -87,8 +87,6 @@ app.get('/scripts/config.js', function(req, res) {
 	var vars = {
 		sid: req.sessionID || '',
 		user: req.session.user.name,
-		host: [ 'http://', config.socket.host, ':', config.socket.port ].join(''),
-        cmdhost: [ 'http://', config.socket.host, ':', config.web.port ].join(''),
 	};
 	
 	// Create javascript snippet containing the variables
