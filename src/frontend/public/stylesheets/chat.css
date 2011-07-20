@@ -85,9 +85,11 @@
 }
 #chat-minimize:hover {
 	background: red;
+	/*
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
+	*/
 }
 #chat-sticky {
 	width:12px;
@@ -148,9 +150,11 @@
 
 #chat-dock:hover {
 	background: red;
+	/*
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
+	*/
 }
 
 
@@ -180,17 +184,21 @@
 }
 #chat-dock:hover {
 	background: red;
+	/*
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
+	*/
 }
 
 
 #chat-max:hover {
 	background: red;
+	/*
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
+	*/
 }
 
 
@@ -219,10 +227,12 @@
 
 }
 #chat-max:hover {
+	/*
 	background: red;
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
+	*/
 }
 
 
@@ -255,9 +265,11 @@
 
 #chat-tabs div:hover {
 	background-color: #EFD279;
+	/*
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
+	*/
 }
 
 #chat-body {
@@ -303,9 +315,11 @@
 }
 
 #chat-users div:hover {
+	/*
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
+	*/
 }
 
 

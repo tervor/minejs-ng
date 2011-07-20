@@ -96,9 +96,11 @@ body {
     background-color: #3c443a;
     border: 1px solid green;
     opacity: 1;
+/*
 	-webkit-animation-name: pulse;
 	-webkit-animation-duration: 0.5s;
 	-webkit-animation-iteration-count: 10;
+*/
 }
 
 /* Upper pane */
