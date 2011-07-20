@@ -1,32 +1,37 @@
 
 /* Mixins */
 
-.rounded-corners (@radius: 3px) {
+.rounded-corners(@radius: 3px) {
 	border-radius: @radius;
 	-webkit-border-radius: @radius;
 	-moz-border-radius: @radius;	
 	-khtml-border-radius: @radius;
 }
 
+.box-shadow(@x: 0, @y: 0, @blur: 1px, @color: #000) {
+	box-shadow: @arguments;
+	-webkit-box-shadow: @arguments;
+	-moz-box-shadow: @arguments;
+	-khtml-box-shadow: @arguments;
+}
+
 #chat {
+	position: fixed;
+	float: left;
 	width: 96%;
 	height: 230px;
-	padding: 0.2%;
-	position: fixed;
-	z-index: 1001;
 	left: 1.8%;
 	bottom: 32px;
+	padding: 0.2%;
+	z-index: 1001;
+	
 	border: 1px solid #271f18;
 	background: rgb(39, 31, 24);
-	float: left;
 	resize: both;
 	border: 1px solid #ffeeaa;
-	-khtml-box-shadow: 1px 1px 1px 1px #333300;
-	-moz-box-shadow: 1px 1px 1px 0px #333300;
-	-webkit-box-shadow: 1px 1px 1px 1px #333300;
-	box-shadow: 1px 1px 1px 1px #333300;
 	opacity: 0.9;
 	.rounded-corners(6px);
+//	.box-shadow(1px, 1px, 1px, #330);
 }
 
 
@@ -46,11 +51,8 @@
 	background-color: #fbd850;
 	padding: 0;
 	margin-bottom: 4px;
-	-khtml-box-shadow: 1px 1px 1px 1px #333300;
-	-moz-box-shadow: 1px 1px 1px 1px #333300;
-	-webkit-box-shadow: 1px 1px 1px 1px #333300;
-	box-shadow: 1px 1px 1px 1px #333300;
 	.rounded-corners(4px);
+//	.box-shadow(1px, 1px, 1px, #330);
 }
 
 /*
@@ -78,11 +80,8 @@
 	padding: 3px;
 	margin: 2px;
 	margin-right:5px;
-	-khtml-box-shadow: 1px 1px 1px 1px #333300;
-	-moz-box-shadow: 1px 1px 1px 1px #333300;
-	-webkit-box-shadow: 1px 1px 1px 1px #333300;
-	box-shadow: 1px 1px 1px 1px #333300;
 	.rounded-corners(4px);
+//	.box-shadow(1px, 1px, 1px, #330);
 }
 #chat-minimize:hover {
 	background: red;
@@ -98,6 +97,7 @@
 	widht: 40%;
 	float: left;
 }
+
 #chat-tabs div {
 	background: #adff2f;
 	color: black;
@@ -110,12 +110,9 @@
 	padding: 3px;
 	margin: 2px;
 	margin-left: 4px;
-	-khtml-box-shadow: 1px 1px 1px 1px #333300;
-	-moz-box-shadow: 1px 1px 1px 1px #333300;
-	-webkit-box-shadow: 1px 1px 1px 1px #333300;
-	box-shadow: 1px 1px 1px 1px #333300;
 	height: 12px;
 	.rounded-corners(4px);
+//	.box-shadow(1px, 1px, 1px, #330);
 }
 
 #chat-tabs div:hover {
@@ -126,6 +123,38 @@
 	-webkit-animation-iteration-count: 10;
 	*/
 }
+
+#chat-options {
+	float: right;
+}
+
+#chat-options div {
+	background: #adff2f;
+	color: black;
+	font-weight: bolder;
+	border: 1px solid black;
+	font-size: 10px;
+	line-height: 10px;
+	text-align: center;
+	float: left;
+	padding: 3px;
+	margin: 2px;
+	margin-left: 4px;
+	width: 12px;
+	height: 12px;
+	.rounded-corners(4px);
+//	.box-shadow(1px, 1px, 1px, #330);
+}
+
+#chat-options div:hover {
+	background-color: #EFD279;
+	/*
+	-webkit-animation-name: pulse;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count: 10;
+	*/
+}
+
 
 #chat-body {
 }
@@ -138,13 +167,13 @@
 #chat-output {
 	border: 0;
 	width: 80%;
+	top: 20px;
+	bottom: 20px;
 	height:194px;
-	resize: none;
 	font-size: 14px;
 	padding-top:8px;
 	padding: 0;
 	margin: 0;
-	resize: none;
 	float: left;
 	overflow: scroll;
 	overflow-x: hidden;
@@ -197,12 +226,9 @@
 	padding-left: 1%;
 	left: 1.7%;
 	bottom: 3px;
-	-khtml-box-shadow: 1px 1px 1px 1px #333300;
-	-moz-box-shadow: 1px 1px 1px 1px #333300;
-	-webkit-box-shadow: 1px 1px 1px 1px #333300;
-	box-shadow: 1px 1px 1px 1px #333300;
 	opacity: 0.9;
 	.rounded-corners(6px);
+//	.box-shadow(1px, 1px, 1px, #330);
 }
 
 /* Chat text line */

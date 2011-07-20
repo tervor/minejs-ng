@@ -76,7 +76,22 @@ function Chat() {
 		}
 	});
 	
-	$('#chat-minimize').click(function () {
+	$('#chat-max').click(function() {
+		var css = {
+			'z-index' : '1200',
+			'height' : '90%'
+		};
+		$("#chat").css(css);
+	});
+	
+	$('#chat-min').click(function() {
+		var css = {
+			'height' : '230px'
+		};
+		$("#chat").css(css);
+	});
+	
+	$('#chat-hide').click(function () {
 		$("#chat").hide();
 	});
 
