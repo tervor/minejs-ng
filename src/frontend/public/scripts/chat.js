@@ -44,7 +44,7 @@ function Chat() {
 	
 
 	// Register global keypress handlers
-	$(document).keypress(function(e) {
+	$(document).keydown(function(e) {
 		//force focus on chatinput for any key values
 		$('#chat').show();
 		
@@ -58,6 +58,8 @@ function Chat() {
 			chat.input(text);
 			break;
 		case 27: // Escape -> hide panel
+			// Keep firefox from restoring old text in input element
+			element.blur(); element.focus();
 			element.val('');
 			$('#chat').hide();
 			break;
@@ -70,7 +72,6 @@ function Chat() {
 		default: // Other keys -> show panel
 			if ($(document.activeElement)[0] != element[0]) {
 				element.focus();
-				element.val(element.val() + String.fromCharCode(e.which));
 			}
 		}
 	});
