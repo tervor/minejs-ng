@@ -92,6 +92,7 @@ app.get('/scripts/config.js', function(req, res) {
 	};
 	
 	// Create javascript snippet containing the variables
+	res.writeHead(200, { 'Content-Type': 'text/javascript' });
 	res.end('{ config = ' + JSON.stringify(vars) + '; }');
 });
 
