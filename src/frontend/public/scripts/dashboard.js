@@ -73,8 +73,9 @@ Dashboard.prototype.selectTag = function(tag) {
 // Called to increase amount of item
 Dashboard.prototype.increaseAmount = function(id) {
 	var amount = parseInt($('#varAmount-' + id).text());
-	if (amount > 1)
-		amount /= 2;
+	var max = this.itemById(id).amount * config.maxStacks;
+	if (amount < max)
+		amount *= 2;
 	$('#varAmount-' + id).text(amount);
 }
 
@@ -90,4 +91,11 @@ Dashboard.prototype.decreaseAmount = function(id) {
 Dashboard.prototype.give = function(id) {
 	var amount = parseInt($('#varAmount-' + id).text());
 	client.give(id, amount);
+}
+
+Dashboard.prototype.itemById = function(id) {
+	for (var key in this.items)
+		if (this.items[key].id == id)
+			return this.items[key];
+	return null;
 }

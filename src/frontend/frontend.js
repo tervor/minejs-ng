@@ -88,6 +88,7 @@ app.get('/scripts/config.js', function(req, res) {
 		sid: req.sessionID || '',
 		user: req.session.user.name,
 		role: req.session.user.role,
+		maxStacks: config.settings.maxStacks,
 	};
 	
 	// Create javascript snippet containing the variables
