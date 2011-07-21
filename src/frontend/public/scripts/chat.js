@@ -167,10 +167,15 @@ Chat.prototype.initTemplates = function() {
 	");
 
 	$.template('userTemplate', "\
-	${name}\
-	{{if isFrontend}}[frontend]{{/if}}\
-	{{if isPlaying}}[playing]{{/if}}\
-	<br/>\
+	{{if true /*isFrontend || isPlaying*/}}\
+		<div class='chat-user'>\
+			<div class='chat-user-name'>${name}</div>\
+			<div class='chat-user-whisper'/>\
+			{{if isPlaying}}<div class='chat-user-playing'/>{{/if}}\
+			<div class='chat-user-teleport'/>\
+		</div>\
+	{{/if}}\
+	<br>\
 	");
 }
 
@@ -193,11 +198,14 @@ Chat.prototype.selectChannel = function(channel) {
 	
 	// Hide all channels but the selected one
 	for (var key in this.channels) {
-		var element = $(this.channels[key].element)
+		var elementTab = $('#chat-tab-' + this.channels[key].name);
+		var elementOutput = $('#chat-output-' + this.channels[key].name);
 		if (key == channel) {
-			element.show();
+			elementTab.addClass('selected');
+			elementOutput.show();
 		} else {
-			element.hide();
+			elementTab.removeClass('selected');
+			elementOutput.hide();
 		}
 	}
 

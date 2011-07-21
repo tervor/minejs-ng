@@ -46,6 +46,10 @@
 	    border: 1px solid lighten(@color-border, 20%);
 	    opacity: 1.0;
 	}
+	
+	&.selected {
+	    color: lighten(@color-text, 40%);
+	}
 }
 
 /* Body */
@@ -115,8 +119,7 @@ body {
 
 #session-logout {
 	float: right;
-    font-weight: bold;
-    width: 60px;
+    width: 80px;
     height: 18px;
     float: left;
 	.button(#fff, #800, #a00, 4px);
@@ -299,6 +302,38 @@ body {
 
 #chat-users {
 	width: 17%;
+	padding-left: 5px;
+}
+
+.chat-user {
+	width: 100%;
+}
+
+.chat-user-name {
+//	float: left;
+	color: white;
+	min-width: 100px;
+}
+
+.chat-user-playing {
+	float: left;
+	width: 18px;
+	height: 18px;
+	.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+}
+
+.chat-user-teleport {
+	float: left;
+	width: 18px;
+	height: 18px;
+	.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+}
+
+.chat-user-whisper {
+	float: left;
+	width: 18px;
+	height: 18px;
+	.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
 }
 
 #chat-input {
