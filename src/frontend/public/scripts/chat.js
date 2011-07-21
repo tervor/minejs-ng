@@ -14,8 +14,10 @@ function Chat() {
 	this.users = [];
 	this.activeChannel = 'chat';
 
+	this.elementChat = $('#chat');
 	this.elementUsers = $('#chat-users');
 	this.elementOutput = $('#chat-output');
+	this.elementInput = $('#chat-input');
 
 	this.initTemplates();
 
@@ -48,128 +50,63 @@ function Chat() {
 
 	// Register global keypress handlers
 	$(document).keydown(function(e) {
-		//force focus on chatinput for any key values
-		$('#chat').show();
-
-		// TODO this seems like a waste of time, caching element reference could help
-		var element = $('#chat-input');
+		var element = chat.elementInput;
 		
 		switch (e.keyCode) {
 		case 13: // Enter -> send message
+			chat.show();
 			var text = element.val().toString();
 			element.val('');
 			chat.input(text);
-			notify('fold',"Oh! Now you talk again with us?") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 			break;
 		case 27: // Escape -> hide panel
-			// Keep firefox from restoring old text in input element
+			// Keeps firefox from restoring old text in input element
 			element.blur(); element.focus();
 			element.val('');
-			//$('#chat').hide();
-			Panelsizer(0);
+			chat.hide();
 			break;
 		case 37: // Left -> go to left tab
+			chat.show();
 			chat.prevChannel();
-			notify('pulsate',"..and it goes left!") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 			break;
 		case 39: // Right -> go to right tab
+			chat.show();
 			chat.nextChannel();
-			notify('slide',"..thats so RIGHT m8!") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 			break;
 		default: // Other keys -> show panel
+			chat.show();
 			if ($(document.activeElement)[0] != element[0]) {
 				element.focus();
-				notify('size',"..ye yea don't forget to focus your target") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 			}
-			Panelsizer(panelInit);
 		}
-		//scroll down textbox on any key
-		var objDiv = document.getElementById("chat-output");
-		objDiv.scrollTop = objDiv.scrollHeight;
 	});
-
-
-	//Panelizer adjusts the panel size as required
-	function Panelsizer(action) {
-		h=$(document).height();
-		switch (action) {
-			case 0: // hidden;
-				$("#main-pane").css({'height' : h=h-135 });
-				/*$('#chat').hide();*/
-				$("#chat").fadeOut('slow', function() {
-					// Animation complete.
-				});
-				$('#main-pane').show();
-				
-				//	$("#chat").slideToggle("slow");
-				$("#chat").fadeOut('slow', function() {
-					// Animation complete.
-				});
-				action = panelInit;
-				break;
-			case 1: // small
-				$('#chat-min').hide();
-				$('#chat-max').show();
-				/*$('#chat').show();*/
-				$("#chat").fadeIn('slow', function() {
-					// Animation complete.
-				});
-
-				$('#main-pane').show();
-
-				$('#main-pane').show();
-				$("#chat").css({'height' : '230px' });
-				$("#main-pane").css({'height' : h=h-380 });
-				$("div#chat-output").css({'height' : '194px' });
-				$("div#chat-user").css({'height' : '194px' });
-				break;
-			case 2: // full
-				c=h-171;
-				$('#chat-max').hide();
-				$('#chat-min').show();
-				$('#chat').show();
-				$('#main-pane').hide();
-				$("#chat").css({'height' : h=h-135 });
-				$("div#chat-output").css({'height' : c });
-				$("div#chat-user").css({'height' : c });
-				break;
-			default: //
-				console.log("DEBUG: something went wrong while Panelsizer"+h)
-		}
-		panelInit = action;
-	}
-
-
-
-	//On Window Resize Trigger
-	var resizeTimer;
+	
+	// Start in minimized state
+	this.minimize();
+	
+	setTimeout(function() {
+		chat.resize();
+	}, 0);
+	
 	$(window).resize(function() {
-		clearTimeout(resizeTimer);
-		resizeTimer = setTimeout(Panelsizer(panelInit), 100);
-		console.log("resized");
+		chat.resize();
 	});
 
 	$('#chat-max').click(function() {
-		Panelsizer(2);
-		notify('bounce',"So fullscreen works, yes?") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide
+		chat.maximize();
 	});
 
 	$('#chat-min').click(function() {
-		Panelsizer(1);
-		notify('puff',"Ah.. well. we can minimize it") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide
+		chat.minimize();
 	});
 
 	$('#chat-hide').click(function () {
-		Panelsizer(0)
-		notify('explode',"Isn't it a bit asocial? ..  ~.~") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
+		chat.hide();
 	});
 
 	$('#chat-input').click(function() {
-		Panelsizer(panelInit);
-		notify('highlight',"Faster! Harder! JAVASCRIPT :>") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
-
+		chat.show();
 	});
-
 
 
 /*does not exist in jquery? wtf -> api.jquery.com/dblclick/
@@ -309,5 +246,49 @@ Chat.prototype.renderUserList = function() {
 }
 
 Chat.prototype.scrollBottom = function() {
-	this.elementOutput.attr({ scrollTop: this.elementOutput.attr("scrollHeight") });
+	var element = document.getElementById("chat-output");
+	element.scrollTop = element.scrollHeight;
+}
+
+Chat.prototype.show = function() {
+	this.elementChat.fadeIn('fast', function() {
+		// Animation completed
+	});
+}
+
+// Hides the chat panel
+Chat.prototype.hide = function() {
+	this.elementChat.fadeOut('fast', function() {
+		// Animation completed
+	});
+}
+
+// Minimizes the chat panel
+Chat.prototype.minimize = function() {
+	var h = $(document).height();
+
+	$('#chat-min').hide();
+	$('#chat-max').show();
+	$("#chat").css({ 'height': '230px' });
+	$("div#chat-output").css({ 'height': '194px' });
+	$("div#chat-user").css({ 'height': '194px' });
+}
+
+// Maximizes the chat panel
+Chat.prototype.maximize = function() {
+	var h = $(document).height();
+	var c = h - 171;
+	
+	$('#chat-max').hide();
+	$('#chat-min').show();
+	$('#chat').show();
+	$("#chat").css({ 'height': h-135 });
+	$("div#chat-output").css({ 'height': c });
+	$("div#chat-user").css({ 'height': c });
+}
+
+// Called when the window is resized
+Chat.prototype.resize = function() {
+	var h = $(document).height();
+	$("#main-pane").css({ 'height': h - 135 });
 }
