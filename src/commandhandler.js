@@ -322,7 +322,7 @@ CommandHandler.prototype.cmd_user = function(user, mode, args) {
 			return "user '" + args[1] + "' does not exist";
 		if (args[2] == "")
 			return "invalid password";
-		user.password = args[2];
+		user.setPassword(args[2]);
 		this.userList.save();
 		return "changed password for user '" + args[1] + "'";
 	default:

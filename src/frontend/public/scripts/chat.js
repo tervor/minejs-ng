@@ -170,8 +170,8 @@ Chat.prototype.initTemplates = function() {
 	{{if true /*isFrontend || isPlaying*/}}\
 		<div class='chat-user'>\
 			<div class='chat-user-name'>${name}</div>\
+			<div class='chat-user-playing {{if isPlaying}}active{{/if}}'/>\
 			<div class='chat-user-whisper' onClick='chat.whisper(\"${name}\")'/>\
-			{{if isPlaying}}<div class='chat-user-playing'/>{{/if}}\
 			<div class='chat-user-teleport' onClick='chat.teleport(\"${name}\")'/>\
 		</div>\
 	{{/if}}\
@@ -249,6 +249,7 @@ Chat.prototype.updateUserList = function() {
 Chat.prototype.renderUserList = function() {
 	this.elementUsers.html('');
 	$.each(this.users, function(key, user) {
+//		user.isPlaying = true; // TODO remove
 		$.tmpl('userTemplate', user).appendTo(chat.elementUsers);
 	});
 }
@@ -306,5 +307,6 @@ Chat.prototype.whisper = function(username) {
 }
 
 Chat.prototype.teleport = function(username) {
+	var answer = confirm('are you sure?');
 	console.log('teleport to ' + username);
 }

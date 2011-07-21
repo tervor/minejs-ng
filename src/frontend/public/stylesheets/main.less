@@ -319,21 +319,31 @@ body {
 	float: left;
 	width: 18px;
 	height: 18px;
-	.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+	margin: 0px 5px 0px 5px;
+	background: url('/images/playing.png') no-repeat;
+	.button(@color-tab-text, #300, #888, 4px);
+	
+	&.active {
+		.button(@color-tab-text, #030, #888, 4px);
+	}
 }
 
 .chat-user-teleport {
 	float: left;
 	width: 18px;
 	height: 18px;
-	.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+	margin: 0px 5px 0px 5px;
+	background: url('/images/teleport.png') no-repeat;
+	.button(@color-tab-text, #000, #888, 4px);
 }
 
 .chat-user-whisper {
 	float: left;
 	width: 18px;
 	height: 18px;
-	.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+	margin: 0px 5px 0px 5px;
+	background: url('/images/whisper.png') no-repeat;
+	.button(@color-tab-text, #000, #888, 4px);
 }
 
 #chat-input {
