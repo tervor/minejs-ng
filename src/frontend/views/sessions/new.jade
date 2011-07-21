@@ -1,14 +1,27 @@
-h1 Login
-form(action='/sessions', method='POST')
-	input(type='hidden', name='redir', value=redir)
-	#row1
-		label(for='username') User:
-	#row2
-			input(type='text', name='username', id='username')
-	#row1
-		label(for='password') Password:
-		input(type='password', name='password', id='password')
-	#row2
-	#row1 BETA
-	#row2
-		input(type='submit')
+script(src='/scripts/session.js')
+
+#session-header
+
+#session-pane
+	#session-logo
+	#session-message
+		- if(flash.warn)
+			#warn= flash.warn
+		- else
+			| Enter your username and password
+
+	#session-form
+		form(action='/sessions', method='POST')
+			input(type='hidden', name='redir', value=redir)
+			#session-form-row
+				label(for='username', class='session-form-label') User:
+				input(type='text', class='session-form-input', name='username', id='username')
+			#session-form-row
+				label(for='password', class='session-form-label') Password:
+				input(type='password', class='session-form-input', name='password', id='password')
+			#session-form-row
+				input(type='submit', class='session-form-submit' )
+
+#session-alpha
+
+#session-footer
