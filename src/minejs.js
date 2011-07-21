@@ -31,6 +31,8 @@ log.on('log', function(level, str) {
 	console.log(str);
 });
 
+log.info("minejs " + version + " - Minecraft Server Wrapper")
+
 // Create singletons
 var itemList = require('itemlist').instance;
 var userList = require('userlist').instance;
@@ -43,9 +45,6 @@ log.debug('Users:');
 log.debug(util.inspect(userList.users));
 log.debug('Server Properties:');
 log.debug(util.inspect(serverProperties.properties));
-
-
-log.info("minejs " + version + " - Minecraft Server Wrapper")
 
 
 // Create minecraft server wrapper

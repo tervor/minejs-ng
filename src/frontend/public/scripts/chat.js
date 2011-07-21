@@ -313,9 +313,8 @@ Chat.prototype.whisper = function(username) {
 }
 
 Chat.prototype.teleport = function(username) {
-	var answer = confirm('are you sure?');
+	var answer = confirm('Want to teleport to ' + username + '?');
 	if (answer) {
-		console.log('teleport to ' + username);
 		client.tp(username);
 	}
 }

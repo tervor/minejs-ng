@@ -29,26 +29,26 @@ ServerProperties.prototype.get = function(name) {
 
 // Loads the server properties
 ServerProperties.prototype.load = function() {
-	path.existsSync(this.filename, function(exists) {
-		if (!exists) {
-			console.log("server.properties not found")
-		}else{
-			this.properties = {};
-			var data = fs.readFileSync(this.filename, 'ascii').replace('\r', '');
-			var lines = data.split('\n');
-			for (var i = 0; i < lines.length; i++) {
-				var line = lines[i];
-				if (line.length < 3)
-					continue;
-				if (line.charAt(0) == '#')
-					continue;
-				var tokens = line.split('=');
-				if (tokens.length != 2)
-					continue;
-				this.properties[tokens[0]] = tokens[1];
-			}
-		}
-	});
+	this.properties = {};
+	var data;
+	try {
+		data = fs.readFileSync(this.filename, 'ascii').replace('\r', '');
+	} catch (error) {
+		console.warn('failed to load server properties from ' + this.filename);
+		return;
+	}
+	var lines = data.split('\n');
+	for (var i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		if (line.length < 3)
+			continue;
+		if (line.charAt(0) == '#')
+			continue;
+		var tokens = line.split('=');
+		if (tokens.length != 2)
+			continue;
+		this.properties[tokens[0]] = tokens[1];
+	}
 };
 
 // Saves the server properties
