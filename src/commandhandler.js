@@ -225,7 +225,7 @@ CommandHandler.prototype.cmd_stack = function(user, mode, args) {
 		return "invalid params";
 	if (args[1] == "")
 		return "invalid params";
-	var item = this.itemByNameOrId(args[0]);
+	var item = this.itemList.itemByNameOrId(args[0]);
 	if (item == null)
 		return "invalid item";
 	var stacks = args[1];
