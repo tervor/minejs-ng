@@ -173,7 +173,7 @@ Chat.prototype.initTemplates = function() {
 	");
 
 	$.template('userTemplate', "\
-	{{if true /*isFrontend || isPlaying*/}}\
+	{{if isFrontend || isPlaying}}\
 		<div class='chat-user'>\
 			<div class='chat-user-name'>${name}</div>\
 			<div class='chat-user-playing {{if isPlaying}}active{{/if}}'/>\
