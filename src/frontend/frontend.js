@@ -162,7 +162,6 @@ function FrontendClient(socket, username) {
 		instance.emit('monitor', this, data.text);
 	}.bind(this));
 	this.socket.on('command', function(data) {
-		console.log('client issued command ' + data.cmd);
 		instance.emit('command', this, data.cmd, data);
 	}.bind(this));
 }

@@ -285,38 +285,33 @@ MCServer.prototype.sendCmd = function(args) {
 
 // Reads all player.dat files
 MCServer.prototype.readPlayerInfos = function() {
-	// Read additional user properties from player dat files
 	// TODO get from server properties
 	var world = 'world';
 	var playerDir = config.server.dir + '/' + world + '/players/';
-	path.existsSync(playerDir, function(exists) {
-		if (!exists) {
-			log.info('minecraft: [WARNING] Failed to load world/players (No such directory)')
-		}else{
-			// Go through all files in the player directory
-			fs.readdir(playerDir, function(error, files) {
-				for (var i = 0; i < files.length; i++) {
-					var file = files[i];
-					// Skip _tmp_.dat file
-					if (file == '_tmp_.dat')
-						continue;
-					(function() {
-						// Check if user exists
-						var username = files[i].substr(0, files[i].length - 4);
-						// Read NBT file
-						fs.readFile(playerDir + file, function(error, data) {
-							// Parse NBT file
-							nbt.parse(data, function(error, result) {
-								this.updatePlayerInfo(username, result);
-							}.bind(this));
-						}.bind(this));
-					}.bind(this))();
-				}
-			}.bind(this));
-
+	// Go through all files in the player directory
+	fs.readdir(playerDir, function(error, files) {
+		if (!files) {
+			log.warning('Cannot read from players directory in ' + playerDir);
+			return;
 		}
-	});
-
+		for (var i = 0; i < files.length; i++) {
+			var file = files[i];
+			// Skip _tmp_.dat file
+			if (file == '_tmp_.dat')
+				continue;
+			(function() {
+				// Check if user exists
+				var username = files[i].substr(0, files[i].length - 4);
+				// Read NBT file
+				fs.readFile(playerDir + file, function(error, data) {
+					// Parse NBT file
+					nbt.parse(data, function(error, result) {
+						this.updatePlayerInfo(username, result);
+					}.bind(this));
+				}.bind(this));
+			}.bind(this))();
+		}
+	}.bind(this));
 }
 
 MCServer.prototype.updatePlayerInfo = function(username, data) {

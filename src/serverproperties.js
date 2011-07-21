@@ -34,7 +34,7 @@ ServerProperties.prototype.load = function() {
 	try {
 		data = fs.readFileSync(this.filename, 'ascii').replace('\r', '');
 	} catch (error) {
-		console.warn('failed to load server properties from ' + this.filename);
+		log.warning('Cannot load server properties from ' + this.filename);
 		return;
 	}
 	var lines = data.split('\n');

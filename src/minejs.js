@@ -108,7 +108,7 @@ mcserver.on('playerInfo', function(username, info) {
 	var user = userList.userByName(username);
 	if (!user) {
 		// Create guest user
-		console.log('Adding guest user \'' + username + '\' (found user properties file)');
+		log.info('Adding guest user \'' + username + '\' (found user properties file)');
 		user = userList.add(username);
 	}
 	
