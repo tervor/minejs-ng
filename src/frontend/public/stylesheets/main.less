@@ -211,6 +211,175 @@ body {
 	.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
 }
 
+/* Chat */
+
+#chat {
+	position: fixed;
+	float: left;
+	height: 230px;
+	left: 30px;
+	right: 30px;
+	bottom: 32px;
+	padding: 0.2%;
+	z-index: 1001;
+	
+	border: 1px solid #271f18;
+	background: rgb(39, 31, 24);
+	resize: both;
+	border: 1px solid #ffeeaa;
+	opacity: 0.9;
+	.rounded-corners(6px);
+}
+
+#chat-head {
+	width: 100%;
+	height: 26px;
+	background-color: #fbd850;
+	padding: 0;
+	margin-bottom: 4px;
+	.rounded-corners(4px);
+}
+
+#chat-tabs {
+	float: left;
+	
+	div {
+		float: left;
+		font-size: 10px;
+		line-height: 10px;
+		padding: 3px;
+		margin: 2px;
+		margin-left: 4px;
+		height: 12px;
+		.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+	}
+}
+
+#chat-options {
+	float: right;
+	
+	div {
+		font-size: 10px;
+		line-height: 10px;
+		float: left;
+		padding: 3px;
+		margin: 2px;
+		margin-left: 4px;
+		width: 12px;
+		height: 12px;
+		.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+	}
+}
+
+#chat-body {
+}
+
+#chat-body div {
+	float: left;
+
+}
+
+#chat-output {
+	border: 0;
+	width: 80%;
+	top: 20px;
+	bottom: 20px;
+	height:194px;
+	font-size: 14px;
+	padding-top:8px;
+	padding: 0;
+	margin: 0;
+	float: left;
+	overflow: scroll;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	padding-bottom: 5px;
+}
+
+#chat-users {
+	width: 17%;
+}
+
+#chat-input {
+	left: 30px;
+	right: 30px;
+	height: 24px;
+	resize: none;
+	background-color: #18130f;
+	color: #fff;
+	border: 1px solid #ffeeaa;
+	position: fixed;
+	z-index: 1500;
+	bottom: 3px;
+	opacity: 0.9;
+	padding-left: 2px;
+	.rounded-corners(6px);
+}
+
+/* Chat text line */
+
+.chat-line {
+	border: 0px;
+	position: relative;
+	width: 100%;
+}
+
+.chat-line div {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	border: 0px;
+}
+
+.chat-line-time {
+	float: left;
+	width: 100px;
+	font-color: #aaa;
+}
+
+.chat-line-name {
+	float: left;
+	width: 150px;
+	font-color: #fff;
+}
+
+.chat-line-text {
+	float: none;
+	font-color: #ccc;
+}
+
+/* Console text line */
+
+.console-line {
+	border: 0px;
+	position: relative;
+	width: 100%;
+}
+
+.console-line div {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	border: 0px;
+}
+
+/* Monitor text line */
+
+.monitor-line {
+	border: 0px;
+	position: relative;
+	width: 100%;
+}
+
+.monitor-line div {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	border: 0px;
+}
+
+
+
+
+
+/* Effect */
 
 #effect {
 
