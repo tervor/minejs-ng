@@ -20,17 +20,12 @@ script(src='/scripts/main.js')
 			a(href='/sessions/destroy')
 				#session-logout Logout
 #nav
-	a(href='/', title='Dashboard')
-		#nav-tab Dashboard
-	a(href='https://oom.ch/wiki/index.php/Minecraft', title='Local Community Minecraft Wiki')
-		#nav-tab Wiki
-	a(href='http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal', title='Minecraft Map')
-		#nav-tab Map
-	a(href='http://www.minecraft.net/game/', title='Minecraft Browser Client')
-		#nav-tab Play
-	a(href='/help', title='View login page')
-		#nav-tab Help
-#upper-pane
+		#nav-dash Dashboard
+		#nav-wiki Wiki
+		#nav-mapi Maps
+#subnav
+
+#main-pane
 	#dashboard
 		#dashboard-tags-container
 			#dashboard-tags
@@ -59,7 +54,6 @@ script(src='/scripts/main.js')
 
 input(type='text', name='chat-input', id='chat-input')
 
-//#effect
-//.ui-widget-content
-//.ui-corner-all
-//	#notify
+#effect
+
+#notify

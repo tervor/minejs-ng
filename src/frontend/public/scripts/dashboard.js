@@ -54,11 +54,13 @@ Dashboard.prototype.render = function() {
 	this.elementItems.html('');
 	$.each(this.itemTags, function(i, tag) {
 		$.tmpl('itemTagTemplate', tag).appendTo(dashboard.elementTags);
+		console.log("item")
 	});
 	$.each(this.items, function(i, item) {
 		if (item.tags.indexOf(dashboard.currentTag) >= 0) {
 			//if (dashboard.achievedItems.indexOf(item.id) >= 0)
 				$.tmpl('itemTemplate', item).appendTo(dashboard.elementItems);
+			console.log("tag")
 		}
 	});
 }

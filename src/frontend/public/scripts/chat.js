@@ -6,9 +6,8 @@ function initChat() {
 	chat = new Chat();
 
 	//adjust default panel view
-	h = $(document).height();
-	h=h-380;
-	$("#upper-pane").css({'height' : h });
+
+	$("#main-pane").css({'height' : $(document).height()-380 });
 }
 
 function Chat() {
@@ -80,6 +79,9 @@ function Chat() {
 			}
 			Panelsizer(panelInit);
 		}
+		//scroll down textbox on any key
+		var objDiv = document.getElementById("chat-output");
+		objDiv.scrollTop = objDiv.scrollHeight;
 	});
 
 
@@ -88,39 +90,38 @@ function Chat() {
 		h=$(document).height();
 		switch (action) {
 			case 0: // hidden;
-				h=h-135;
-				$("#upper-pane").css({'height' : h });
+				$("#main-pane").css({'height' : h=h-135 });
 				$('#chat').hide();
-				$('#upper-pane').show();
+				$('#main-pane').show();
 				action = panelInit;
 				break;
 			case 1: // small
-				h=h-380;
 				$('#chat-min').hide();
 				$('#chat-max').show();
 				$('#chat').show();
-				$('#upper-pane').show();
+				$('#main-pane').show();
 				$("#chat").css({'height' : '230px' });
-				$("#upper-pane").css({'height' : h });
+				$("#main-pane").css({'height' : h=h-380 });
 				$("div#chat-output").css({'height' : '194px' });
 				$("div#chat-user").css({'height' : '194px' });
 				break;
 			case 2: // full
 				c=h-171;
-				h=h-135;
 				$('#chat-max').hide();
 				$('#chat-min').show();
 				$('#chat').show();
-				$('#upper-pane').hide();
-				$("#chat").css({'height' : h });
+				$('#main-pane').hide();
+				$("#chat").css({'height' : h=h-135 });
 				$("div#chat-output").css({'height' : c });
 				$("div#chat-user").css({'height' : c });
 				break;
 			default: //
-				console.log("DEBUG: something went wrong while Panelizer"+h)
+				console.log("DEBUG: something went wrong while Panelsizer"+h)
 		}
 		panelInit = action;
 	}
+
+
 
 	//On Window Resize Trigger
 	var resizeTimer;
@@ -132,6 +133,7 @@ function Chat() {
 
 	$('#chat-max').click(function() {
 		Panelsizer(2);
+		notifyme('bounce', "Welcome Crafter!") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide
 	});
 
 	$('#chat-min').click(function() {
@@ -149,10 +151,23 @@ function Chat() {
 
 
 
-
-
-
-
+/*does not exist in jquery? wtf -> api.jquery.com/dblclick/
+	$('#chat-head').dblclick(function() {
+		switch (panelInit) {
+			case 0: // hidden;
+				Panelsizer(panelInit);
+				break;
+			case 1: // small
+				Panelsizer('2');
+				break;
+			case 2: // full
+				Panelsizer('1');
+				break;
+			default: //
+				console.log("panelInit no match: "+panelInit)
+		}
+	});
+*/
 
 
 

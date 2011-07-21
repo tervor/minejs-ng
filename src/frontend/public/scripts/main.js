@@ -10,60 +10,32 @@ $(document).ready(function() {
 	//hide yellow news feed phrase
 	$("#effect").hide();
 
-	function switchPanel(p) {
-		switch (p) {
 
-			case 'home':
-				//hidde others
-				if ($("#map"))
-					$("#map").remove();
-				if ($("#admin"))
-					$('#admin').show();
-				if ($("#sortable"))
-					$("#sortable").hide();
-				//show me
-					
-				break;
+	$('#nav-home').click(function () {
 
-			case 'dashboard':
-				//hidde others
-				if ($("#map"))
-					$("#map").remove();
-				if ($("#admin"))
-					$('#admin').show();
-				//show me
-				$('#sortable').show();
-				break;
+	});
+	$('#nav-dash').click(function () {
+		$('#framer').remove();
+		$('#dashboard').show();
 
-			case 'map':
-				//hidde others
-				if ($("#sortable"))
-					$("#sortable").hide();
-				if ($("#admin"))
-					$('#admin').show();
-				//show me
-				$('body').append('<div id="map" class="map"><iframe src="http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal" class="framer"></iframe></div>');
-				break;
-
-			case 'admin':
-				//hide others
-				if ($("#sortable"))
-					$("#sortable").hide();
-				if ($("#map"))
-					$("#map").remove();
-				//show me
-					$('#admin').show();
-				break;
-
-			default:
-				alert("panelSwitchboard : Something went wrong, don't tell anyone")
-		}
-	}
+	});
+	$('#nav-wiki').click(function () {
+		$('#framer').remove();
+		$('#main-pane').append('<div id="framer" class="framer"><iframe src="https://oom.ch/wiki/index.php/Minecraft" class="framer"></iframe></div>');
+		$('#dashboard').hide();
+	});
+	$('#nav-mapi').click(function () {
+		$('#framer').remove();
+		$('#main-pane').append('<div id="framer" class="framer"><iframe src="http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal" class="framer"></iframe></div>');
+		$('#dashboard').hide();
+	});
 });
 
-//out of jQuery.ready functions.
-function notify(effect, content) {
+
+
+function notifyme(effect, content) {
 	// possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide
+
 	console.log("DEBUG: " + effect);
 
 	$('#notify').text(content);
@@ -80,12 +52,15 @@ function notify(effect, content) {
 	$("#effect").show(effect, options, 500, callback);
 
 	return false;
-
-
-	//callback function to bring a hidden box back
+//callback function to bring a hidden box back
 	function callback() {
+		console.log("called back");
 		setTimeout(function() {
-			$("#effect:visible").removeAttr("style").fadeOut();
+			$("#notify:visible").removeAttr("style").fadeOut();
 		}, 300);
 	}
+
+
 }
+
+
