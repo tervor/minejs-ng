@@ -170,9 +170,9 @@ Chat.prototype.initTemplates = function() {
 	{{if true /*isFrontend || isPlaying*/}}\
 		<div class='chat-user'>\
 			<div class='chat-user-name'>${name}</div>\
-			<div class='chat-user-whisper'/>\
+			<div class='chat-user-whisper' onClick='chat.whisper(\"${name}\")'/>\
 			{{if isPlaying}}<div class='chat-user-playing'/>{{/if}}\
-			<div class='chat-user-teleport'/>\
+			<div class='chat-user-teleport' onClick='chat.teleport(\"${name}\")'/>\
 		</div>\
 	{{/if}}\
 	<br>\
@@ -299,4 +299,12 @@ Chat.prototype.maximize = function() {
 Chat.prototype.resize = function() {
 	var h = $(document).height();
 	$("#main-pane").css({ 'height': h - 135 });
+}
+
+Chat.prototype.whisper = function(username) {
+	console.log('whisper to ' + username);
+}
+
+Chat.prototype.teleport = function(username) {
+	console.log('teleport to ' + username);
 }
