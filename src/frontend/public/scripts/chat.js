@@ -6,9 +6,9 @@ function initChat() {
 	chat = new Chat();
 
 	//adjust default panel view
-
 	$("#main-pane").css({'height' : $(document).height()-380 });
 }
+
 
 function Chat() {
 	this.users = [];
@@ -59,6 +59,7 @@ function Chat() {
 			var text = element.val().toString();
 			element.val('');
 			chat.input(text);
+			notify('fold',"Oh! Now you talk again with us?") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 			break;
 		case 27: // Escape -> hide panel
 			// Keep firefox from restoring old text in input element
@@ -69,13 +70,16 @@ function Chat() {
 			break;
 		case 37: // Left -> go to left tab
 			chat.prevChannel();
+			notify('pulsate',"..and it goes left!") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 			break;
 		case 39: // Right -> go to right tab
 			chat.nextChannel();
+			notify('slide',"..thats so RIGHT m8!") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 			break;
 		default: // Other keys -> show panel
 			if ($(document.activeElement)[0] != element[0]) {
 				element.focus();
+				notify('size',"..ye yea don't forget to focus your target") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 			}
 			Panelsizer(panelInit);
 		}
@@ -91,14 +95,28 @@ function Chat() {
 		switch (action) {
 			case 0: // hidden;
 				$("#main-pane").css({'height' : h=h-135 });
-				$('#chat').hide();
+				/*$('#chat').hide();*/
+				$("#chat").fadeOut('slow', function() {
+					// Animation complete.
+				});
 				$('#main-pane').show();
+				
+				//	$("#chat").slideToggle("slow");
+				$("#chat").fadeOut('slow', function() {
+					// Animation complete.
+				});
 				action = panelInit;
 				break;
 			case 1: // small
 				$('#chat-min').hide();
 				$('#chat-max').show();
-				$('#chat').show();
+				/*$('#chat').show();*/
+				$("#chat").fadeIn('slow', function() {
+					// Animation complete.
+				});
+
+				$('#main-pane').show();
+
 				$('#main-pane').show();
 				$("#chat").css({'height' : '230px' });
 				$("#main-pane").css({'height' : h=h-380 });
@@ -133,21 +151,24 @@ function Chat() {
 
 	$('#chat-max').click(function() {
 		Panelsizer(2);
-		notifyme('bounce', "Welcome Crafter!") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide
+		notify('bounce',"So fullscreen works, yes?") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide
 	});
 
 	$('#chat-min').click(function() {
 		Panelsizer(1);
+		notify('puff',"Ah.. well. we can minimize it") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide
 	});
 
 	$('#chat-hide').click(function () {
-		Panelsizer(0);
+		Panelsizer(0)
+		notify('explode',"Isn't it a bit asocial? ..  ~.~") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 	});
 
 	$('#chat-input').click(function() {
 		Panelsizer(panelInit);
-	});
+		notify('highlight',"Faster! Harder! JAVASCRIPT :>") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 
+	});
 
 
 
