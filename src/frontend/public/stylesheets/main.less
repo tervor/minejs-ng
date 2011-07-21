@@ -90,6 +90,9 @@ body {
 
 #session-info {
 	float: left;
+    height: 48px;
+    padding-top: 20px;
+    padding-right: 20px;
 }
 
 #session-user {
@@ -98,7 +101,28 @@ body {
 }
 
 #session-logout {
-	float: left;
+    color: #fff;
+    line-height:50px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 14px;
+    margin-top: 2px;
+    margin-left: 2px;
+    width: 48px;
+    height: 48px;
+    float: left;
+    cursor: pointer;
+    background-color: maroon;
+    border: 1px solid #151515;
+    opacity: .8;
+    text-align: center ;
+	.rounded-corners(4px);
+}
+
+#session-logout:hover {
+	background-color:red;
+    opacity: 1;
+
 }
 
 /* Top level navigation */
@@ -219,14 +243,7 @@ body {
 
 
 #effect {
-    width: 400px;
-    height: 100px;
-    padding: 2px;
-    position: absolute;
-    z-index: 1000;
-    left: 30%;
-    top: 3px;
-    opacity: 0.8;
+
 
 }
 
@@ -239,41 +256,31 @@ body {
 
 /* Component containers
 ----------------------------------*/
-/*
-#notify {
-    border: 1px solid #aaaaaa;
-    background: #747474;
-    position: fixed;
-    text-shadow: #000 2px -2px 1px, #ffa500 -0.1em 0.1em 0.1em, #cc6600 -1px -2px 0px;
-    color: #ffff00;
-    top:10px;
-    left:30%;
-    font-weight: 600;
-    font-size: 20px;
-    float: left;
-    padding-left: 100px;
-    padding-right: 10px;
-    padding-top: 3px;
-    padding-bottom: 10px;
 
 
-}
-*/
+
 #effect {
     border: 1px solid #aaaaaa;
     background: #747474;
-    position: fixed;
-    text-shadow: #000 2px -2px 1px, #ffa500 -0.1em 0.1em 0.1em, #cc6600 -1px -2px 0px;
-    color: #ffff00;
-    top:10px;
-    left:30%;
-    font-weight: 600;
-    font-size: 20px;
+    width: 200px;
+    height:130px;
+    padding: 2px;
+    position: absolute;
+    z-index: 1900;
+    opacity: 0.6;
+   /* text-shadow: #000 2px -2px 1px, #ffa500 -0.1em 0.1em 0.1em, #cc6600 -1px -2px 0px;*/
+    color: #fff;
+    top:120px;
+    left:10px;
+    font-weight: 150;
+    font-size: 14px;
     float: left;
-    padding-left: 100px;
+    align: center;
+    padding-left: 10px;
     padding-right: 10px;
     padding-top: 3px;
     padding-bottom: 10px;
+	.rounded-corners (20px)
 
 
 }
