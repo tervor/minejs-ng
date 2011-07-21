@@ -32,7 +32,7 @@ Dashboard.prototype.initTemplates = function() {
 	");
 	
 	$.template('itemTagTemplate', "\
-	<div id='ItemTag' class='itemTags' onclick='dashboard.selectTag(\"${name}\")'>${info}</div>\
+	<div id='dashboard-item-tag' class='dashboard-item-tag' onclick='dashboard.selectTag(\"${name}\")'>${info}</div>\
 	");
 }
 

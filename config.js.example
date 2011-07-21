@@ -25,6 +25,12 @@ var config = {
 	frontend: {
 		port: 8008,
 		// fakeLogin: 'admin',
+		
+		externalLinks: [
+			{ name: 'Wiki', title: 'Local Community Minecraft Wiki', link: 'https://oom.ch/wiki/index.php/Minecraft' },
+			{ name: 'Map', title: 'Minecraft Map', link: 'http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal' },
+			{ name: 'Play', title: 'Minecraft Game', link: 'http://www.minecraft.net/game/' },
+		],
 	},
 	
 	// Game related settings
