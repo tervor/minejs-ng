@@ -56,6 +56,10 @@ Client.prototype.stacks = function(name, count) {
 	this.command('stacks', { name: name, count: count });
 }
 
+Client.prototype.tp = function(target) {
+	this.command('tp', { target: target });
+}
+
 Client.prototype.command = function(cmd, args) {
 	args.cmd = cmd;
 	this.socket.emit('command', args);

@@ -20,6 +20,12 @@ function Chat() {
 	this.elementInput = $('#chat-input');
 
 	this.initTemplates();
+	
+	// Remove monitor tab if not superadmin
+	if (config.role != 'superadmin') {
+		delete (this.channels['monitor']);
+		$('#chat-tab-monitor').hide();
+	}
 
 	// Bind click events for channel tabs
 	$('#chat-tab-chat').click(function() {
@@ -308,5 +314,8 @@ Chat.prototype.whisper = function(username) {
 
 Chat.prototype.teleport = function(username) {
 	var answer = confirm('are you sure?');
-	console.log('teleport to ' + username);
+	if (answer) {
+		console.log('teleport to ' + username);
+		client.tp(username);
+	}
 }

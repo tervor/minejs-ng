@@ -87,6 +87,7 @@ app.get('/scripts/config.js', function(req, res) {
 	var vars = {
 		sid: req.sessionID || '',
 		user: req.session.user.name,
+		role: req.session.user.role,
 	};
 	
 	// Create javascript snippet containing the variables
