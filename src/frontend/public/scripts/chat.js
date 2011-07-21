@@ -1,19 +1,25 @@
 chat = null;
+var panelInit=1;
 
 function initChat() {
-	chat = new Chat();
-}
 
+	chat = new Chat();
+
+	//adjust default panel view
+	h = $(document).height();
+	h=h-380;
+	$("#upper-pane").css({'height' : h });
+}
 
 function Chat() {
 	this.users = [];
 	this.activeChannel = 'chat';
-	
+
 	this.elementUsers = $('#chat-users');
 	this.elementOutput = $('#chat-output');
-	
+
 	this.initTemplates();
-	
+
 	// Bind click events for channel tabs
 	$('#chat-tab-chat').click(function() {
 		chat.selectChannel('chat');
@@ -24,9 +30,9 @@ function Chat() {
 	$('#chat-tab-monitor').click(function() {
 		chat.selectChannel('monitor');
 	});
-	
+
 	this.selectChannel('chat');
-	
+
 	// Bind client events
 	client.on('chat', function(data) {
 		chat.output('chat', data.user, data.text);
@@ -40,13 +46,12 @@ function Chat() {
 	client.onNotify('userListChanged', function() {
 		chat.updateUserList();
 	});
-	
 
 	// Register global keypress handlers
 	$(document).keydown(function(e) {
 		//force focus on chatinput for any key values
 		$('#chat').show();
-		
+
 		// TODO this seems like a waste of time, caching element reference could help
 		var element = $('#chat-input');
 		
@@ -60,7 +65,8 @@ function Chat() {
 			// Keep firefox from restoring old text in input element
 			element.blur(); element.focus();
 			element.val('');
-			$('#chat').hide();
+			//$('#chat').hide();
+			Panelsizer(0);
 			break;
 		case 37: // Left -> go to left tab
 			chat.prevChannel();
@@ -72,54 +78,85 @@ function Chat() {
 			if ($(document.activeElement)[0] != element[0]) {
 				element.focus();
 			}
+			Panelsizer(panelInit);
 		}
 	});
-	
+
+
+	//Panelizer adjusts the panel size as required
+	function Panelsizer(action) {
+		h=$(document).height();
+		switch (action) {
+			case 0: // hidden;
+				h=h-135;
+				$("#upper-pane").css({'height' : h });
+				$('#chat').hide();
+				$('#upper-pane').show();
+				action = panelInit;
+				break;
+			case 1: // small
+				h=h-380;
+				$('#chat-min').hide();
+				$('#chat-max').show();
+				$('#chat').show();
+				$('#upper-pane').show();
+				$("#chat").css({'height' : '230px' });
+				$("#upper-pane").css({'height' : h });
+				$("div#chat-output").css({'height' : '194px' });
+				$("div#chat-user").css({'height' : '194px' });
+				break;
+			case 2: // full
+				c=h-171;
+				h=h-135;
+				$('#chat-max').hide();
+				$('#chat-min').show();
+				$('#chat').show();
+				$('#upper-pane').hide();
+				$("#chat").css({'height' : h });
+				$("div#chat-output").css({'height' : c });
+				$("div#chat-user").css({'height' : c });
+				break;
+			default: //
+				console.log("DEBUG: something went wrong while Panelizer"+h)
+		}
+		panelInit = action;
+	}
+
+	//On Window Resize Trigger
+	var resizeTimer;
+	$(window).resize(function() {
+		clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(Panelsizer(panelInit), 100);
+		console.log("resized");
+	});
+
 	$('#chat-max').click(function() {
-		var css = {
-			'z-index' : '1200',
-			'height' : '90%'
-		};
-		$("#chat").css(css);
+		Panelsizer(2);
 	});
 
 	$('#chat-min').click(function() {
-		var css = {
-			'height' : '230px'
-		};
-		$("#chat").css(css);
+		Panelsizer(1);
 	});
-	
 
 	$('#chat-hide').click(function () {
-		$("#chat").hide();
-		browserheight=$(document).height();
-		newheight=browserheight-130
-		console.log("new height is: "+newheight);
-		$("#upper-pane").css({'height' : newheight });
-		$("#lower-pane").css({'height' : '32' });
+		Panelsizer(0);
 	});
 
-	$('#chat-input').hover(function() {
-		$("#chat").show();
-		browserheight=$(document).height();
-		newheight=browserheight-380
-		console.log("new height is: "+newheight);
-		$("#upper-pane").css({'height' : newheight });
-		$("#lower-pane").css({'height' : '300' });
+	$('#chat-input').click(function() {
+		Panelsizer(panelInit);
 	});
 
-	$("#chat-dock").click(function () {
-		$("#chat").css({'position' : '', 'z-index' : ''});
-	}, function () {
-		var cssObj = {
-			'background-color' : '#ddd',
-			'z-index' : '1200',
-			'position' : 'fixed'
-		};
-		$("#chat").css(cssObj);
-	});
-	
+
+
+
+
+
+
+
+
+
+
+
 	this.updateUserList();
 }
 
@@ -133,7 +170,7 @@ Chat.prototype.MaxHistory = 500;
 Chat.prototype.channels = {
 	chat: { name: 'chat', element: '#chat-output-chat', template: 'chatLineTemplate' },
 	console: { name: 'console', element: '#chat-output-console', template: 'consoleLineTemplate' },
-	monitor: { name: 'monitor', element: '#chat-output-monitor', template: 'monitorLineTemplate' },
+	monitor: { name: 'monitor', element: '#chat-output-monitor', template: 'monitorLineTemplate' }
 };
 
 Chat.prototype.channelOrder = ['chat', 'console', 'monitor'];
@@ -215,10 +252,8 @@ Chat.prototype.output = function(channel, user, text) {
 			continue;
 		$.tmpl(template, { time: now.toString('HH:MM:ss'), name: user, text: lines[i] }).appendTo(element);
 	}
-	
 	while (element.children().length > this.MaxHistory)
-		element.children(':first').remove();
-	
+	element.children(':first').remove();
 	this.scrollBottom();	
 }
 
