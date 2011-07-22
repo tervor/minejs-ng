@@ -6,7 +6,7 @@ $(document).ready(function() {
 		$.blockUI({ message: "\
 		<h1>Help</h1>\
 		<p>To activate your user account for mine.js, log on to the minecraft server and change your password by entering the following on the text console:</p>\
-		<p class='code'>passwd [your username] [your password]</p>\
+		<p class='code'>passwd [your password]</p>\
 		<p>Login to mine.js using your newly created password!</p>\
 		<div id='close' class='close'>Close</div>\
 		"});
