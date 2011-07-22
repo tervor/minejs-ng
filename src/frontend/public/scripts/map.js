@@ -41,6 +41,8 @@ function loadPlayerMarkers() {
 		playerMarkers = [];
 		for (var i in data) {
 			var user = data[i];
+			if (user.name == 'admin')
+				continue;
 			
 			var converted = overviewer.util.fromWorldToLatLng(user.pos[0], user.pos[1], user.pos[2]);
 			var marker =  new google.maps.Marker({

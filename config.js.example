@@ -44,7 +44,7 @@ var config = {
 	        'defaultZoom':  6,		/// The zoom level when the page is loaded without a specific zoom setting
 	        'minZoom':      0,      /// This controls how far you can zoom out.
 	        'maxZoom':      10,      /// This controls how close you can zoom in.
-	        'center':       [0,0,0], /// Center on this point, in world coordinates. Should be an array, ex: [0,0,0]
+	        'center':       [2, 64, -5], /// Center on this point, in world coordinates. Should be an array, ex: [0,0,0]
 	        'cacheMinutes': 0,        	/// Set this to tell browsers how long they should cache tiles in minutes.
 	        'debug':        false,       	/// Set to true to turn on debug mode, which adds a grid to the map along with co-ordinates and a bunch of console output.
 	    },
@@ -84,7 +84,7 @@ var config = {
 		defaultUserPassword: 'changeme',
 		defaultUserRole: 'guest',
 		maxStacks: 16,
-		saveInterval: 60,
+		saveInterval: 300,
 	},
 	
 	// Logging related settings
