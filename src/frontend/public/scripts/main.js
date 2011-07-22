@@ -1,42 +1,46 @@
 
+var mapInitialized = false;
+
 $(document).ready(function() {
 	initClient();
 	initDashboard();
 	initChat();
 	
-	//TODO backend should send this at index.jason query
-	MaxLimitItems = 2048;
-
 	//hide yellow news feed phrase
 	$("#effect").hide();
 
-
-	$('#nav-home').click(function () {
-
-	});
-	$('#nav-dash').click(function () {
-		$('#framer').remove();
+	$('#nav-dashboard').click(function () {
 		$('#dashboard').show();
-
+		$('#mcmap').hide();
+		$('#framer').remove();
 	});
 	$('#nav-wiki').click(function () {
+		$('#dashboard').hide();
+		$('#mcmap').hide();
 		$('#framer').remove();
 		$('#main-pane').append('<div id="framer" class="framer"><iframe src="https://oom.ch/wiki/index.php/Minecraft" class="framer"></iframe></div>');
-		$('#dashboard').hide();
-		notify('shake',"DOn't ONLY READ THE GOODIES! write them!") // possible effects:    blind bounce clip drop explode fold highlight puff pulsate scale shake size slide;
 	});
-	$('#nav-mapi').click(function () {
+	$('#nav-map').click(function () {
+		$('#dashboard').hide();
+		$('#mcmap').show();
 		$('#framer').remove();
-		$('#main-pane').append('<div id="framer" class="framer"><iframe src="http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal" class="framer"></iframe></div>');
-		$('#dashboard').hide();
-
+		if (!mapInitialized) {
+			overviewerConfig.map = config.overviewer.map;
+			overviewerConfig.mapTypes = config.overviewer.mapTypes;
+			overviewer.util.initialize();
+			mapView.open();
+			mapInitialized = true;
+		}
 	});
+
 /*	jQuery.getFeed({
 		url: 'rss.xml',
 		success: function(feed) {
 			alert(feed.title);
 		}
 	});*/
+	
+	
 });
 
 

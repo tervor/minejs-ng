@@ -25,12 +25,57 @@ var config = {
 	frontend: {
 		port: 8008,
 		// fakeLogin: 'admin',
-		
-		externalLinks: [
-			{ name: 'Wiki', title: 'Local Community Minecraft Wiki', link: 'https://oom.ch/wiki/index.php/Minecraft' },
-			{ name: 'Map', title: 'Minecraft Map', link: 'http://mc.oom.ch/map/#/67/64/110/-4/mcmapNormal' },
-			{ name: 'Play', title: 'Minecraft Game', link: 'http://www.minecraft.net/game/' },
-		],
+	},
+
+	// Minecraft overviewer configuration options
+	overviewer: {
+	    'map': {    			// General map settings.
+	        'controls': {      		/// Control the visibility of various controls.
+	            'pan':      true,           //// Pan control is the hand with the arrows around it in the upper left.
+	            'zoom':     true,           //// Zoom control is the zoom slider bar in the upper left.
+	            'spawn':    true,           //// Spawn control is the 'Spawn' button that centers the map on spawn.
+	            'compass':  true,           //// The compass in the upper right.
+	            'mapType':  true,           //// The mapType control is the slider for selecting different map types.
+	            'link':     true,           //// The small box at the bottom that displays the link to the current map view.
+	            'coordsBox': true,		//// The coordsBox control is the box showing the XYZ coordinates under the cursor.
+	            'overlays': true, 		//// The overlays control is the drop-down box for selecting overlays.
+	            'searchBox': true		//// The searchBox control is the search box for markers.
+	        },
+	        'defaultZoom':  6,		/// The zoom level when the page is loaded without a specific zoom setting
+	        'minZoom':      0,      /// This controls how far you can zoom out.
+	        'maxZoom':      10,      /// This controls how close you can zoom in.
+	        'center':       [0,0,0], /// Center on this point, in world coordinates. Should be an array, ex: [0,0,0]
+	        'cacheMinutes': 0,        	/// Set this to tell browsers how long they should cache tiles in minutes.
+	        'debug':        false,       	/// Set to true to turn on debug mode, which adds a grid to the map along with co-ordinates and a bunch of console output.
+	    },
+	    /* mapTypes -- a list of alternate map renderings available. At least one
+	     * rendering must be listed.  When more than one are provided, controls to
+	     * switch between them are provided, with the first one being the default.
+	     *
+	     * Required:
+	     *     label    : string. Displayed on the control.
+	     *     path     : string. Location of the rendered tiles.
+	     * Optional:
+	     *     base     : string. Base of the url path for tile locations, useful
+	     *                        for serving tiles from a different server than
+	     *                        the js/html server.
+	     *    imgformat : string. File extension used for these tiles. Defaults to png.
+	     *    overlay   : bool. If true, this tile set will be treated like an overlay
+	     * Example:
+	     *  'mapTypes': [
+	     *      {'label': 'Day',   'path': 'lighting/tiles'},
+	     *      {'label': 'Night', 'path': 'night/tiles', 'imgformat': 'jpg'},
+	     *      {'label': 'Spawn', 'path': 'spawn/tiles', 'base': 'http://example.cdn.amazon.com/'},
+	     *      {'label': 'Overlay', 'path': 'overlay/tiles', 'overlay': true}
+	     *  ]
+	     */
+	    'mapTypes':         [
+								{'base': 'http://mc.oom.ch/map/', 'path': 'tiles', 'overlay': false, 'imgformat': 'png', 'bg_color': '#1A1A1A', 'label': 'Normal'},
+								{'base': 'http://mc.oom.ch/map/', 'path': 'lighting', 'overlay': false, 'imgformat': 'png', 'bg_color': '#1A1A1A', 'label': 'Lighting'},
+								{'base': 'http://mc.oom.ch/map/', 'path': 'night', 'overlay': false, 'imgformat': 'png', 'bg_color': '#1A1A1A', 'label': 'Night'},
+								{'base': 'http://mc.oom.ch/map/', 'path': 'spawn', 'overlay': true, 'imgformat': 'png', 'bg_color': '#1A1A1A', 'label': 'Spawn'},
+								{'base': 'http://mc.oom.ch/map/', 'path': 'cave', 'overlay': false, 'imgformat': 'png', 'bg_color': '#1A1A1A', 'label': 'Cave'},
+							]
 	},
 	
 	// Game related settings
