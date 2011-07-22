@@ -191,7 +191,6 @@ var frontend = require('frontend/frontend').instance;
 
 frontend.on('connect', function(client) {
 	log.info("User '" + client.user.name + "' has connected via socket.io");
-	mcserver.say('<' + client.user.name + '> has connected to minejs');
 	client.sendChatHistory();
 	frontend.chat(client.user.name, 'has connected');
 	client.user.isFrontend = true;
@@ -200,7 +199,6 @@ frontend.on('connect', function(client) {
 
 frontend.on('disconnect', function(client) {
 	log.info("User '" + client.user.name + "' has disconnected via socket.io");
-	mcserver.say('<' + client.user.name + '> has disconnected from minejs');
 	frontend.chat(client.user.name, 'has disconnected');
 	client.user.isFrontend = false;
 	userList.changed();
