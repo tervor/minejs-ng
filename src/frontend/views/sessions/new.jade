@@ -9,6 +9,9 @@ script(src='/scripts/session.js')
 			#warn= flash.warn
 		- else
 			| Enter your username and password
+		| (need
+		span(id='help') help
+		| ?)
 
 	#session-form
 		form(action='/sessions', method='POST')

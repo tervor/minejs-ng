@@ -75,7 +75,19 @@
 	text-align: left;
 	background-color: #111;
 	#warn {
+		float: left;
 		color: #a66;
+		padding-right: 10px;
+	}
+	
+	#help {
+		cursor: pointer;
+		color: #aaa;
+		font-weight: bold;
+	}
+	
+	#help:hover {
+		color: #eee;
 	}
 }
 
@@ -113,5 +125,57 @@
 		border: 1px solid #fff;
 		font-size: 12px;
 		.rounded-corners(5px);
+		
+		&:hover {
+			color: #fff;
+		}
+	}
+}
+
+
+.block-msg {
+	padding: 10px;
+	margin: 0px;
+	width: 500px;
+	height: 200px;
+	top: 40%;
+	left: 50%;
+	margin-left: -250px;
+	margin-top: -100px;
+	text-align: left;
+	background: #000;
+	color: #aaa;
+	border: 3px solid #fff;
+	.rounded-corners(10px);
+	
+	h1 {
+		font-size: 16px;
+		color: #fff;
+	}
+	
+	p.code {
+		font: 14px monospace;
+		color: #ccc;
+	}
+	
+	.close {
+		position: absolute;
+		float: right;
+		text-align: center;
+		padding-top: 4px;
+		bottom: 10px;
+		right: 10px;
+		width: 100px;
+		height: 17px;
+		background-color: #111;
+		color: #aaa;
+		border: 1px solid #fff;
+		font-size: 12px;
+		cursor: pointer;
+		.rounded-corners(5px);
+		
+		&:hover {
+			color: #fff;
+		}
 	}
 }
