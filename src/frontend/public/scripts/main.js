@@ -3,6 +3,7 @@ nav = null;
 function Nav() {
 	nav = this;
 	this.mapInitialized = false;
+	this.gameInitialized = false;
 	this.wikiInitialized = false;
 	this.elementTabs = $('#nav');
 	this.initTemplates();
@@ -11,11 +12,11 @@ function Nav() {
 }
 
 Nav.prototype.tabs = [
-	{ name: 'dashboard', title: 'Dashboard', element: '#dashboard' },
-	{ name: 'map', title: 'Map', element: '#mcmap' },
-	{ name: 'wiki', title: 'Wiki', element: '#framer' },
-	{ name: 'help', title: 'Help', element: '#help' },
-	{ name: 'game', title: 'Game', element: '#game'}
+	{ name: 'dashboard', title: 'Dashboard' },
+	{ name: 'map', title: 'Map' },
+	{ name: 'game', title: 'Game' },
+	{ name: 'wiki', title: 'Wiki' },
+	{ name: 'help', title: 'Help' },
 ];
 
 // Initializes templates
@@ -39,7 +40,8 @@ Nav.prototype.selectTab = function(name) {
 		var tab = this.tabs[i];
 		
 		if (tab.name == this.selectedTab) {
-			$(tab.element).show();
+			$('#panel-' + tab.name).show();
+			$('#nav-' + tab.name).show();
 			$('#nav-tab-' + tab.name).addClass('selected');
 			
 			switch (tab.name) {
@@ -54,26 +56,28 @@ Nav.prototype.selectTab = function(name) {
 				break;
 			case 'wiki':
 				if (!nav.wikiInitialized) {
-					$('#main-pane').append('<div id="framer" class="framer"><iframe src="https://oom.ch/wiki/index.php/Minecraft" class="framer"></iframe></div>');
+					$('#panel-wiki').remove();
+					$('#main-panel').append('<div id="panel-wiki"><iframe src="https://oom.ch/wiki/index.php/Minecraft" class="framer"></iframe></div>');
 					nav.wikiInitialized = true;
 				}
 				break;
 			case 'game':
-				if (!nav.wikiInitialized) {
-					$('#main-pane').append(" \
-							<div style='z-index:1;'> \
+				if (!nav.gameInitialized) {
+					$('#main-panel').append(" \
+							<div id='#panel-game' style='z-index:1;'> \
 								<applet style='z-index:1;' code='net.minecraft.Launcher' archive='https://s3.amazonaws.com/MinecraftDownload/launcher/MinecraftLauncher.jar?v=1310111031000' codebase='/game/' width='100%' height='100%'> \
 									<param name='separate_jvm' value='true'> \
 									<param name='java_arguments' value='-Dsun.java2d.noddraw=true -Dsun.awt.noerasebackground=true -Dsun.java2d.d3d=false -Dsun.java2d.opengl=false -Dsun.java2d.pmoffscreen=false -Xms512M -Xmx512M'> \
 								</applet> \
 							</div>");
 
-					nav.wikiInitialized = true;
+					nav.gameInitialized = true;
 				}
 				break;
 			}
 		} else {
-			$(tab.element).hide();
+			$('#panel-' + tab.name).hide();
+			$('#nav-' + tab.name).hide();
 			$('#nav-tab-' + tab.name).removeClass('selected');
 		}
 	}

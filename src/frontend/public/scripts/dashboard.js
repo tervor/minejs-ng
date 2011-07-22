@@ -9,7 +9,7 @@ function Dashboard() {
 	this.achievedItems = null;
 	this.currentTag = 'all';
 	
-	this.elementTags = $('#dashboard-tags');
+	this.elementTags = $('#nav-dashboard');
 	this.elementItems = $('#dashboard-items');
 	
 	this.initTemplates();

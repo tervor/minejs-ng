@@ -9,7 +9,7 @@ var overviewerConfig = {
             'spawnMarker':      'http://google-maps-icons.googlecode.com/files/home.png',
             'queryMarker':      'http://google-maps-icons.googlecode.com/files/regroup.png'
         },
-        'mapDivId':             'mcmap',
+        'mapDivId':             'panel-map',
         'regionStrokeWeight':   2
     },
     'map': {    			// General map settings.

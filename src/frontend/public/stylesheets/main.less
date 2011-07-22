@@ -125,9 +125,21 @@ body {
 	}
 }
 
+/* Sub navigation */
+
+#nav-sub {
+	position: fixed;
+	top: 70px;
+	left: 10px;
+	right: 10px;
+    height: 25px;
+    background-color: transparent;
+	.debugbox;
+}
+
 /* Main pane */
 
-#main-pane {
+#main-panel {
 	display: block;
 	position: absolute;
     width: 100%;
@@ -144,20 +156,11 @@ body {
 
 /* Dashboard */
 
-#dashboard-tags-container {
-	height: 20px;
-//	padding: 2px;
-	position: fixed;
-
-	top: 80px;
-	//right:24px;
-}
-
 #dashboard-items-container {
-	width: 100%;
+//	width: 100%;
 }
 
-#dashboard {
+#panel-dashboard {
     float: none;
     clear: both;
 }
@@ -171,12 +174,15 @@ body {
 
 .dashboard-item-tag {
 	float: left;
-	margin: 0 4px 0 4px;
+	margin-right: 4px;
+//	margin: 0 4px 0 4px;
 	padding: 0 8px 0 8px;
 	font-size: 12px;
-	height: inherit;
 	vertical-align: middle;
 	.style-button();
+	height: 15px;
+	padding-top: 3px;
+	margin-top: 3px;
 }
 
 /* Chat */
@@ -320,7 +326,6 @@ body {
 
 #chat-input {
 	position: fixed;
-	
 	width: 94%;
 	height: 24px;
 	left: 50%;
@@ -393,13 +398,20 @@ body {
 
 /* Map */
 
-#mcmap {
+#panel-map {
     float: none;
     clear: both;
 	width: 100%;
 	height: 100%;
 }
 
+#panel-wiki .framer {
+    float: none;
+    clear: both;
+	width: 100%;
+    height: 100%;
+    border: 0;
+}
 
 
 /* Effect */
@@ -461,14 +473,5 @@ body {
 
 .ui-widget-header a {
     color: #fff;
-}
-
-
-
-
-.framer {
-    width: 100%;
-    height: 100%;
-    border: 0;
 }
 
