@@ -32,6 +32,32 @@
 	}
 }
 
+.style-input {
+	height: 20px;
+	color: @color-text;
+	background-color: @color-background-input;
+	border: 1px solid @color-border-input;
+	font-size: 12px;
+	.rounded-corners(5px);
+}
+
+.style-button {
+	cursor: pointer;
+	text-align: center;
+	height: 18px;
+	padding-top: 4px;
+	color: @color-text;
+	background-color: @color-background-input;
+	border: 1px solid @color-border-input;
+	font-size: 12px;
+	.rounded-corners(5px);
+	
+	&:hover {
+		color: @color-text-hover;
+		border: 1px solid @color-border-input-hover;
+	}
+}
+
 .transform (@value) {
 	-webkit-transform: rotate(@arguments);
 	-moz-transform: rotate(@arguments);

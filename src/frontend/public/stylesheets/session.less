@@ -15,7 +15,7 @@
 	height: 100px;
 }
 
-#session-pane {
+#session-panel {
 	position: absolute;
 	left: 50%;
 	top: 40%;
@@ -23,7 +23,7 @@
 	height: 240px;
 	margin-top: -120px;
 	margin-left: -200px;
-	border: 1px #222 solid;
+	border: 1px @color-border-panel solid;
 	font-size: 14px;
 	.rounded-corners(10px);
 }
@@ -57,21 +57,21 @@
 	margin-top: 5px;
 	margin-bottom: 12px;
 	text-align: left;
-	background-color: #111;
+	background-color: @color-background-lighter;
 	#warn {
 		float: left;
-		color: #a66;
+		color: @color-text-warn;
 		padding-right: 10px;
 	}
 	
 	#help {
 		cursor: pointer;
-		color: #aaa;
+		color: @color-text-lighter;
 		font-weight: bold;
 	}
 	
 	#help:hover {
-		color: #eee;
+		color: @color-text-hover;
 	}
 }
 
@@ -89,14 +89,9 @@
 	.session-form-input {
 		float: left;
 		width: 200px;
-		height: 20px;
 		margin-top: 5px;
 		margin-bottom: 5px;
-		color: #aaa;
-		background-color: #111;
-		border: 1px solid #fff;
-		font-size: 12px;
-		.rounded-corners(5px);
+		.style-input();
 	}
 	
 	.session-form-submit {
@@ -104,18 +99,11 @@
 		width: 100px;
 		margin-top: 10px;
 		margin-left: 205px;
-		background-color: #111;
-		color: #aaa;
-		border: 1px solid #fff;
-		font-size: 12px;
-		.rounded-corners(5px);
-		
-		&:hover {
-			color: #fff;
-		}
+		.style-button();
+		height: 22px;
+		padding-top: 2px;
 	}
 }
-
 
 .block-msg {
 	padding: 10px;
@@ -127,39 +115,27 @@
 	margin-left: -250px;
 	margin-top: -100px;
 	text-align: left;
-	background: #000;
-	color: #aaa;
-	border: 3px solid #fff;
+	background: @color-background;
+	color: @color-text;
+	border: 3px solid @color-border-panel;
 	.rounded-corners(10px);
 	
 	h1 {
 		font-size: 16px;
-		color: #fff;
+		color: @color-text-heading;
 	}
 	
 	p.code {
 		font: 14px monospace;
-		color: #ccc;
+		color: @color-text-lighter;
 	}
 	
 	.close {
 		position: absolute;
 		float: right;
-		text-align: center;
-		padding-top: 4px;
 		bottom: 10px;
 		right: 10px;
 		width: 100px;
-		height: 17px;
-		background-color: #111;
-		color: #aaa;
-		border: 1px solid #fff;
-		font-size: 12px;
-		cursor: pointer;
-		.rounded-corners(5px);
-		
-		&:hover {
-			color: #fff;
-		}
+		.style-button();
 	}
 }
