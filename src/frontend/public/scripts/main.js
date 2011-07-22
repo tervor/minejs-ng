@@ -4,9 +4,7 @@ function Nav() {
 	nav = this;
 	this.mapInitialized = false;
 	this.wikiInitialized = false;
-	
 	this.elementTabs = $('#nav');
-	
 	this.initTemplates();
 	this.render();
 	this.selectTab('dashboard');
@@ -17,6 +15,7 @@ Nav.prototype.tabs = [
 	{ name: 'map', title: 'Map', element: '#mcmap' },
 	{ name: 'wiki', title: 'Wiki', element: '#framer' },
 	{ name: 'help', title: 'Help', element: '#help' },
+	{ name: 'game', title: 'Game', element: '#game'}
 ];
 
 // Initializes templates
@@ -56,6 +55,21 @@ Nav.prototype.selectTab = function(name) {
 			case 'wiki':
 				if (!nav.wikiInitialized) {
 					$('#main-pane').append('<div id="framer" class="framer"><iframe src="https://oom.ch/wiki/index.php/Minecraft" class="framer"></iframe></div>');
+					nav.wikiInitialized = true;
+				}
+				break;
+			case 'game':
+				if (!nav.wikiInitialized) {
+					$('#main-pane').append(" \
+							<div style='z-index:1;'> \
+								<applet style='z-index:1;' code='net.minecraft.Launcher' archive='https://s3.amazonaws.com/MinecraftDownload/launcher/MinecraftLauncher.jar?v=1310111031000' codebase='/game/' width='100%' height='100%'> \
+									<param name='separate_jvm' value='true'> \
+									<param name='java_arguments' value='-Dsun.java2d.noddraw=true -Dsun.awt.noerasebackground=true -Dsun.java2d.d3d=false -Dsun.java2d.opengl=false -Dsun.java2d.pmoffscreen=false -Xms512M -Xmx512M'> \
+								</applet><br> \
+								<p><pre><code> \
+						</code></pre> \
+							</div>");
+
 					nav.wikiInitialized = true;
 				}
 				break;
