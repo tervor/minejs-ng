@@ -1,16 +1,8 @@
+
 chat = null;
-var panelInit=1;
-
-function initChat() {
-
-	chat = new Chat();
-
-	//adjust default panel view
-	$("#main-pane").css({'height' : $(document).height()-380 });
-}
-
 
 function Chat() {
+	chat = this;
 	this.users = [];
 	this.activeChannel = 'chat';
 
@@ -20,6 +12,9 @@ function Chat() {
 	this.elementInput = $('#chat-input');
 
 	this.initTemplates();
+	
+	// Adjust default panel view
+	$("#main-pane").css({'height' : $(document).height()-380 });
 	
 	// Remove monitor tab if not superadmin
 	if (config.role != 'superadmin') {

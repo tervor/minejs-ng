@@ -1,11 +1,9 @@
-dashboard = null;
 
-function initDashboard() {
-	dashboard = new Dashboard();
-}
+dashboard = null;
 
 // Creates the dashboard
 function Dashboard() {
+	dashboard = this;
 	this.items = null;
 	this.itemTags = null;
 	this.achievedItems = null;

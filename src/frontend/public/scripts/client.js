@@ -1,13 +1,9 @@
 
 client = null;
 
-
-function initClient() {
-	client = new Client();
-}
-
 // Class to wrap the socket.io client
 function Client() {
+	client = this;
 	this.notifyHandlers = {};
 	
 	console.log('initializing socket.io');

@@ -1,37 +1,80 @@
+nav = null;
 
-var mapInitialized = false;
+function Nav() {
+	nav = this;
+	this.selectTab('dashboard');
+	this.mapInitialized = false;
+	this.wikiInitialized = false;
+	
+	this.elementTabs = $('#nav');
+	
+	this.initTemplates();
+	this.render();
+}
+
+Nav.prototype.tabs = [
+	{ name: 'dashboard', title: 'Dashboard', element: '#dashboard' },
+	{ name: 'map', title: 'Map', element: '#mcmap' },
+	{ name: 'wiki', title: 'Wiki', element: '#framer' },
+	{ name: 'help', title: 'Help', element: '#help' },
+];
+
+// Initializes templates
+Nav.prototype.initTemplates = function() {
+	$.template('navTabTemplate', "\
+	<div id='nav-tab-tag-${name}' onclick='nav.selectTab(\"${name}\")'>${title}</div>\
+	");
+}
+
+Nav.prototype.render = function() {
+	this.elementTabs.html('');
+	$.each(this.tabs, function(i, tab) {
+		$.tmpl('navTabTemplate', tab).appendTo(nav.elementTabs);
+	});
+}
+
+Nav.prototype.selectTab = function(name) {
+	this.selectedTab = name;
+	
+	for (var i = 0; i < this.tabs.length; i++) {
+		var tab = this.tabs[i];
+		
+		if (tab.name == this.selectedTab) {
+			$(tab.element).show();
+			$('#nav-' + tab.name).addClass('selected');
+			
+			switch (tab.name) {
+			case 'map':
+				if (!nav.mapInitialized) {
+					overviewerConfig.map = config.overviewer.map;
+					overviewerConfig.mapTypes = config.overviewer.mapTypes;
+					overviewer.util.initialize();
+					mapView.open();
+					nav.mapInitialized = true;
+				}
+				break;
+			case 'wiki':
+				if (!nav.wikiInitialized) {
+					$('#main-pane').append('<div id="framer" class="framer"><iframe src="https://oom.ch/wiki/index.php/Minecraft" class="framer"></iframe></div>');
+					nav.wikiInitialized = true;
+				}
+				break;
+			}
+		} else {
+			$(tab.element).hide();
+			$('#nav-' + tab.name).removeClass('selected');
+		}
+	}
+}
 
 $(document).ready(function() {
-	initClient();
-	initDashboard();
-	initChat();
+	new Nav;
+	new Client();
+	new Dashboard();
+	new Chat();
 	
 	//hide yellow news feed phrase
 	$("#effect").hide();
-
-	$('#nav-dashboard').click(function () {
-		$('#dashboard').show();
-		$('#mcmap').hide();
-		$('#framer').remove();
-	});
-	$('#nav-wiki').click(function () {
-		$('#dashboard').hide();
-		$('#mcmap').hide();
-		$('#framer').remove();
-		$('#main-pane').append('<div id="framer" class="framer"><iframe src="https://oom.ch/wiki/index.php/Minecraft" class="framer"></iframe></div>');
-	});
-	$('#nav-map').click(function () {
-		$('#dashboard').hide();
-		$('#mcmap').show();
-		$('#framer').remove();
-		if (!mapInitialized) {
-			overviewerConfig.map = config.overviewer.map;
-			overviewerConfig.mapTypes = config.overviewer.mapTypes;
-			overviewer.util.initialize();
-			mapView.open();
-			mapInitialized = true;
-		}
-	});
 
 /*	jQuery.getFeed({
 		url: 'rss.xml',
