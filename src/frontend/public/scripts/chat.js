@@ -176,7 +176,6 @@ Chat.prototype.initTemplates = function() {
 			<div class='chat-user-teleport' onClick='chat.teleport(\"${name}\")'/>\
 		</div>\
 	{{/if}}\
-	<br>\
 	");
 }
 
@@ -280,21 +279,21 @@ Chat.prototype.minimize = function() {
 	$('#chat-min').hide();
 	$('#chat-max').show();
 	$("#chat").css({ 'height': '230px' });
-	$("div#chat-output").css({ 'height': '194px' });
-	$("div#chat-user").css({ 'height': '194px' });
+	$("div#chat-output").css({ 'height': '192px' });
+	$("div#chat-users").css({ 'height': '192px' });
 }
 
 // Maximizes the chat panel
 Chat.prototype.maximize = function() {
 	var h = $(document).height();
-	var c = h - 171;
+	var c = h - 173;
 	
 	$('#chat-max').hide();
 	$('#chat-min').show();
 	$('#chat').show();
 	$("#chat").css({ 'height': h-135 });
 	$("div#chat-output").css({ 'height': c });
-	$("div#chat-user").css({ 'height': c });
+	$("div#chat-users").css({ 'height': c });
 }
 
 // Called when the window is resized

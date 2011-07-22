@@ -2,7 +2,6 @@ nav = null;
 
 function Nav() {
 	nav = this;
-	this.selectTab('dashboard');
 	this.mapInitialized = false;
 	this.wikiInitialized = false;
 	
@@ -10,6 +9,7 @@ function Nav() {
 	
 	this.initTemplates();
 	this.render();
+	this.selectTab('dashboard');
 }
 
 Nav.prototype.tabs = [
@@ -22,7 +22,7 @@ Nav.prototype.tabs = [
 // Initializes templates
 Nav.prototype.initTemplates = function() {
 	$.template('navTabTemplate', "\
-	<div id='nav-tab-tag-${name}' onclick='nav.selectTab(\"${name}\")'>${title}</div>\
+	<div id='nav-tab-${name}' onclick='nav.selectTab(\"${name}\")'>${title}</div>\
 	");
 }
 
@@ -41,7 +41,7 @@ Nav.prototype.selectTab = function(name) {
 		
 		if (tab.name == this.selectedTab) {
 			$(tab.element).show();
-			$('#nav-' + tab.name).addClass('selected');
+			$('#nav-tab-' + tab.name).addClass('selected');
 			
 			switch (tab.name) {
 			case 'map':
@@ -62,7 +62,7 @@ Nav.prototype.selectTab = function(name) {
 			}
 		} else {
 			$(tab.element).hide();
-			$('#nav-' + tab.name).removeClass('selected');
+			$('#nav-tab-' + tab.name).removeClass('selected');
 		}
 	}
 }

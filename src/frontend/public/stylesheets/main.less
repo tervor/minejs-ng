@@ -31,8 +31,14 @@ body {
 	display: block;
 	position: absolute;
 	width: 100%;
-	height: 60px;
+	height: 65px;
 	top: 0px;
+	
+	border: 1px solid @color-border-panel;
+	border-left-style: none;
+	border-right-style: none;
+	border-top-style: none;
+	
 	.debugbox;
 }
 
@@ -57,6 +63,7 @@ body {
 	float: left;
     height: 48px;
     margin-right: 10px;
+	padding-top: 4px;
 }
 
 #session-user {
@@ -69,16 +76,17 @@ body {
     width: 80px;
     height: 18px;
     float: left;
-	.button(#fff, #800, #a00, 4px);
+	.style-button();
+	background-color: #200;
+	&:hover {
+		background-color: #400;
+	}
 }
 
 /* Top level navigation */
 
 #nav {
-//	display: block;
-//	text-align: center;
 	position: absolute;
-//    width: 100%;
 	left: 300px;
     height: 26px;
 	top: 0px;
@@ -89,27 +97,31 @@ body {
 		display: block;
 	    float: left;
 		cursor: pointer;
+		width: 80px;
+	    height: 16px;
+	    padding:  4px 10px 4px 10px;
+		margin-right: 5px;
 	    color: @color-nav-text;
 		background-color: @color-nav-background;
 	    font-size: 12px;
 		font-weight: bold;
 		text-align: center;
-		width: 80px;
-	    padding:  4px 10px 4px 10px;
-		margin-right: 5px;
-	    height: 16px;
 		border: 1px solid @color-nav-border;
 		border-top-style: none;
 		.rounded-corners(0px 0px 5px 5px);
 		
 		&:hover {
 			color: @color-nav-text-hover;
+			background-color: @color-nav-background-hover;
 			border: 1px solid @color-nav-border-hover;
 			border-top-style: none;
 		}
 		
 		&.selected {
-			
+			color: @color-nav-text-selected;
+			background-color: @color-nav-background-selected;
+			border: 1px solid @color-nav-border-selected;
+			border-top-style: none;
 		}
 	}
 }
@@ -165,36 +177,34 @@ body {
 	font-size: 12px;
 	height: inherit;
 	vertical-align: middle;
-	.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+	.style-button();
 }
 
 /* Chat */
 
 #chat {
 	position: fixed;
-	float: left;
+	width: 94%;
 	height: 230px;
-	left: 30px;
-	right: 30px;
+	left: 50%;
 	bottom: 32px;
-	padding: 0.2%;
-	z-index: 1001;
+	margin-left: -47%;
+	margin-right: 50px;
+	padding: 0px;
+	z-index: 1000;
 	
-	border: 1px solid #271f18;
-	background: rgb(39, 31, 24);
-	resize: both;
-	border: 1px solid #ffeeaa;
-	opacity: 0.9;
+	background: @color-chat-background;
+	border: 1px solid @color-chat-border;
+	opacity: @opacity-chat;
 	.rounded-corners(6px);
+	.shadow(0 0 10px 10px #000);
 }
 
 #chat-head {
 	width: 100%;
-	height: 26px;
-	background-color: #fbd850;
-	padding: 0;
-	margin-bottom: 4px;
-	.rounded-corners(4px);
+	height: 28px;
+	background-color: #aaa;
+	.rounded-corners(4px 4px 0px 0px);
 }
 
 #chat-tabs {
@@ -203,12 +213,17 @@ body {
 	div {
 		float: left;
 		font-size: 10px;
-		line-height: 10px;
-		padding: 3px;
-		margin: 2px;
-		margin-left: 4px;
-		height: 12px;
-		.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+		padding-left: 10px;
+		padding-right: 10px;
+		margin-right: 5px;
+		margin-top: 1px;
+		margin-left: 1px;
+		.style-button();
+		
+		&.selected {
+			color: @color-text-selected;
+			background-color: @color-background-lighter;
+		}
 	}
 }
 
@@ -216,111 +231,118 @@ body {
 	float: right;
 	
 	div {
-		font-size: 10px;
-		line-height: 10px;
 		float: left;
-		padding: 3px;
-		margin: 2px;
-		margin-left: 4px;
-		width: 12px;
-		height: 12px;
-		.button(@color-tab-text, @color-tab-background, @color-tab-border, 4px);
+		width: 24px;
+		margin-left: 2px;
+		margin-top: 1px;
+		margin-right: 1px;
+		.style-button();
 	}
 }
 
 #chat-body {
-}
-
-#chat-body div {
-	float: left;
-
+	margin: 0px;
 }
 
 #chat-output {
-	border: 0;
-	width: 80%;
+	display: block;
+	height:194px;
 	top: 20px;
 	bottom: 20px;
-	height:194px;
-	font-size: 14px;
-	padding-top:8px;
-	padding: 0;
-	margin: 0;
-	float: left;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	margin: 0px;
+	
 	overflow: scroll;
 	overflow-x: hidden;
 	overflow-y: scroll;
-	padding-bottom: 5px;
 }
 
 #chat-users {
-	width: 17%;
-	padding-left: 5px;
+	float: right;
+	width: 250px;
+	height:194px;
+	top: 20px;
+	bottom: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	margin: 0px;
+
+	overflow: scroll;
+	overflow-x: hidden;
+	overflow-y: scroll;
 }
 
 .chat-user {
-	width: 100%;
 }
 
 .chat-user-name {
-//	float: left;
+	float: left;
 	color: white;
-	min-width: 100px;
+	min-width: 150px;
+	padding-top: 2px;
 }
 
 .chat-user-playing {
 	float: left;
-	width: 18px;
-	height: 18px;
-	margin: 0px 5px 0px 5px;
 	background: url('/images/playing.png') no-repeat;
-	.button(@color-tab-text, #300, #888, 4px);
+	.style-button();
+	margin: 2px;
+	padding: 0px;
+	width: 20px;
+	height: 20px;
 	
 	&.active {
-		.button(@color-tab-text, #030, #888, 4px);
+		background-color: @color-chat-user-is-playing;
 	}
 }
 
 .chat-user-teleport {
 	float: left;
-	width: 18px;
-	height: 18px;
-	margin: 0px 5px 0px 5px;
 	background: url('/images/teleport.png') no-repeat;
-	.button(@color-tab-text, #000, #888, 4px);
+	.style-button();
+	margin: 2px;
+	padding: 0px;
+	width: 20px;
+	height: 20px;
 }
 
 .chat-user-whisper {
 	float: left;
-	width: 18px;
-	height: 18px;
-	margin: 0px 5px 0px 5px;
 	background: url('/images/whisper.png') no-repeat;
-	.button(@color-tab-text, #000, #888, 4px);
+	.style-button();
+	margin: 2px;
+	padding: 0px;
+	width: 20px;
+	height: 20px;
 }
 
 #chat-input {
-	left: 30px;
-	right: 30px;
-	height: 24px;
-	resize: none;
-	background-color: #18130f;
-	color: #fff;
-	border: 1px solid #ffeeaa;
 	position: fixed;
-	z-index: 1500;
+	
+	width: 94%;
+	height: 24px;
+	left: 50%;
+	margin-left: -47%;
 	bottom: 3px;
-	opacity: 0.9;
 	padding-left: 2px;
-	.rounded-corners(6px);
+	font-size: 12px;
+	color: #fff;
+	background-color: @color-chat-background;
+	opacity: 0.9;
+	border: 1px solid @color-chat-border;
+	z-index: 1000;
+	.rounded-corners(4px);
 }
 
 /* Chat text line */
 
 .chat-line {
 	border: 0px;
-	position: relative;
-	width: 100%;
+//	position: relative;
+//	width: 100%;
 }
 
 .chat-line div {
@@ -331,27 +353,25 @@ body {
 
 .chat-line-time {
 	float: left;
-	width: 100px;
-	font-color: #aaa;
+	width: 80px;
+	color: #aaa;
 }
 
 .chat-line-name {
 	float: left;
 	width: 150px;
-	font-color: #fff;
+	color: #fff;
 }
 
 .chat-line-text {
 	float: none;
-	font-color: #ccc;
+	color: #ccc;
 }
 
 /* Console text line */
 
 .console-line {
 	border: 0px;
-	position: relative;
-	width: 100%;
 }
 
 .console-line div {
@@ -364,8 +384,6 @@ body {
 
 .monitor-line {
 	border: 0px;
-	position: relative;
-	width: 100%;
 }
 
 .monitor-line div {
@@ -379,8 +397,8 @@ body {
 #mcmap {
     float: none;
     clear: both;
-width: 100%;
-height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 

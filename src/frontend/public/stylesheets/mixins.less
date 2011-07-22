@@ -34,6 +34,7 @@
 
 .style-input {
 	height: 20px;
+	padding-left: 4px;
 	color: @color-text;
 	background-color: @color-background-input;
 	border: 1px solid @color-border-input;
@@ -45,11 +46,12 @@
 	cursor: pointer;
 	text-align: center;
 	height: 18px;
-	padding-top: 4px;
+	padding-top: 6px;
 	color: @color-text;
 	background-color: @color-background-input;
 	border: 1px solid @color-border-input;
 	font-size: 12px;
+	line-height: 12px;
 	.rounded-corners(5px);
 	
 	&:hover {
@@ -61,4 +63,10 @@
 .transform (@value) {
 	-webkit-transform: rotate(@arguments);
 	-moz-transform: rotate(@arguments);
+}
+
+.shadow (@value) {
+	box-shadow: @arguments;
+	-moz-box-shadow: @arguments;
+	-webkit-box-shadow: @arguments;
 }

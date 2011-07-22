@@ -27,7 +27,6 @@ script(src='/scripts/main.js')
 			#session-info
 				| logged in as
 				span(id='session-user') #{session.user.name}
-				| .
 			a(href='/sessions/destroy')
 				#session-logout Logout
 #nav
@@ -40,6 +39,8 @@ script(src='/scripts/main.js')
 			#dashboard-items
 	#mcmap
 	#wikis
+	#help
+		#h1 Help
 
 #chat
 	#chat-head
@@ -53,11 +54,11 @@ script(src='/scripts/main.js')
 			#chat-hide(title='Hide') x
 
 	#chat-body
+		#chat-users
 		#chat-output
 			#chat-output-chat
 			#chat-output-console
 			#chat-output-monitor
-		#chat-users
 
 input(type='text', name='chat-input', id='chat-input')
 

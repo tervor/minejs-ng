@@ -9,6 +9,7 @@
 @color-text-lighter: lighten(@color-text, 20%);
 @color-text-heading: lighten(@color-text, 30%);
 @color-text-hover: #fff;
+@color-text-selected: #fff;
 @color-text-darker: #4B4B4B;
 
 @color-text-warn: #a66;
@@ -25,13 +26,28 @@
 /* Navigation colors */
 
 @color-nav-text: @color-text;
-@color-nav-text-hover: lighten(@color-text, 20%);
+@color-nav-text-hover: lighten(@color-nav-text, 20%);
+@color-nav-text-selected: #000;
 
 @color-nav-background: @color-background-lighter;
+@color-nav-background-hover: lighten(@color-nav-background, 0%);
+@color-nav-background-selected: #fff;
 
 @color-nav-border: #aaa;
-@color-nav-border-hover: #fff;
+@color-nav-border-hover: lighten(@color-nav-border, 20%);
+@color-nav-border-selected: #fff;
 
+/* Chat colors */
+
+@opacity-chat: 0.9;
+@color-chat-header: #fff;
+@color-chat-border: @color-border-input;
+@color-chat-background: darken(@color-darker, 10%);
+
+@color-chat-user-is-playing: #030;
+
+
+/* Soon obsolete ... */
 
 @color-tab-text: @color-text-lighter;
 @color-tab-background: @color-darker;
