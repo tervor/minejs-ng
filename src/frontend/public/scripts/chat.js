@@ -60,6 +60,10 @@ function Chat() {
 			element.val('');
 			chat.input(text);
 			break;
+		case 17: // ctrl -> preserve copy&past
+			break;
+		case 67: // c > preserve copy&past
+			break;
 		case 27: // Escape -> hide panel
 			// Keeps firefox from restoring old text in input element
 			element.blur(); element.focus();

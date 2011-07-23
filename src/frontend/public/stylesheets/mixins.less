@@ -11,6 +11,7 @@
 	-khtml-border-radius: @arguments;
 }
 
+
 .button (@color-text: #fff, @color-background: #000, @color-border: #fff, @radius: 4px) {
     color: @color-text;
     cursor: pointer;
@@ -30,6 +31,23 @@
 	&.selected {
 	    color: lighten(@color-text, 40%);
 	}
+}
+
+.top-button  {
+		display: block;
+	    float: left;
+		cursor: pointer;
+		width: 80px;
+	    height: 16px;
+	    padding:  4px 10px 4px 10px;
+		margin-right: 5px;
+	    color: @color-nav-text;
+		background-color: @color-nav-background;
+	    font-size: 12px;
+		font-weight: bold;
+		text-align: center;
+		border: 1px solid @color-nav-border;
+		border-top-style: none;
 }
 
 .style-input {
@@ -52,7 +70,7 @@
 	border: 1px solid @color-border-input;
 	font-size: 12px;
 	line-height: 12px;
-	.rounded-corners(5px);
+	.rounded-corners(6px 6px 0px 0px);
 	
 	&:hover {
 		color: @color-text-hover;

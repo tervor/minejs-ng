@@ -14,7 +14,7 @@ function Nav() {
 Nav.prototype.tabs = [
 	{ name: 'dashboard', title: 'Dashboard' },
 	{ name: 'map', title: 'Map' },
-/*	{ name: 'game', title: 'Game' },*/
+	{ name: 'game', title: 'Game' },
 	{ name: 'wiki', title: 'Wiki' },
 	{ name: 'help', title: 'Help' },
 ];
