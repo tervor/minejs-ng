@@ -57,7 +57,7 @@ MCServer.prototype.start = function() {
 	this.reset();
 	this.running = true;
 
-	var args = config.server.javaArgs.concat(['-jar', config.server.jar]).concat(config.server.serverArgs);
+	var args = config.server.javaArgs.concat(['-Dfile.encoding=utf-8', '-jar', config.server.jar]).concat(config.server.serverArgs);
 	var cmdline = config.server.java + ' ' + args.join(' ');
 	log.info('Starting minecraft server with: ' + cmdline);
 	// Stop any minecraft server running with same command line
@@ -77,7 +77,7 @@ MCServer.prototype.start = function() {
 		}
 		
 		// Spawn the child process
-		this.process = spawn(config.server.java, args, { cwd: config.server.dir });
+		this.process = spawn(config.server.java, args, { encoding: 'utf8', cwd: config.server.dir, env: process.env });
 
 		// Read player infos
 		this.readPlayerInfos();
@@ -222,15 +222,15 @@ MCServer.prototype.updateMonitoring = function() {
 
 // Called for every chunk of data received from the server's STDOUT and STDERR
 MCServer.prototype.receive = function(data) {
-	for (var i = 0; i < data.length; i++) {
-		var c = data.toString('ascii', i, i + 1);
-		if (c == '\n') {
-			this.receiveLine(this.receiveBuf);
-			this.receiveBuf = '';
-		} else {
-			this.receiveBuf += c;
-		}
-	}
+	this.receiveBuf += data.toString('utf8');
+	do {
+		var pos = this.receiveBuf.indexOf('\n');
+		if (pos < 0)
+			break;
+		var line = this.receiveBuf.substr(0, pos);
+		this.receiveBuf = this.receiveBuf.slice(pos + 1);
+		this.receiveLine(line);
+	} while (true);
 }
 
 // Called for every new received line from the server's STDOUT and STDERR
