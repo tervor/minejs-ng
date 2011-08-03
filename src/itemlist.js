@@ -6,6 +6,7 @@ function ItemList()
 {
 	this.items = JSON.parse(fs.readFileSync(__dirname + '/items.json', 'ascii'));
 	this.tags = JSON.parse(fs.readFileSync(__dirname + '/categories.json', 'ascii'));
+	this.itemMap = JSON.parse(fs.readFileSync(__dirname + '/itemmap.json', 'ascii'));
 }
 
 ItemList.prototype.itemByNameOrId = function(name) {

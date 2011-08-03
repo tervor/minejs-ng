@@ -6,6 +6,7 @@ exports.index = {
 		res.send({
 			items: itemList.items,
 			itemTags: itemList.tags,
+			itemMap: itemList.itemMap,
 			achievedItems: req.session.user.achievedItems,
 		});
 	},

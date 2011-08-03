@@ -6,6 +6,7 @@ function Dashboard() {
 	dashboard = this;
 	this.items = null;
 	this.itemTags = null;
+	this.itemMap = null;
 	this.achievedItems = null;
 	this.currentTag = 'all';
 	
@@ -25,8 +26,10 @@ Dashboard.prototype.initTemplates = function() {
 	<div id='ctlPlus' class='ctlPlMi' onclick='dashboard.increaseAmount(${id})'>+</div>\
 	<div name='IconLayer-${id}' onclick='dashboard.give(${id})'>\
 	<div style='padding: 25% 29% 4% 29%;'>\
-	<img src='/icons/${id}.png' id='ItemImg-${id}' class='STicon' border='0'></div>\
-	<div name='Namelabel-${id}' id='Namelabel-${id}' class='Namelabel'>${info}</div></div>\
+	<div style='width: ${image.width}px; height: ${image.height}px; background: url(\"/images/items.png\") no-repeat; background-position: -${image.x}px -${image.y}px'></div>\
+	</div>\
+	<div name='Namelabel-${id}' id='Namelabel-${id}' class='Namelabel'>${info}</div>\
+	</div>\
 	");
 	
 	$.template('itemTagTemplate', "\
@@ -39,8 +42,29 @@ Dashboard.prototype.update = function() {
 	$.getJSON('/items.json', function(data) {
 		dashboard.items = data.items;
 		dashboard.itemTags = data.itemTags;
+		dashboard.itemMap = data.itemMap;
 		dashboard.achievedItems = data.achievedItems;
+		dashboard.updateImageMap();
 		dashboard.render();
+	});
+}
+
+Dashboard.prototype.updateImageMap = function() {
+	var mapInfo = dashboard.itemMap.info;
+	$.each(this.items, function(i, item) {
+		item.image = {};
+		var mapItem = dashboard.itemMap.cells[item.id];
+		if (mapItem) {
+			item.image.x = mapItem.x * mapInfo.cellwidth;
+			item.image.y = mapItem.y * mapInfo.cellheight;
+			item.image.width = mapInfo.cellwidth;
+			item.image.height = mapInfo.cellheight;
+		} else {
+			item.image.x = 0;
+			item.image.y = 0;
+			item.image.width = mapInfo.cellwidth;
+			item.image.height = mapInfo.cellheight;
+		}
 	});
 }
 
