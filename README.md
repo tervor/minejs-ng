@@ -1,6 +1,6 @@
 mineJS
 ========
-Licence: GNU/GPL
+Licence: not clear right now, probably GPL or MIT, but as long it's not furter defined all code belongs to the developers of the source.
 
 This is a proof of concept in nodeJS, we try to add some remotecontrol feautures to our minecraft server without touching the minecraft code, now we want to share with you what we got. Enjoy!
 
