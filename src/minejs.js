@@ -192,14 +192,14 @@ var frontend = require('frontend/frontend').instance;
 frontend.on('connect', function(client) {
 	log.info("User '" + client.user.name + "' has connected via socket.io");
 	client.sendChatHistory();
-	frontend.chat(client.user.name, 'has connected');
+//	frontend.chat(client.user.name, 'has connected');
 	client.user.isFrontend = true;
 	userList.changed();
 });
 
 frontend.on('disconnect', function(client) {
 	log.info("User '" + client.user.name + "' has disconnected via socket.io");
-	frontend.chat(client.user.name, 'has disconnected');
+//	frontend.chat(client.user.name, 'has disconnected');
 	client.user.isFrontend = false;
 	userList.changed();
 });
