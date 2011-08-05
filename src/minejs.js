@@ -204,7 +204,7 @@ frontend.on('disconnect', function(client) {
 	userList.changed();
 });
 
-frontend.on('chat', function(client, text) {
+frontend.on('chat', function(client, timestamp, text) {
 	mcserver.say('<' + client.user.name + '> ' + text);
 });
 

@@ -7,6 +7,7 @@ var express = require('express');
 var MemStore = require('connect').session.MemoryStore;
 
 require('express-resource');
+require('datejs');
 
 var config = require('config').config;
 
@@ -149,17 +150,21 @@ function FrontendClient(socket, username) {
 	this.socket = socket;
 	this.user = userList.userByName(username);
 	
-	this.chat('console', 'Welcome to the minejs chat');
+	this.chat('console', null, 'Welcome to the minejs chat');
 	
 	this.socket.on('chat', function(data) {
-		this.socket.broadcast.emit('chat', { user: this.user.name, text: data.text });
-		instance.emit('chat', this, data.text);
-		instance.addChatHistory(this.user.name, data.text);
+		var timestamp = Math.round((new Date()).getTime() / 1000);
+		this.socket.broadcast.emit('chat', { user: this.user.name, timestamp: timestamp, text: data.text });
+		this.chat(this.user.name, timestamp, data.text);
+		instance.emit('chat', this, timestamp, data.text);
+		instance.addChatHistory(this.user.name, timestamp, data.text);
 	}.bind(this));
 	this.socket.on('console', function(data) {
+		this.console(data.text);
 		instance.emit('console', this, data.text);
 	}.bind(this));
 	this.socket.on('monitor', function(data) {
+		this.monitor(data.text);
 		instance.emit('monitor', this, data.text);
 	}.bind(this));
 	this.socket.on('command', function(data) {
@@ -167,8 +172,10 @@ function FrontendClient(socket, username) {
 	}.bind(this));
 }
 
-FrontendClient.prototype.chat = function(username, text) {
-	this.socket.emit('chat', { user: username, text: text });
+FrontendClient.prototype.chat = function(username, timestamp, text) {
+	if (!timestamp)
+		timestamp = Math.round((new Date()).getTime() / 1000);
+	this.socket.emit('chat', { user: username, timestamp: timestamp, text: text });
 }
 
 FrontendClient.prototype.console = function(text) {
@@ -186,7 +193,7 @@ FrontendClient.prototype.notify = function(action, args) {
 FrontendClient.prototype.sendChatHistory = function() {
 	for (var i = 0; i < instance.chatHistory.length; i++) {
 		var item = instance.chatHistory[i];
-		this.chat(item.username, item.text);
+		this.chat(item.username, item.timestamp, item.text);
 	}
 }
 
@@ -229,12 +236,13 @@ function Frontend() {
 
 util.inherits(Frontend, events.EventEmitter);
 
-Frontend.prototype.chatHistoryLength = 10;
+Frontend.prototype.chatHistoryLength = 50;
 
 Frontend.prototype.chat = function(username, text) {
-	this.addChatHistory(username, text);
+	var timestamp = Math.round((new Date()).getTime() / 1000);
+	this.addChatHistory(username, timestamp, text);
 	for (var i = 0; i < this.clients.length; i++)
-		this.clients[i].chat(username, text);
+		this.clients[i].chat(username, timestamp, text);
 }
 
 Frontend.prototype.notify = function(action, args) {
@@ -242,9 +250,9 @@ Frontend.prototype.notify = function(action, args) {
 		this.clients[i].notify(action, args);
 }
 
-Frontend.prototype.addChatHistory = function(username, text) {
+Frontend.prototype.addChatHistory = function(username, timestamp, text) {
 	// Keep messages in history
-	this.chatHistory.push({ username: username, text: text });
+	this.chatHistory.push({ username: username, timestamp: timestamp, text: text });
 	if (this.chatHistory.length > this.chatHistoryLength)
 		this.chatHistory.splice(0, this.chatHistory.length - this.chatHistoryLength);
 }

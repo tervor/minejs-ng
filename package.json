@@ -14,7 +14,8 @@
 		"socket.io": "=0.7.6",
 		"underscore": ">=1.1.7",
 		"less": ">=1.1.4",
-		"nbt-js": "https://github.com/sjmulder/nbt-js/tarball/master",
-		"compress": "https://github.com/egorich239/node-compress/tarball/master/v0.1.10"
+		"mongoose": ">=1.7.4",
+		"datejs": ">=0.0.2",
+		"nbt-js": "https://github.com/sjmulder/nbt-js/tarball/master"
 	}
 }

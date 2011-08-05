@@ -37,13 +37,13 @@ function Chat() {
 
 	// Bind client events
 	client.on('chat', function(data) {
-		chat.output('chat', data.user, data.text);
+		chat.output('chat', data.user, data.timestamp, data.text);
 	});
 	client.on('console', function(data) {
-		chat.output('console', null, data.text);
+		chat.output('console', null, null, data.text);
 	});
 	client.on('monitor', function(data) {
-		chat.output('monitor', null, data.text);
+		chat.output('monitor', null, null, data.text);
 	});
 	client.onNotify('userListChanged', function() {
 		chat.updateUserList();
@@ -223,19 +223,19 @@ Chat.prototype.input = function(text) {
 	if (text.length > this.MaxInputLength)
 		text = text.substr(0, this.MaxInputLength);
 		
-	this.output(this.activeChannel, config.user, text);
 	client.emit(this.activeChannel, { text: text });
 }
 
-Chat.prototype.output = function(channel, user, text) {
+Chat.prototype.output = function(channel, user, timestamp, text) {
 	var element = $(this.channels[channel].element);
 	var template = this.channels[channel].template;
-	var now = new Date;
 	var lines = text.split('\n');
 	for (var i = 0; i < lines.length; i++) {
 		if (lines[i] == '')
 			continue;
-		$.tmpl(template, { time: now.toString('HH:MM:ss'), name: user, text: lines[i] }).appendTo(element);
+		var time = new Date();
+		time.setTime(timestamp * 1000);
+		$.tmpl(template, { time: time.toString('HH:mm:ss'), name: user, text: lines[i] }).appendTo(element);
 	}
 	while (element.children().length > this.MaxHistory)
 	element.children(':first').remove();
