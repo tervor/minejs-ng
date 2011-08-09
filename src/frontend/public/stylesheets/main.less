@@ -53,45 +53,31 @@ body {
 
 #session {
 	position: absolute;
-	top: 0px;
-	right: 0px;
-	margin-top: 0px;
-    top: 0;
     right: 110px;
- 	line-height: 8px;
-    heigth: 2px;
-	font-size: 10px;
-    padding: 0px 0px 6px 6px;
-    border: 1px solid @color-border-input;
-    .rounded-corners(0px 0px 0px 6px);
+	top: 0px;
 }
 
 #session-info {
 	float: left;
-    margin-right: 10px;
-	padding-top: 4px;
-
+    heigth: 2px;
+	font-size: 12px;
+    padding: 4px 12px 0px 0px;
 }
 
 #session-user {
 	font-weight: bold;
 	color: @color-text-lighter;
-
-
 }
 
 #session-logout {
-    width: 80px;
-    height: 18px;
     position: fixed;
     top: 0;
     right: 16px;
-	.top-button;
+	.style-nav-button;
 	background-color: #200;
 	&:hover {
 		background-color: #400;
 	}
-	.rounded-corners(0px 0px 5px 5px);
 }
 
 /* Top level navigation */
@@ -105,8 +91,7 @@ body {
 	.debugbox;
 	
 	div {
-		.top-button;
-		.rounded-corners(0px 0px 5px 5px);
+		.style-nav-button;
 		
 		&:hover {
 			color: @color-nav-text-hover;
@@ -134,7 +119,30 @@ body {
     height: 22px;
     background-color: transparent;
 	border-bottom: 1px solid @color-border-input;
+	padding: 0px 0px 0px 0px;
 	.debugbox;
+	
+	div {
+		
+		div {
+			.style-nav-sub-button;
+
+			&:hover {
+				color: @color-nav-text-hover;
+				background-color: @color-nav-background-hover;
+				border: 1px solid @color-nav-border-hover;
+				border-bottom-style: none;
+			}
+
+			&.selected {
+				color: @color-nav-text-selected;
+				background-color: @color-nav-background-selected;
+				border: 1px solid @color-nav-border-selected;
+				border-bottom-style: none;
+			}
+		}
+		
+	}
 }
 
 /* Main pane */
@@ -156,10 +164,6 @@ body {
 
 /* Dashboard */
 
-#dashboard-items-container {
-//	width: 100%;
-}
-
 #panel-dashboard {
     float: none;
     clear: both;
@@ -169,21 +173,6 @@ body {
 #sortable {
     float:none;
     clear: both;
-}
-
-/* Dashboard item tags */
-
-.dashboard-item-tag {
-	float: left;
-	margin-right: 4px;
-//	margin: 0 4px 0 4px;
-	padding: 0 8px 0 8px;
-	font-size: 12px;
-	vertical-align: middle;
-	.style-button();
-	height: 15px;
-	padding-top: 3px;
-	margin-top: 3px;
 }
 
 /* Chat */

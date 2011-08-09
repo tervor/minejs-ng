@@ -10,7 +10,7 @@ function Dashboard() {
 	this.achievedItems = null;
 	this.currentTag = 'all';
 	
-	this.elementTags = $('#nav-dashboard');
+	this.elementTags = $('#nav-sub-dashboard');
 	this.elementItems = $('#dashboard-items');
 	
 	this.initTemplates();
@@ -19,6 +19,10 @@ function Dashboard() {
 
 // Initializes templates
 Dashboard.prototype.initTemplates = function() {
+	$.template('itemTagTemplate', "\
+	<div id='dashboard-item-tag-${name}' class='dashboard-item-tag' onclick='dashboard.selectTag(\"${name}\")'>${info}</div>\
+	");
+	
 	$.template('itemTemplate', "\
 	<div id='GridBox' class='GridBox ItemGridBox'>\
 	<div id='ctlMinus' class='ctlPlMi' onclick='dashboard.decreaseAmount(${id})'>-</div>\
@@ -30,10 +34,6 @@ Dashboard.prototype.initTemplates = function() {
 	</div>\
 	<div name='Namelabel-${id}' id='Namelabel-${id}' class='Namelabel'>${info}</div>\
 	</div>\
-	");
-	
-	$.template('itemTagTemplate', "\
-	<div id='dashboard-item-tag-${name}' class='dashboard-item-tag' onclick='dashboard.selectTag(\"${name}\")'>${info}</div>\
 	");
 }
 
@@ -75,7 +75,10 @@ Dashboard.prototype.render = function() {
 	this.elementTags.html('');
 	this.elementItems.html('');
 	$.each(this.itemTags, function(i, tag) {
-		$.tmpl('itemTagTemplate', tag).appendTo(dashboard.elementTags);
+		var element = $.tmpl('itemTagTemplate', tag);
+		if (dashboard.currentTag == tag.name)
+			element.addClass('selected');
+		element.appendTo(dashboard.elementTags);
 	});
 	$.each(this.items, function(i, item) {
 		if (item.tags.indexOf(dashboard.currentTag) >= 0) {

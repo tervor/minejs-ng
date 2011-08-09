@@ -40,9 +40,9 @@ Nav.prototype.selectTab = function(name) {
 		var tab = this.tabs[i];
 		
 		if (tab.name == this.selectedTab) {
-			$('#panel-' + tab.name).show();
-			$('#nav-' + tab.name).show();
 			$('#nav-tab-' + tab.name).addClass('selected');
+			$('#nav-sub-' + tab.name).show();
+			$('#panel-' + tab.name).show();
 			
 			switch (tab.name) {
 			case 'map':
@@ -76,9 +76,9 @@ Nav.prototype.selectTab = function(name) {
 				break;
 			}
 		} else {
-			$('#panel-' + tab.name).hide();
-			$('#nav-' + tab.name).hide();
 			$('#nav-tab-' + tab.name).removeClass('selected');
+			$('#nav-sub-' + tab.name).hide();
+			$('#panel-' + tab.name).hide();
 		}
 	}
 }
