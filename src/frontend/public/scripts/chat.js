@@ -229,6 +229,8 @@ Chat.prototype.input = function(text) {
 Chat.prototype.output = function(channel, user, timestamp, text) {
 	var element = $(this.channels[channel].element);
 	var template = this.channels[channel].template;
+	
+	// Add output to tab
 	var lines = text.split('\n');
 	for (var i = 0; i < lines.length; i++) {
 		if (lines[i] == '')
@@ -237,9 +239,14 @@ Chat.prototype.output = function(channel, user, timestamp, text) {
 		time.setTime(timestamp * 1000);
 		$.tmpl(template, { time: time.toString('HH:mm:ss'), name: user, text: lines[i] }).appendTo(element);
 	}
+	
+	// Clear lines if history gets too long
 	while (element.children().length > this.MaxHistory)
-	element.children(':first').remove();
-	this.scrollBottom();	
+		element.children(':first').remove();
+		
+	// Scroll to bottom if we outputed to the currently visible tab
+	if (this.activeChannel == channel)
+		this.scrollBottom();
 }
 
 
