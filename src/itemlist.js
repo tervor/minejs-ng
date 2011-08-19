@@ -4,9 +4,10 @@ var fs = require('fs');
 // Holds a list of all available minecraft items.
 function ItemList()
 {
-	this.items = JSON.parse(fs.readFileSync(__dirname + '/items.json', 'ascii'));
-	this.tags = JSON.parse(fs.readFileSync(__dirname + '/categories.json', 'ascii'));
-	this.itemMap = JSON.parse(fs.readFileSync(__dirname + '/itemmap.json', 'ascii'));
+	this.items = JSON.parse(fs.readFileSync(__dirname + '/../data/items.json', 'ascii'));
+	this.tags = JSON.parse(fs.readFileSync(__dirname + '/../data/categories.json', 'ascii'));
+	this.kits = JSON.parse(fs.readFileSync(__dirname + '/../data/kits.json', 'ascii'));
+	this.itemMap = JSON.parse(fs.readFileSync(__dirname + '/../data/itemmap.json', 'ascii'));
 }
 
 ItemList.prototype.itemByNameOrId = function(name) {
@@ -14,6 +15,15 @@ ItemList.prototype.itemByNameOrId = function(name) {
 		item = this.items[i];
 		if (item.name == name || item.id == name)
 			return item;
+	}
+	return null;
+}
+
+ItemList.prototype.kitByName = function(name) {
+	for (var i = 0; i < this.kits.length; i++) {
+		kit = this.kits[i];
+		if (kit.name == name)
+			return kit;
 	}
 	return null;
 }

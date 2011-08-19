@@ -1,0 +1,7 @@
+[
+{"name":"tools","info":"Basic Tools","items":[
+	{"id":"diamond_pickaxe","amount":2},
+	{"id":"diamond_shovel","amount":2},
+	{"id":"diamond_axe","amount":2}
+]}
+]
