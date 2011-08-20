@@ -13,7 +13,7 @@ var sys = require('sys'),
 
 // TODO move to utils or something
 Array.prototype.has = function(v) {
-	for (i = 0; i < this.length; i++)
+	for (var i = 0; i < this.length; i++)
 		if (this[i] == v) return true;
 	return false;
 }

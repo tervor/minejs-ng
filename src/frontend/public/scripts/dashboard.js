@@ -24,23 +24,41 @@ Dashboard.prototype.initTemplates = function() {
 	");
 	
 	$.template('itemTemplate', "\
+	<div id='dashboard-item-${name}' class='dashboard-item'>\
+	<div class='dashboard-item-decinc' onclick='dashboard.decreaseAmount(${id})'>-</div>\
+	<div id='dashboard-item-amount-${id}' class='dashboard-item-amount' onclick='dashboard.give(${id})'>${amount}</div>\
+	<div class='dashboard-item-decinc' onclick='dashboard.increaseAmount(${id})'>+</div>\
+	<div class='dashboard-item-icon' onclick='dashboard.give(${id})'>\
+	<div style='padding: 25% 29% 4% 29%;'>\
+	<div style='width: ${image.width}px; height: ${image.height}px; background: url(\"/images/items.png\") no-repeat; background-position: -${image.x}px -${image.y}px'></div>\
+	</div>\
+	<div class='dashboard-item-label'>${info}</div>\
+	</div>\
+	");
+	
+	$.template('kitTemplate', "\
+	<div class='dashboard-kit'>\
+	<div class='dashboard-kit-name'>${info}</div>\
+	</div>\
+	");
+	
+	$.template('kitItemTemplate', "\
 	<div id='GridBox' class='GridBox ItemGridBox'>\
-	<div id='ctlMinus' class='ctlPlMi' onclick='dashboard.decreaseAmount(${id})'>-</div>\
-	<div id='varAmount-${id}' class='varAmountbox' onclick='dashboard.give(${id})'>${amount}</div>\
-	<div id='ctlPlus' class='ctlPlMi' onclick='dashboard.increaseAmount(${id})'>+</div>\
 	<div name='IconLayer-${id}' onclick='dashboard.give(${id})'>\
 	<div style='padding: 25% 29% 4% 29%;'>\
 	<div style='width: ${image.width}px; height: ${image.height}px; background: url(\"/images/items.png\") no-repeat; background-position: -${image.x}px -${image.y}px'></div>\
 	</div>\
-	<div name='Namelabel-${id}' id='Namelabel-${id}' class='Namelabel'>${info}</div>\
+	</div>\
 	</div>\
 	");
+	
 }
 
 // Updates the data
 Dashboard.prototype.update = function() {
 	$.getJSON('/items.json', function(data) {
 		dashboard.items = data.items;
+		dashboard.kits = data.kits;
 		dashboard.itemTags = data.itemTags;
 		dashboard.itemMap = data.itemMap;
 		dashboard.achievedItems = data.achievedItems;
@@ -86,6 +104,17 @@ Dashboard.prototype.render = function() {
 				$.tmpl('itemTemplate', item).appendTo(dashboard.elementItems);
 		}
 	});
+	if (dashboard.currentTag == 'kit') {
+		$.each(this.kits, function(i, kit) {
+			var element = $.tmpl('kitTemplate', kit);
+			$.each(kit.items, function(i, kititem) {
+				item = dashboard.itemByNameOrId(kititem.id);
+				if (item)
+					$.tmpl('kitItemTemplate', dashboard.itemById(item.id)).appendTo(element);
+			});
+			element.appendTo(dashboard.elementItems);
+		});
+	}
 }
 
 // Called to select a new tag
@@ -97,24 +126,24 @@ Dashboard.prototype.selectTag = function(tag) {
 
 // Called to increase amount of item
 Dashboard.prototype.increaseAmount = function(id) {
-	var amount = parseInt($('#varAmount-' + id).text());
+	var amount = parseInt($('#dashboard-item-amount-' + id).text());
 	var max = this.itemById(id).amount * config.maxStacks;
 	if (amount < max)
 		amount *= 2;
-	$('#varAmount-' + id).text(amount);
+	$('#dashboard-item-amount-' + id).text(amount);
 }
 
 // Called to decrease amount of item
 Dashboard.prototype.decreaseAmount = function(id) {
-	var amount = parseInt($('#varAmount-' + id).text());
+	var amount = parseInt($('#dashboard-item-amount-' + id).text());
 	if (amount > 1)
 		amount /= 2;
-	$('#varAmount-' + id).text(amount);
+	$('#dashboard-item-amount-' + id).text(amount);
 }
 
 // Called to give item
 Dashboard.prototype.give = function(id) {
-	var amount = parseInt($('#varAmount-' + id).text());
+	var amount = parseInt($('#dashboard-item-amount-' + id).text());
 	client.give(id, amount);
 }
 
@@ -123,4 +152,19 @@ Dashboard.prototype.itemById = function(id) {
 		if (this.items[key].id == id)
 			return this.items[key];
 	return null;
+}	
+
+Dashboard.prototype.itemByName = function(name) {
+	for (var key in this.items)
+		if (this.items[key].name == name)
+			return this.items[key];
+	return null;
 }
+
+Dashboard.prototype.itemByNameOrId = function(name) {
+	var item = this.itemByName(name);
+	if (!item)
+		item = this.itemById(name);
+	return item;
+}
+

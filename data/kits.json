@@ -1,7 +1,12 @@
 [
-{"name":"tools","info":"Basic Tools","items":[
+{"name":"starter","info":"Starter Kit","items":[
 	{"id":"diamond_pickaxe","amount":2},
 	{"id":"diamond_shovel","amount":2},
 	{"id":"diamond_axe","amount":2}
+]},
+{"name":"crap","info":"Crap Kit","items":[
+	{"id":"dirt","amount":2},
+	{"id":"sand","amount":2},
+	{"id":"cobblestone","amount":2}
 ]}
 ]
