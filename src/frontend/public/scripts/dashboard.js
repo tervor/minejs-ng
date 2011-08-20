@@ -29,7 +29,6 @@ Dashboard.prototype.initTemplates = function() {
 	<div id='dashboard-item-amount-${id}' class='dashboard-item-amount' onclick='dashboard.give(${id})'>${amount}</div>\
 	<div class='dashboard-item-decinc' onclick='dashboard.increaseAmount(${id})'>+</div>\
 	<div class='dashboard-item-icon' onclick='dashboard.give(${id})'>\
-	<div style='padding: 25% 29% 4% 29%;'>\
 	<div style='width: ${image.width}px; height: ${image.height}px; background: url(\"/images/items.png\") no-repeat; background-position: -${image.x}px -${image.y}px'></div>\
 	</div>\
 	<div class='dashboard-item-label'>${info}</div>\
@@ -37,21 +36,20 @@ Dashboard.prototype.initTemplates = function() {
 	");
 	
 	$.template('kitTemplate', "\
-	<div class='dashboard-kit'>\
-	<div class='dashboard-kit-name'>${info}</div>\
+	<div class='dashboard-kit' onclick='dashboard.kit(\"${name}\")'>\
+	<div class='dashboard-kit-label'>${info}</div>\
+	<div class='dashboard-kit-items'/>\
 	</div>\
 	");
 	
 	$.template('kitItemTemplate', "\
-	<div id='GridBox' class='GridBox ItemGridBox'>\
-	<div name='IconLayer-${id}' onclick='dashboard.give(${id})'>\
-	<div style='padding: 25% 29% 4% 29%;'>\
+	<div class='dashboard-kit-item'>\
+	<div class='dashboard-kit-item-icon'>\
 	<div style='width: ${image.width}px; height: ${image.height}px; background: url(\"/images/items.png\") no-repeat; background-position: -${image.x}px -${image.y}px'></div>\
 	</div>\
-	</div>\
+	<div class='dashboard-kit-item-label'>${amount} x</div>\
 	</div>\
 	");
-	
 }
 
 // Updates the data
@@ -107,10 +105,12 @@ Dashboard.prototype.render = function() {
 	if (dashboard.currentTag == 'kit') {
 		$.each(this.kits, function(i, kit) {
 			var element = $.tmpl('kitTemplate', kit);
-			$.each(kit.items, function(i, kititem) {
-				item = dashboard.itemByNameOrId(kititem.id);
-				if (item)
-					$.tmpl('kitItemTemplate', dashboard.itemById(item.id)).appendTo(element);
+			$.each(kit.items, function(i, kitItem) {
+				item = dashboard.itemByNameOrId(kitItem.id);
+				if (item) {
+					kitItem.image = item.image;
+					$.tmpl('kitItemTemplate', kitItem).appendTo($('.dashboard-kit-items', element));
+				}
 			});
 			element.appendTo(dashboard.elementItems);
 		});
@@ -145,6 +145,11 @@ Dashboard.prototype.decreaseAmount = function(id) {
 Dashboard.prototype.give = function(id) {
 	var amount = parseInt($('#dashboard-item-amount-' + id).text());
 	client.give(id, amount);
+}
+
+// Called to give item kit
+Dashboard.prototype.kit = function(name) {
+	client.kit(name);
 }
 
 Dashboard.prototype.itemById = function(id) {

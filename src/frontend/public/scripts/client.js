@@ -48,6 +48,10 @@ Client.prototype.give = function(name, count) {
 	this.command('give', { name: name, count: count });
 }
 
+Client.prototype.kit = function(name) {
+	this.command('kit', { name: name });
+}
+
 Client.prototype.stacks = function(name, count) {
 	this.command('stacks', { name: name, count: count });
 }
