@@ -1,9 +1,0 @@
-<?php
-
-# settings:
-$GLOBALS['maxitems'] = 2047;
-$GLOBALS['nodejsServer'] = "http://localhost:25564";
-$GLOBALS['versionString'] = "0.5";
-$GLOBALS['cacheLifetime'] = 3600;
-
-?>
