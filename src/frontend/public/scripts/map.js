@@ -43,15 +43,21 @@ function loadPlayerMarkers() {
 			var user = data[i];
 			if (user.name == 'admin')
 				continue;
+			var labelClass = 'map-user';
+			labelClass += user.isPlaying ? ' map-user-online' : ' map-user-offline';
 			
 			var converted = overviewer.util.fromWorldToLatLng(user.pos[0], user.pos[1], user.pos[2]);
-			var marker =  new google.maps.Marker({
+			var marker =  new MarkerWithLabel({
 				position: converted,
 				map: overviewer.map,
 				title: user.name,
 				icon: '/images/player.png',
 				visible: true,
-				zIndex: 999
+				zIndex: 999,
+				labelContent: user.name,
+				labelAnchor: new google.maps.Point(22, 0),
+				labelClass: labelClass,
+				labelStyle: {},
 			});
 			playerMarkers.push(marker);
 			preparePlayerMarker(marker, user);
