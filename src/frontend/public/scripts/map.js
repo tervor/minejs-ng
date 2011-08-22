@@ -5,6 +5,7 @@ mapView = new MapView();
 function MapView() {
 	this.frame = null;
 	this.showUsers = true;
+	this.showOffline = false;
 	this.showNames = true;
 	this.playerMarkers = [];
 }
@@ -22,12 +23,21 @@ MapView.prototype.open = function() {
 		}
 	});
 	items.push({
+		'label':	'Show offline users',
+		'checked':	mapView.showOffline,
+		'action':	function(i, item, checked) {
+			// FIXME all handlers are handled in the last action of the item list
+		}
+	});
+	items.push({
 		'label':	'Show names',
 		'checked':	mapView.showNames,
 		'action':	function(i, item, checked) {
-			// Ugly ugly hack
+			// FIXME ugly ugly hack
 			if (item.label == 'Show users')
 				mapView.showUsers = checked;
+			else if (item.label == 'Show offline users')
+				mapView.showOffline = checked;
 			else if (item.label == 'Show names')
 				mapView.showNames = checked;
 			mapView.updatePlayerMarkers();
@@ -63,6 +73,8 @@ MapView.prototype.updatePlayerMarkers = function() {
 		for (var i in data) {
 			var user = data[i];
 			if (user.name == 'admin')
+				continue;
+			if (!mapView.showOffline & !user.isPlaying)
 				continue;
 			var labelClass = 'map-user';
 			labelClass += user.isPlaying ? ' map-user-online' : ' map-user-offline';
