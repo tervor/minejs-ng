@@ -743,7 +743,7 @@ var overviewer = {
                 itemInput.type='checkbox';
 
                 // give it a name
-                $(itemInput).data('label',item.label);
+                $(itemInput).data('label', item.label);
                 jQuery(itemInput).click((function(local_idx, local_item) {
                                      return function(e) {
                                          item.action(local_idx, local_item, e.target.checked);

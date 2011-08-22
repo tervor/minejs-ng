@@ -1,51 +1,74 @@
 
 mapView = new MapView();
 
+
 function MapView() {
 	this.frame = null;
+	this.showUsers = true;
+	this.showNames = true;
+	this.playerMarkers = [];
 }
 
 MapView.prototype.open = function() {
-	setInterval(loadPlayerMarkers, 1000 * 15);
-	setTimeout(loadPlayerMarkers, 1000);
+	setInterval(this.updatePlayerMarkers, 1000 * 15);
+
+	// overlay maps control
+	var items = [];
+	items.push({
+		'label':	'Show users',
+		'checked':	mapView.showUsers,
+		'action':	function(i, item, checked) {
+			// FIXME all handlers are handled in the last action of the item list
+		}
+	});
+	items.push({
+		'label':	'Show names',
+		'checked':	mapView.showNames,
+		'action':	function(i, item, checked) {
+			// Ugly ugly hack
+			if (item.label == 'Show users')
+				mapView.showUsers = checked;
+			else if (item.label == 'Show names')
+				mapView.showNames = checked;
+			mapView.updatePlayerMarkers();
+		}
+	});
+	overviewer.util.createDropDown('Options', items);
 }
 
 MapView.prototype.close = function() {
 	
 }
 
-
-var playerMarkers = null;
-var warpMarkers = [];
-
-function deletePlayerMarkers() {
-  if (playerMarkers) {
-    for (i in playerMarkers) {
-      playerMarkers[i].setMap(null);
-    }
-    playerMarkers = null;
-  }
+MapView.prototype.deletePlayerMarkers = function() {
+	for (var i = 0; i < this.playerMarkers.length; i++) {
+		this.playerMarkers[i].setMap(null);
+	}
+	this.playerMarkers = [];
 }
 
-function preparePlayerMarker(marker, user) {
+MapView.prototype.preparePlayerMarker = function(marker, user) {
 	var c = "<div class=\"infoWindow\" style='width: 300px'><img src='/images/player.png'/><h1>" + user.name + "</h1></div>";
 	var infowindow = new google.maps.InfoWindow({content: c});
 	google.maps.event.addListener(marker, 'click', function() {
-		infowindow.open(overviewer.map,marker);
+		infowindow.open(overviewer.map, marker);
 	});
 }
 
-function loadPlayerMarkers() {
+MapView.prototype.updatePlayerMarkers = function() {
 	$.getJSON('/users.json', function(data) {
-		deletePlayerMarkers();
-		playerMarkers = [];
+		mapView.deletePlayerMarkers();
+		if (!mapView.showUsers)
+			return;
 		for (var i in data) {
 			var user = data[i];
 			if (user.name == 'admin')
 				continue;
 			var labelClass = 'map-user';
 			labelClass += user.isPlaying ? ' map-user-online' : ' map-user-offline';
-			
+			if (!mapView.showNames)
+				labelClass += ' map-user-hidden';
+
 			var converted = overviewer.util.fromWorldToLatLng(user.pos[0], user.pos[1], user.pos[2]);
 			var marker =  new MarkerWithLabel({
 				position: converted,
@@ -59,8 +82,8 @@ function loadPlayerMarkers() {
 				labelClass: labelClass,
 				labelStyle: {},
 			});
-			playerMarkers.push(marker);
-			preparePlayerMarker(marker, user);
+			mapView.preparePlayerMarker(marker, user);
+			mapView.playerMarkers.push(marker);
 		}
 	});
 }
