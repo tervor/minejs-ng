@@ -1,24 +1,22 @@
-mineJS
-========
-Licence: not clear right now, probably GPL or MIT, but as long it's not furter defined all code belongs to the developers of the source.
+MineJS-ng
+=========
+MinejS-ng is a fork from escii/minejs.
 
-This is a proof of concept in nodeJS, we try to add some remotecontrol feautures to our minecraft server without touching the minecraft code, now we want to share with you what we got. Enjoy!
+Since mineJS is not longer developed, I will develop a new version of this to the actual Minecraft version.
 
 Requirements
 ------------
-*Linux or UNIX operating System
-*Java Support
-**Apache webserver with PHP support
-*NodeJS 0.5
-*Minecraft 1.7.x
+* Linux operating system (Debian, Ubuntu, Gentoo, others should also work but not with install.sh)
+* Minecraft server
+* Nodejs 0.5 or higher
+* Webserver with PHP support
 
-How to install it
------------------
-execute the following script in a bash shell terminal.
-./install.sh 
+Install
+-------
+execute install.sh (./install.sh)
 
-How to run 
-----------
+Start
+-----
 just execute ./mine.js  or node mine.js from the minejs directory.
 don't forget to add yourself to the ops.txt file if you not already did it.
 login to minecraft and run //help
@@ -27,8 +25,5 @@ further users, before they are able to login.
 
 Thanks to
 ---------
-###code & concept: 
+###mineJS: 
 escii, freaky & oxi 
-
-###testing & input: 
-copykill, fabich, tomsnow, yingpang, mortron and the darklords 
