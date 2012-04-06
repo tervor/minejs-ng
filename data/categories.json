@@ -10,6 +10,7 @@
 {"name":"active","info":"Active"},
 {"name":"misc","info":"Misc"},
 {"name":"weapon","info":"Weapons"},
+{"name":"armor","info":"Armor"},
 {"name":"food","info":"Food"},
 {"name":"light","info":"Lights"},
 {"name":"deco","info":"Decoration"},
