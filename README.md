@@ -1,3 +1,8 @@
+Project Halted!
+===============
+
+I will no longer update this project!
+
 MineJS-ng
 =========
 MinejS-ng is a fork from escii/minejs.
